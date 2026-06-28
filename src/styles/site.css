@@ -152,14 +152,6 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .key--w2 { grid-column: span 2; }
 .key--ghost { opacity: 0.55; }
 
-/* HIRE ME sticker */
-.hire { position: absolute; left: var(--pad); bottom: clamp(120px, 18vh, 200px); width: clamp(92px, 11vw, 150px); aspect-ratio: 1; z-index: 3; }
-.hire__spin { position: absolute; inset: 0; background: var(--lime); border-radius: 50%; animation: spin 11s linear infinite; }
-.hire__spin text { font-size: 13px; font-weight: 600; letter-spacing: 0.18em; fill: var(--ink); text-transform: uppercase; }
-.hire__plane { position: absolute; inset: 0; display: grid; place-items: center; }
-.hire__plane svg { width: 38%; height: 38%; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
 .hero__foot { margin-top: auto; }
 
 /* ============================================================
@@ -342,9 +334,6 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
   .nav__center, .nav__links { display: none; }
   .nav__menu { display: flex; }
   .kbd-wrap { position: relative; right: auto; top: auto; width: 100%; margin: 10px auto 0; max-width: 540px; }
-  /* keep `relative` (not static) so the badge stays its own positioning
-     context — otherwise the absolute lime circle fills the whole hero */
-  .hire { position: relative; left: auto; bottom: auto; margin: 26px 0 6px; width: clamp(96px, 22vw, 130px); }
   .proof__grid { grid-template-columns: 1fr 1fr; }
   .work-grid { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
@@ -366,5 +355,4 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
-  .hire__spin { animation: none; }
 }
