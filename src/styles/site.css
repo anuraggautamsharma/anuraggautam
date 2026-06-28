@@ -41,8 +41,6 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-@media (hover: hover) and (pointer: fine) { body { cursor: none; } }
-
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--lime); color: var(--ink); }
@@ -63,9 +61,7 @@ em { font-style: italic; }
 .cursor svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18)); }
 .cursor.is-down { transform: translate(-30%, -20%) scale(0.82); }
 .cursor.is-hover { transform: translate(-30%, -20%) scale(1.18) rotate(-8deg); }
-.cursor__label { position: absolute; left: 38px; top: 30px; white-space: nowrap; background: var(--ink); color: var(--bg); font-size: 11px; padding: 4px 9px; border-radius: 20px; opacity: 0; transform: translateY(4px); transition: opacity 0.2s, transform 0.2s; font-weight: 500; }
-.cursor.is-hover .cursor__label { opacity: 1; transform: none; }
-@media (hover: none) { .cursor { display: none; } }
+.cursor { display: none; } /* custom cursor removed — using the native pointer */
 
 /* ============================================================
    PAGE TRANSITION
@@ -275,8 +271,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .footer__socials a { font-size: 14px; border: 1.5px solid var(--line-2); border-radius: 50px; padding: 9px 16px; transition: background 0.25s, color 0.25s, border-color 0.25s; }
 .footer__socials a:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .footer__base { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; margin-top: clamp(40px, 8vh, 90px); padding-top: 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
-.footer__top { background: none; border: 0; font: inherit; color: var(--muted); }
-@media (hover: hover) and (pointer: fine) { .footer__top { cursor: none; } }
+.footer__top { background: none; border: 0; font: inherit; color: var(--muted); cursor: pointer; }
 .footer__top:hover { color: var(--ink); }
 
 /* ============================================================

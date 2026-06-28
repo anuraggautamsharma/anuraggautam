@@ -176,6 +176,6 @@ function initCopyMail() {
 /* ---------- BOOT ---------- */
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initCursor(); initKeyboard(); initMarquees(); initReveals(); initNav(); initCopyMail()
+  initScroll(); initTransition(); initKeyboard(); initMarquees(); initReveals(); initNav(); initCopyMail()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })
