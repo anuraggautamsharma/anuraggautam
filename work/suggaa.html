@@ -3,35 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#07060c" />
+  <meta name="theme-color" content="#e9e9e4" />
   <title>Suggaa — Design system & apps for a ride-hailing platform | Anurag Gautam</title>
   <meta name="description" content="A full product design system from scratch, plus the rider and driver apps, for a ride-hailing platform that reached 25,000+ users." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script type="module" src="/src/site.js"></script>
 </head>
 <body>
-  <div class="page-fx is-open" id="pageFx" aria-hidden="true"><span>SUGGAA</span></div>
-  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
+  <div class="page-fx is-open" id="pageFx" aria-hidden="true"><span>Suggaa</span></div>
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <svg viewBox="0 0 32 34"><path d="M12 2c-1.1 0-2 .9-2 2v10l-2.1-2.1a2 2 0 0 0-2.9 2.8l5.6 6c.9 1 2.1 1.5 3.4 1.5h5.5a4 4 0 0 0 4-4v-6.7a1.9 1.9 0 0 0-3.8 0 1.9 1.9 0 0 0-3.8 0 1.9 1.9 0 0 0-3.9 0V4c0-1.1-.9-2-2-2z" fill="#fff" stroke="#15150f" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <span class="cursor__label" id="cursorLabel"></span>
+  </div>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="nav" id="nav">
-    <a href="/" class="nav__brand"><span class="dot"></span> Anurag Gautam</a>
+    <a href="/" class="nav__brand">ag</a>
+    <div class="nav__center">
+      <a href="mailto:anuraggautamsharma@gmail.com" class="nav__email">anuraggautamsharma@gmail.com</a>
+      <span class="nav__social">
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.3-.02-2.96-1.8-2.96-1.8 0-2.08 1.4-2.08 2.86V21H9z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.4.36 1 .42 2.2.07 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 1.8-.42 2.2-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.4.17-1 .36-2.2.42-1.3.07-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.8-.25-2.2-.42a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.17-.4-.36-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-1.8.42-2.2.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.4-.17 1-.36 2.2-.42C8.4 2.2 8.8 2.2 12 2.2z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 4.9 12 4.9 12 4.9s-7 0-8.9.5A3 3 0 0 0 1 7.5 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.5 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
+      </span>
+    </div>
     <nav class="nav__links" aria-label="Primary">
-      <a href="/">Home</a><a href="/work.html" class="is-active">Work</a><a href="/about.html">About</a><a href="/contact.html">Contact</a>
+      <a href="/about.html">about</a><a href="/work.html" class="is-active">work</a><a href="/contact.html">contact</a>
     </nav>
-    <a href="/contact.html" class="nav__cta"><i></i> Open to work</a>
     <button class="nav__menu" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
   </header>
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-    <a href="/">Home</a><a href="/work.html">Work</a><a href="/about.html">About</a><a href="/contact.html">Contact</a>
+    <a href="/about.html">about</a><a href="/work.html">work</a><a href="/contact.html">contact</a>
+    <a href="mailto:anuraggautamsharma@gmail.com" class="mm-mail">anuraggautamsharma@gmail.com</a>
   </div>
 
   <main id="main">
     <section class="case-hero">
-      <div class="hero__stickers"><span class="sticker sticker--lime">★ Case study</span><span class="sticker sticker--cyan">Product design</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px">
+        <span class="sticker-tag sticker-tag--lime">★ Case study</span><span class="sticker-tag">Product design</span>
+      </div>
       <h1>Suggaa</h1>
       <p>A full product design system from scratch — plus the rider app, driver app, and operator console — for a ride-hailing platform that reached <em>25,000+ users.</em></p>
     </section>
@@ -45,7 +58,7 @@
       </dl>
     </section>
 
-    <section><div class="case-cover"><div class="ph ph--1">SUGGAA</div></div></section>
+    <section><div class="case-cover"><div class="ph ph--1">Suggaa</div></div></section>
 
     <section class="case-section">
       <h2 data-reveal>The brief</h2>
@@ -74,7 +87,7 @@
         <div><b>[N]</b><span>cities launched</span></div>
       </div>
       <p data-reveal>The product reached 25,000+ users. The design system meant new features and new cities shipped without the experience drifting — <strong>one operator, end to end, from blank canvas to product on the road.</strong></p>
-      <p data-reveal style="font-family:var(--font-mono);font-size:14px">[Add a real outcome line — retention, trips, or a launch number — and swap in real screens below.]</p>
+      <p data-reveal style="font-size:14px">[Add a real outcome line — retention, trips, or a launch number — and swap in real screens below.]</p>
     </section>
 
     <section><div class="case-gallery">

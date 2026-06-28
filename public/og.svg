@@ -1,26 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
-  <defs>
-    <linearGradient id="holo" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2fe6ff"/><stop offset="0.35" stop-color="#9b5cff"/>
-      <stop offset="0.7" stop-color="#ff2bd6"/><stop offset="1" stop-color="#c6ff3a"/>
-    </linearGradient>
-    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#8b90ad"/><stop offset="1" stop-color="#eef0f7"/>
-    </linearGradient>
-    <radialGradient id="g1" cx="15%" cy="10%" r="60%"><stop offset="0" stop-color="#9b5cff" stop-opacity="0.55"/><stop offset="1" stop-color="#07060c" stop-opacity="0"/></radialGradient>
-    <radialGradient id="g2" cx="90%" cy="90%" r="60%"><stop offset="0" stop-color="#ff2bd6" stop-opacity="0.5"/><stop offset="1" stop-color="#07060c" stop-opacity="0"/></radialGradient>
-  </defs>
-  <rect width="1200" height="630" fill="#07060c"/>
-  <rect width="1200" height="630" fill="url(#g1)"/>
-  <rect width="1200" height="630" fill="url(#g2)"/>
-  <text x="70" y="80" font-family="'Space Mono', monospace" font-size="20" fill="#c6ff3a" letter-spacing="5">PRODUCT DESIGN · GTM · 0→1 · BENGALURU</text>
-  <text x="62" y="250" font-family="'Syne', sans-serif" font-weight="800" font-size="150" fill="url(#chrome)" letter-spacing="-6">ANURAG</text>
-  <text x="62" y="390" font-family="'Syne', sans-serif" font-weight="800" font-size="150" fill="url(#holo)" letter-spacing="-6">GAUTAM</text>
-  <text x="70" y="470" font-family="Inter, sans-serif" font-size="30" fill="#9a96bd">I build products and the growth engines that ship them.</text>
-  <g font-family="'Syne', sans-serif" font-weight="800" fill="#f3f1ff">
-    <text x="70" y="565" font-size="46" fill="#ff2bd6">₹6 Cr+</text>
-    <text x="370" y="565" font-size="46" fill="#2fe6ff">$2M</text>
-    <text x="600" y="565" font-size="46" fill="#c6ff3a">25K+</text>
-    <text x="880" y="565" font-size="46" fill="#9b5cff">7+ yrs</text>
+  <rect width="1200" height="630" fill="#e9e9e4"/>
+  <circle cx="1000" cy="150" r="120" fill="#c2f23c"/>
+  <text x="1000" y="165" text-anchor="middle" font-family="'Playfair Display', serif" font-style="italic" font-size="44" fill="#15150f">hire me</text>
+  <text x="70" y="80" font-family="Inter, sans-serif" font-size="20" font-weight="600" fill="#71706a" letter-spacing="4">PRODUCT DESIGN · GTM · 0→1 · BENGALURU</text>
+  <text x="64" y="270" font-family="'Playfair Display', serif" font-size="120" fill="#15150f">Anurag Gautam</text>
+  <text x="70" y="345" font-family="Inter, sans-serif" font-size="36" fill="#71706a">Product Designer &amp; GTM Operator</text>
+  <line x1="70" y1="430" x2="900" y2="430" stroke="#15150f" stroke-opacity="0.2"/>
+  <g font-family="'Playfair Display', serif" fill="#15150f">
+    <text x="70" y="520" font-size="56" font-style="italic">₹6 Cr+</text>
+    <text x="360" y="520" font-size="56">$2M</text>
+    <text x="560" y="520" font-size="56" font-style="italic">25,000+</text>
+    <text x="870" y="520" font-size="56">7+ yrs</text>
+  </g>
+  <g font-family="Inter, sans-serif" fill="#71706a" font-size="17">
+    <text x="72" y="558">B2B REVENUE</text>
+    <text x="362" y="558">RAISED</text>
+    <text x="562" y="558">USERS LAUNCHED</text>
+    <text x="872" y="558">SINCE 18</text>
   </g>
 </svg>

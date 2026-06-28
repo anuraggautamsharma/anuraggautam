@@ -10,7 +10,7 @@ function runLoader(done) {
   if (!loader) return done()
   const count = document.getElementById('loaderCount')
   const bar = document.getElementById('loaderBar')
-  const dur = reduced ? 250 : 950
+  const dur = reduced ? 250 : 900
   const start = performance.now()
   function step(now) {
     const t = Math.min((now - start) / dur, 1)
@@ -27,17 +27,13 @@ function runLoader(done) {
 let lenis
 function initTransition() {
   const fx = document.getElementById('pageFx')
-  // reveal on load
   if (fx) requestAnimationFrame(() => requestAnimationFrame(() => fx.classList.add('is-open')))
-
   document.querySelectorAll('a[href]').forEach((a) => {
     const href = a.getAttribute('href')
     if (!href) return
     const isHash = href.startsWith('#')
     const isExternal = /^(https?:|mailto:|tel:)/.test(href)
-    const newTab = a.target === '_blank'
-    if (isExternal || newTab) return
-
+    if (isExternal || a.target === '_blank') return
     a.addEventListener('click', (e) => {
       if (isHash) {
         const el = document.querySelector(href)
@@ -46,16 +42,12 @@ function initTransition() {
       }
       if (e.metaKey || e.ctrlKey || e.shiftKey) return
       if (!fx || reduced) return
-      e.preventDefault()
-      closeMenu()
-      // sweep cover up from bottom
+      e.preventDefault(); closeMenu()
       fx.classList.remove('is-open')
-      fx.style.transition = 'none'
-      fx.style.transform = 'translateY(100%)'
+      fx.style.transition = 'none'; fx.style.transform = 'translateY(100%)'
       void fx.offsetWidth
-      fx.style.transition = ''
-      fx.style.transform = 'translateY(0)'
-      setTimeout(() => { window.location.href = href }, 620)
+      fx.style.transition = ''; fx.style.transform = 'translateY(0)'
+      setTimeout(() => { window.location.href = href }, 600)
     })
   })
 }
@@ -68,7 +60,7 @@ function initScroll() {
   requestAnimationFrame(raf)
 }
 
-/* ---------- CURSOR ---------- */
+/* ---------- HAND CURSOR ---------- */
 function initCursor() {
   if (!finePointer) return
   const cur = document.getElementById('cursor')
@@ -76,16 +68,35 @@ function initCursor() {
   if (!cur) return
   let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y
   addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY }, { passive: true })
+  addEventListener('pointerdown', () => cur.classList.add('is-down'))
+  addEventListener('pointerup', () => cur.classList.remove('is-down'))
   ;(function loop() {
-    cx += (x - cx) * 0.22; cy += (y - cy) * 0.22
-    cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`
+    cx += (x - cx) * 0.25; cy += (y - cy) * 0.25
+    cur.style.left = cx + 'px'; cur.style.top = cy + 'px'
     requestAnimationFrame(loop)
   })()
-  const hoverables = 'a, button, [data-cursor], .work-card, .proof__cell'
-  document.querySelectorAll(hoverables).forEach((el) => {
+  document.querySelectorAll('a, button, [data-cursor], .work-card, .proof__cell, .key').forEach((el) => {
     el.addEventListener('pointerenter', () => { cur.classList.add('is-hover'); if (label) label.textContent = el.getAttribute('data-cursor') || '' })
     el.addEventListener('pointerleave', () => { cur.classList.remove('is-hover'); if (label) label.textContent = '' })
   })
+}
+
+/* ---------- KEYBOARD PARALLAX TILT ---------- */
+function initKeyboard() {
+  if (!finePointer || reduced) return
+  const kbd = document.getElementById('kbd')
+  if (!kbd) return
+  const baseX = 56, baseZ = -44
+  let tx = 0, ty = 0, cxv = 0, cyv = 0
+  addEventListener('pointermove', (e) => {
+    tx = (e.clientX / innerWidth - 0.5)
+    ty = (e.clientY / innerHeight - 0.5)
+  }, { passive: true })
+  ;(function loop() {
+    cxv += (tx - cxv) * 0.06; cyv += (ty - cyv) * 0.06
+    kbd.style.transform = `rotateX(${baseX - cyv * 8}deg) rotateZ(${baseZ + cxv * 8}deg) translate3d(${cxv * 18}px, ${cyv * 18}px, 0)`
+    requestAnimationFrame(loop)
+  })()
 }
 
 /* ---------- MARQUEES ---------- */
@@ -95,17 +106,14 @@ function initMarquees() {
   let vel = 0
   if (lenis) lenis.on('scroll', ({ velocity }) => { vel = velocity })
   tracks.forEach((track) => {
-    // duplicate content for seamless loop
     track.innerHTML += track.innerHTML
-    let x = 0, last = 0
-    const half = () => track.scrollWidth / 2
-    let halfW = half()
-    addEventListener('resize', () => { halfW = half() })
+    let x = 0, last = 0, halfW = track.scrollWidth / 2
+    addEventListener('resize', () => { halfW = track.scrollWidth / 2 })
     const dir = track.dataset.dir === 'rev' ? 1 : -1
     function loop(now) {
       requestAnimationFrame(loop)
       const dt = Math.min((now - last) / 16.67, 3) || 1; last = now
-      x += dir * (0.7 + Math.abs(vel) * 0.25) * dt
+      x += dir * (0.6 + Math.abs(vel) * 0.25) * dt
       if (x <= -halfW) x += halfW
       if (x >= 0) x -= halfW
       track.style.transform = `translate3d(${x}px,0,0)`
@@ -119,7 +127,7 @@ function initReveals() {
   const ro = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add('is-in'); ro.unobserve(e.target) }
   }), { threshold: 0.12, rootMargin: '0px 0px -7% 0px' })
-  document.querySelectorAll('[data-reveal], .line').forEach((el) => ro.observe(el))
+  document.querySelectorAll('[data-reveal]').forEach((el) => ro.observe(el))
 }
 
 /* ---------- NAV ---------- */
@@ -138,7 +146,6 @@ function initNav() {
   }
   if (lenis) lenis.on('scroll', ({ scroll }) => onScroll(scroll))
   else addEventListener('scroll', () => onScroll(scrollY), { passive: true })
-
   const toggle = document.getElementById('navToggle')
   toggle?.addEventListener('click', () => {
     const open = nav.classList.toggle('is-open')
@@ -169,6 +176,6 @@ function initCopyMail() {
 /* ---------- BOOT ---------- */
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initCursor(); initMarquees(); initReveals(); initNav(); initCopyMail()
+  initScroll(); initTransition(); initCursor(); initKeyboard(); initMarquees(); initReveals(); initNav(); initCopyMail()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

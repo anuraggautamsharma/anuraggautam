@@ -1,9 +1,11 @@
 # Anurag Gautam — Portfolio
 
-Retro-future / Y2K **multipage** portfolio. Off-black base, chrome + holographic
-gradient type, neon accents, sticker UI, page-transition wipes, custom cursor and
-marquees. Built to feel like an Awwwards-grade creative-designer site — while staying
-fast (~24 KB of JS, no heavy 3D).
+Light, refined & playful **multipage** portfolio (inspired by the feel of
+kkapustin.com). Warm-grey canvas, elegant serif (Playfair Display) + clean grotesque
+(Inter), a single lime accent, and tactile interaction: a glassy lime keycap cluster
+that tilts with your cursor, a custom hand cursor, a spinning "HIRE ME" sticker,
+serif/sans marquees, page-transition wipes and lift-on-hover cards. Fast — ~24 KB of
+JS, no heavy 3D.
 
 ## Pages
 - `/` — Home (hero, thesis, proof, featured work, studio, contact)

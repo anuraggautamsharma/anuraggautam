@@ -3,58 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#07060c" />
+  <meta name="theme-color" content="#e9e9e4" />
   <title>About — Anurag Gautam</title>
   <meta name="description" content="Dropout, builder since 18. Product designer and GTM operator who takes ideas from zero to in-market — design, team, launch, pipeline." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script type="module" src="/src/site.js"></script>
 </head>
 <body>
-  <div class="page-fx is-open" id="pageFx" aria-hidden="true"><span>ABOUT</span></div>
-  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
+  <div class="page-fx is-open" id="pageFx" aria-hidden="true"><span>about</span></div>
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <svg viewBox="0 0 32 34"><path d="M12 2c-1.1 0-2 .9-2 2v10l-2.1-2.1a2 2 0 0 0-2.9 2.8l5.6 6c.9 1 2.1 1.5 3.4 1.5h5.5a4 4 0 0 0 4-4v-6.7a1.9 1.9 0 0 0-3.8 0 1.9 1.9 0 0 0-3.8 0 1.9 1.9 0 0 0-3.9 0V4c0-1.1-.9-2-2-2z" fill="#fff" stroke="#15150f" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <span class="cursor__label" id="cursorLabel"></span>
+  </div>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="nav" id="nav">
-    <a href="/" class="nav__brand"><span class="dot"></span> Anurag Gautam</a>
+    <a href="/" class="nav__brand">ag</a>
+    <div class="nav__center">
+      <a href="mailto:anuraggautamsharma@gmail.com" class="nav__email">anuraggautamsharma@gmail.com</a>
+      <span class="nav__social">
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.3-.02-2.96-1.8-2.96-1.8 0-2.08 1.4-2.08 2.86V21H9z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.4.36 1 .42 2.2.07 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 1.8-.42 2.2-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.4.17-1 .36-2.2.42-1.3.07-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.8-.25-2.2-.42a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.17-.4-.36-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-1.8.42-2.2.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.4-.17 1-.36 2.2-.42C8.4 2.2 8.8 2.2 12 2.2z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 4.9 12 4.9 12 4.9s-7 0-8.9.5A3 3 0 0 0 1 7.5 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.5 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
+      </span>
+    </div>
     <nav class="nav__links" aria-label="Primary">
-      <a href="/">Home</a>
-      <a href="/work.html">Work</a>
-      <a href="/about.html" class="is-active">About</a>
-      <a href="/contact.html">Contact</a>
+      <a href="/about.html" class="is-active">about</a>
+      <a href="/work.html">work</a>
+      <a href="/contact.html">contact</a>
     </nav>
-    <a href="/contact.html" class="nav__cta"><i></i> Open to work</a>
     <button class="nav__menu" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
   </header>
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-    <a href="/">Home</a>
-    <a href="/work.html">Work</a>
-    <a href="/contact.html">Contact</a>
+    <a href="/about.html">about</a><a href="/work.html">work</a><a href="/contact.html">contact</a>
     <a href="mailto:anuraggautamsharma@gmail.com" class="mm-mail">anuraggautamsharma@gmail.com</a>
   </div>
 
   <main id="main">
     <section class="page-hero">
-      <div class="hero__stickers"><span class="sticker sticker--pink">Dropout</span><span class="sticker sticker--lime">Building since 18</span><span class="sticker sticker--cyan">Bengaluru</span></div>
-      <h1><span class="chrome">ABOUT</span> <span class="holo">ME</span></h1>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px">
+        <span class="sticker-tag sticker-tag--lime">Dropout</span>
+        <span class="sticker-tag">Building since 18</span>
+        <span class="sticker-tag">Bengaluru</span>
+      </div>
+      <h1>About <em>me</em></h1>
     </section>
 
     <section class="about-grid">
       <div class="about-portrait" data-reveal>
         <!-- Drop your headshot at /public/portrait.jpg -->
         <img src="/portrait.svg" alt="Anurag Gautam" id="portrait" />
-        <span class="sticker sticker--lime tag">Bengaluru, IN</span>
+        <span class="sticker-tag sticker-tag--lime tag">Bengaluru, IN</span>
       </div>
       <div class="about-copy">
-        <p class="lead" data-reveal>I'm a dropout. I started working at <span class="holo">18</span>, in 2017, and I've been building ever since.</p>
+        <p class="lead" data-reveal>I'm a dropout. I started working at <em>18</em>, in 2017, and I've been building ever since.</p>
         <p data-reveal>I don't sit in one lane. I've designed the product, built the team, run the launch, and owned the pipeline. That range is the point — I take an idea from zero to in-market, and I can do most of it myself.</p>
         <p data-reveal><a href="/contact.html" class="btn btn--primary" data-cursor="say hi">Let's build something <span aria-hidden="true">→</span></a></p>
       </div>
     </section>
 
-    <!-- CAPABILITIES -->
     <section class="caps">
       <div class="section-tag"><span class="n">01</span><span class="l">/ Capabilities — one operator's toolkit</span></div>
       <div class="caps__item" data-reveal><span class="caps__no">01</span><h3>Product &amp; Visual Design</h3><p>Design systems, app UI, and brand-grade visual work. I built a full design system from scratch across three products.</p></div>
@@ -64,30 +74,26 @@
       <div class="caps__item" data-reveal><span class="caps__no">05</span><h3>Vibe Coding</h3><p>I ship real, working product — not just mockups. This site is one example.</p></div>
     </section>
 
-    <!-- TIMELINE -->
     <section class="timeline">
       <div class="section-tag"><span class="n">02</span><span class="l">/ Track record — newest first</span></div>
       <div class="timeline__item" data-reveal><div class="timeline__year">2024 — present</div><div class="timeline__body"><h3>The PipelineLab <span>Founder</span></h3><p>GTM studio. I build scalable outbound systems for B2B teams — ICP, list-building, deliverability, multichannel sequences — and deliver consistent pipeline. Part of the ₹6 Cr+ in B2B revenue I've generated.</p></div></div>
       <div class="timeline__item" data-reveal><div class="timeline__year">[year] — present</div><div class="timeline__body"><h3>AfterThought <span>Founder</span></h3><p>Creative studio. Brand identity, marketing design, motion and content for founders and growing teams. Runs in parallel with PipelineLab.</p></div></div>
-      <div class="timeline__item" data-reveal><div class="timeline__year">[2018] — [2023]</div><div class="timeline__body"><h3>Suggaa <span>Product &amp; Marketing</span></h3><p>Designed the entire design system from scratch — rider app, driver app, and operator console. Built the design and development team from the ground up. Launched city by city with on-ground events and press. Reached 25,000+ users.</p></div></div>
+      <div class="timeline__item" data-reveal><div class="timeline__year">[2018] — [2023]</div><div class="timeline__body"><h3>Suggaa <span>Product &amp; Marketing</span></h3><p>Designed the entire design system from scratch — rider app, driver app, and operator console. Built the design and development team from the ground up. Launched city by city. Reached 25,000+ users.</p></div></div>
       <div class="timeline__item" data-reveal><div class="timeline__year">2017</div><div class="timeline__body"><h3>Marketing agency <span>Sales</span></h3><p>Started at 18, finding and closing clients for a marketing agency. Learned to sell before I learned anything else.</p></div></div>
     </section>
 
-    <!-- STUDIO -->
     <section class="studio" id="afterthought" data-reveal>
-      <span class="eyebrow" style="color:#07060c">03 / The studio</span>
-      <h2 style="margin-top:18px">AfterThought<br>— my studio.</h2>
+      <span class="eyebrow" style="color:var(--lime)">03 / The studio</span>
+      <h2 style="margin-top:18px">AfterThought<br>— <em>my studio.</em></h2>
       <p>Brand identity, marketing design, motion and content — for founders who need work that looks like the company they're trying to become.</p>
       <ul class="studio__chips"><li>Brand identity</li><li>Marketing design</li><li>Motion &amp; content</li><li>Launch support</li></ul>
       <a href="mailto:anuraggautamsharma@gmail.com?subject=AfterThought%20project" class="btn btn--primary" data-cursor="start">Start a project <span aria-hidden="true">→</span></a>
     </section>
 
-    <!-- IN PUBLIC -->
     <section class="intro">
       <div class="section-tag"><span class="n">04</span><span class="l">/ In public</span></div>
-      <p class="intro__text" data-reveal>I build in <span class="holo">public.</span> Design, GTM and the messy middle — on Instagram and YouTube.</p>
-      <div class="hero__stickers" style="margin-top:30px">
-        <!-- TODO: replace # with real URLs -->
+      <p class="intro__text">I build in <span class="serif-i">public.</span> Design, GTM and the messy middle — on Instagram and YouTube.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:30px">
         <a href="#" class="btn btn--ghost" data-cursor="watch">Instagram ↗</a>
         <a href="#" class="btn btn--ghost" data-cursor="watch">YouTube ↗</a>
       </div>
@@ -95,20 +101,12 @@
 
     <footer class="footer">
       <div class="section-tag"><span class="n">→</span><span class="l">/ Contact</span></div>
-      <h2 class="footer__cta"><span class="outline-text">LET'S</span> <span class="holo">BUILD.</span></h2>
+      <h2 class="footer__cta">Let's <em>build.</em></h2>
       <div class="footer__row">
         <a href="mailto:anuraggautamsharma@gmail.com" class="footer__mail" data-copy-mail="anuraggautamsharma@gmail.com" data-cursor="copy">anuraggautamsharma@gmail.com</a>
-        <div class="footer__socials">
-          <a href="#" data-cursor="open">LinkedIn ↗</a>
-          <a href="#" data-cursor="open">Instagram ↗</a>
-          <a href="#" data-cursor="open">YouTube ↗</a>
-        </div>
+        <div class="footer__socials"><a href="#" data-cursor="open">LinkedIn ↗</a><a href="#" data-cursor="open">Instagram ↗</a><a href="#" data-cursor="open">YouTube ↗</a></div>
       </div>
-      <div class="footer__base">
-        <span>Anurag Gautam · Bengaluru, IN</span>
-        <span>© <span id="year">2026</span> · Built with vibe code</span>
-        <button class="footer__top" id="backTop" data-cursor="up">Back to top ↑</button>
-      </div>
+      <div class="footer__base"><span>Anurag Gautam · Bengaluru, IN</span><span>© <span id="year">2026</span> · Built with vibe code</span><button class="footer__top" id="backTop" data-cursor="up">Back to top ↑</button></div>
     </footer>
   </main>
 </body>
