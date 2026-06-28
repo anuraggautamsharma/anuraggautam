@@ -124,10 +124,14 @@ function initMarquees() {
 
 /* ---------- REVEALS ---------- */
 function initReveals() {
+  const els = [...document.querySelectorAll('[data-reveal]')]
   const ro = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add('is-in'); ro.unobserve(e.target) }
   }), { threshold: 0.12, rootMargin: '0px 0px -7% 0px' })
-  document.querySelectorAll('[data-reveal]').forEach((el) => ro.observe(el))
+  els.forEach((el) => ro.observe(el))
+  // safety net: if the observer never fires (e.g. odd device/headless), make
+  // sure nothing stays invisible after a few seconds
+  setTimeout(() => els.forEach((el) => el.classList.add('is-in')), 4000)
 }
 
 /* ---------- NAV ---------- */

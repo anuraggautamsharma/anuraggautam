@@ -337,7 +337,9 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
   .nav__center, .nav__links { display: none; }
   .nav__menu { display: flex; }
   .kbd-wrap { position: relative; right: auto; top: auto; width: 100%; margin: 10px auto 0; max-width: 540px; }
-  .hire { position: static; margin: 26px 0 6px; }
+  /* keep `relative` (not static) so the badge stays its own positioning
+     context — otherwise the absolute lime circle fills the whole hero */
+  .hire { position: relative; left: auto; bottom: auto; margin: 26px 0 6px; width: clamp(96px, 22vw, 130px); }
   .proof__grid { grid-template-columns: 1fr 1fr; }
   .work-grid { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
