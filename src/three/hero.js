@@ -49,7 +49,7 @@ export function initHero(canvas) {
   camera.position.z = 6.2
 
   // detail 22 ≈ 29k points (was 64 ≈ 245k). Plenty dense, far cheaper.
-  const geo = new THREE.IcosahedronGeometry(2.1, isMobile ? 12 : 22)
+  const geo = new THREE.IcosahedronGeometry(1.75, isMobile ? 14 : 24)
 
   const uniforms = {
     uTime: { value: 0 },
@@ -57,7 +57,8 @@ export function initHero(canvas) {
     uMouseStrength: { value: 0 },
     uAccent: { value: new THREE.Color(0xd6ff1f) },
     uPaper: { value: new THREE.Color(0xededea) },
-    uSize: { value: 2.0 * dpr },
+    uDim: { value: new THREE.Color(0x4a4a44) }, // dim base so it doesn't wash the headline
+    uSize: { value: 1.05 * dpr },              // crisp small points, not soft blobs
   }
 
   const material = new THREE.ShaderMaterial({
@@ -71,31 +72,34 @@ export function initHero(canvas) {
       ${SNOISE}
       void main(){
         vec3 p = position;
-        float n = snoise(p * 0.6 + vec3(0.0, 0.0, uTime * 0.14));
-        float disp = n * 0.5;
+        float n = snoise(p * 0.7 + vec3(0.0, 0.0, uTime * 0.14));
+        float disp = n * 0.28; // keep it a structured sphere, not a blob
         p += normalize(position) * disp;
 
         // cursor push
         float d = distance(p, uMouse);
-        float push = smoothstep(2.2, 0.0, d) * uMouseStrength;
-        p += normalize(p - uMouse) * push * 0.9;
+        float push = smoothstep(1.8, 0.0, d) * uMouseStrength;
+        p += normalize(p - uMouse) * push * 0.7;
 
         vDisp = disp; vMouse = push;
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_PointSize = uSize * (1.0 + push * 1.6) * (300.0 / -mv.z);
+        gl_PointSize = uSize * (1.0 + push * 1.0) * (300.0 / -mv.z);
         gl_Position = projectionMatrix * mv;
       }
     `,
     fragmentShader: /* glsl */`
       precision mediump float;
-      uniform vec3 uAccent; uniform vec3 uPaper;
+      uniform vec3 uAccent; uniform vec3 uPaper; uniform vec3 uDim;
       varying float vDisp; varying float vMouse;
       void main(){
         vec2 c = gl_PointCoord - 0.5;
         float a = smoothstep(0.5, 0.1, length(c));
         if (a < 0.02) discard;
-        vec3 col = mix(uPaper, uAccent, smoothstep(0.18, 0.5, vDisp) + vMouse);
-        gl_FragColor = vec4(col, a * (0.55 + vMouse));
+        // mostly dim, brightening to paper then accent on the noise crests + cursor
+        float t = smoothstep(0.05, 0.26, vDisp);
+        vec3 col = mix(uDim, uPaper, t);
+        col = mix(col, uAccent, smoothstep(0.18, 0.30, vDisp) + vMouse);
+        gl_FragColor = vec4(col, a * (0.5 + vMouse * 0.5));
       }
     `,
   })
@@ -129,8 +133,10 @@ export function initHero(canvas) {
     const h = canvas.clientHeight || window.innerHeight
     renderer.setSize(w, h, false)
     camera.aspect = w / h
-    // pull the object slightly off-center-right on wide screens
-    points.position.x = w / h > 1 ? 1.3 : 0
+    // sit the object in the right third so it doesn't cover the headline
+    const wide = w / h > 1
+    points.position.x = wide ? 2.4 : 0
+    points.position.y = wide ? 0.2 : 1.0
     camera.updateProjectionMatrix()
   }
   resize()
