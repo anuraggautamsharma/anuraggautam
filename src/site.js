@@ -172,6 +172,24 @@ function initMarquees() {
   })
 }
 
+/* ---------- SCROLL-FILL THESIS ---------- */
+function initScrollFill() {
+  const el = document.querySelector('.intro__text')
+  if (!el) return
+  const words = [...el.querySelectorAll('.w')]
+  if (reduced) { words.forEach((w) => w.classList.add('is-on')); return }
+  function update() {
+    const r = el.getBoundingClientRect()
+    const readLine = innerHeight * 0.72
+    const p = Math.max(0, Math.min(1, (readLine - r.top) / (r.height || 1)))
+    const n = Math.round(p * words.length)
+    for (let i = 0; i < words.length; i++) words[i].classList.toggle('is-on', i < n)
+  }
+  if (lenis) lenis.on('scroll', update); else addEventListener('scroll', update, { passive: true })
+  addEventListener('resize', update)
+  update()
+}
+
 /* ---------- REVEALS ---------- */
 function initReveals() {
   const els = [...document.querySelectorAll('[data-reveal]')]
@@ -230,6 +248,6 @@ function initCopyMail() {
 /* ---------- BOOT ---------- */
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initMarquees(); initReveals(); initNav(); initCopyMail()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

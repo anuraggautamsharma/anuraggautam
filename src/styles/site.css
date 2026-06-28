@@ -172,6 +172,10 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .intro { padding-top: clamp(60px, 10vh, 130px); padding-bottom: clamp(60px, 10vh, 130px); }
 .intro__text { font-size: clamp(26px, 4.2vw, 64px); line-height: 1.06; letter-spacing: -0.015em; max-width: 22ch; font-weight: 400; }
 .intro__text .serif-i { color: var(--ink); }
+/* scroll-fill: words start faint and ignite to ink as they scroll past */
+.intro__text .w { color: rgba(21, 21, 15, 0.16); transition: color 0.35s var(--ease); }
+.intro__text .w.is-on { color: var(--ink); }
+.intro__text .w.i { font-family: var(--serif); font-style: italic; }
 
 /* ---------- proof ---------- */
 .proof { padding-bottom: clamp(40px, 8vh, 100px); }
