@@ -1,15 +1,16 @@
 # Anurag Gautam — Portfolio
 
-High-contrast brutalist personal site. Mono palette + one acid accent, oversized kinetic
-type, an interactive WebGL particle hero, and glitch/scramble motion. Single long-scroll
-home page plus three deep case-study pages (Suggaa, Srijan, The PipelineLab).
+Light, editorial, premium personal site. Warm paper palette, refined serif display
+(Fraunces) + clean sans (Inter), one quiet terracotta accent, generous space and calm
+motion. The signature interaction is a cursor-following thumbnail on the work list.
+Single long-scroll home page plus three deep case-study pages (Suggaa, Srijan, The
+PipelineLab).
 
 ## Stack
 - **Vite** (multi-page) — vanilla, no framework
-- **Three.js** — interactive noise-displaced particle object in the hero (reacts to cursor)
 - **Lenis** — smooth scroll
-- **GSAP** — hero intro timeline
-- Custom: cursor, magnetic buttons, text-scramble reveals, kinetic marquees, tilt
+- Custom, lightweight JS: gentle scroll reveals, cursor-following work thumbnail,
+  loader, sticky nav. No heavy 3D libraries — the whole site is ~25 KB of JS.
 
 ## Run
 ```bash
@@ -29,13 +30,17 @@ index.html              # home (all sections)
 work/suggaa.html        # case study
 work/srijan.html        # case study
 work/pipelinelab.html   # case study
-src/main.js             # home JS (loader, scroll, cursor, hero, marquees…)
-src/case.js             # lighter JS for case pages (no Three.js)
-src/three/hero.js       # WebGL particle hero
+src/main.js             # home JS (loader, smooth scroll, reveals, work thumbnail, nav)
+src/case.js             # lighter JS for case pages
 src/styles/main.css     # design tokens + all home styles
 src/styles/case.css     # case-study styles (imports main.css)
 public/                 # favicon.svg, portrait.svg, og.svg
 ```
+
+### Work thumbnails
+Each project row in the work list shows a colour block that follows your cursor on hover.
+To use a real image instead, add `data-imgsrc="/work/suggaa.jpg"` to that row's `<a>`/`<div>`
+in `index.html` (the colour block is the fallback until you do).
 
 ## ⚠️ Before you ship — replace these
 Search the codebase for these and swap in real values:

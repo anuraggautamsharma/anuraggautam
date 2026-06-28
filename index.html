@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#f7f5f0" />
 
   <title>Anurag Gautam — Product Design, GTM & 0→1 Operator | Bengaluru</title>
   <meta name="description" content="Founder, product designer and GTM operator. 7+ years building products and growth engines from zero — ₹6 Cr+ revenue, $2M raised, 25,000+ users. Open to senior & fractional roles." />
   <link rel="canonical" href="https://anuraggautam.com/" />
 
-  <!-- OpenGraph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Anurag Gautam — Product Design, GTM & 0→1 Operator" />
   <meta property="og:description" content="7+ years building products and growth engines from zero — ₹6 Cr+ revenue, $2M raised, 25,000+ users. Open to senior & fractional roles." />
@@ -22,10 +21,9 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-  <!-- Fonts: display=swap for fast first paint -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <script type="application/ld+json">
   {
@@ -42,41 +40,32 @@
   <script type="module" src="/src/main.js"></script>
 </head>
 <body>
-  <!-- ============ LOADER ============ -->
+  <!-- LOADER -->
   <div class="loader" id="loader" aria-hidden="true">
     <div class="loader__inner">
-      <span class="loader__name">ANURAG GAUTAM</span>
-      <span class="loader__count" id="loaderCount">000</span>
+      <span class="loader__name">Anurag Gautam</span>
+      <span class="loader__count" id="loaderCount">0</span>
+      <div class="loader__bar"><span id="loaderBar"></span></div>
     </div>
-    <div class="loader__bar"><span id="loaderBar"></span></div>
   </div>
-
-  <!-- ============ CUSTOM CURSOR ============ -->
-  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
 
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- ============ NAV ============ -->
+  <!-- NAV -->
   <header class="nav" id="nav">
-    <a href="#top" class="nav__brand" data-cursor="home">
-      <span class="nav__mark">AG</span>
-      <span class="nav__full">ANURAG GAUTAM</span>
-    </a>
+    <a href="#top" class="nav__brand"><b>Anurag</b> Gautam</a>
     <nav class="nav__links" aria-label="Primary">
-      <a href="#work" data-cursor="view">Work</a>
-      <a href="#experience" data-cursor="view">Experience</a>
-      <a href="#afterthought" data-cursor="view">AfterThought</a>
-      <a href="#contact" data-cursor="view">Contact</a>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#afterthought">AfterThought</a>
+      <a href="#contact">Contact</a>
     </nav>
-    <a href="#contact" class="nav__cta" data-magnetic>
-      <span class="nav__cta-dot"></span>Open to roles
-    </a>
+    <a href="#contact" class="nav__cta"><i></i> Open to roles</a>
     <button class="nav__menu" id="navToggle" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span>
     </button>
   </header>
 
-  <!-- ============ MOBILE MENU ============ -->
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <a href="#work">Work</a>
     <a href="#experience">Experience</a>
@@ -85,316 +74,182 @@
     <a href="mailto:anuraggautamsharma@gmail.com" class="mobile-menu__mail">Email me →</a>
   </div>
 
+  <!-- floating thumbnail for the work list -->
+  <div class="work-float" id="workFloat" aria-hidden="true"><div class="work-float__inner" id="workFloatInner"></div></div>
+
   <main id="main">
     <span id="top"></span>
 
-    <!-- ============ HERO ============ -->
-    <section class="hero" id="hero">
-      <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
-      <div class="hero__grid" aria-hidden="true"></div>
-
-      <div class="hero__eyebrow">
-        <span>PRODUCT DESIGN</span><span>·</span><span>GTM</span><span>·</span><span>0→1</span><span>·</span><span>BENGALURU</span>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero__top">
+        <span class="eyebrow">Product Design <b>·</b> GTM <b>·</b> 0→1 <b>·</b> Bengaluru</span>
+        <span class="hero__avail"><i></i> Open to senior &amp; fractional roles</span>
       </div>
-
-      <h1 class="hero__title" data-scramble>
-        <span class="line"><span>I build products</span></span>
-        <span class="line"><span>and the <em>growth&nbsp;engines</em></span></span>
-        <span class="line"><span>that ship them.</span></span>
-      </h1>
-
-      <div class="hero__bottom">
-        <p class="hero__sub">
+      <h1 class="hero__title" data-hero-title>I build products and the <em>growth engines</em> that ship them.</h1>
+      <div class="hero__row">
+        <p class="hero__sub" data-reveal>
           Founder, product designer and GTM operator. 7+ years taking things from
           zero — design systems, teams, launches, pipeline. Open to senior and
           fractional roles in design, marketing and GTM.
         </p>
-        <div class="hero__cta">
-          <a href="#contact" class="btn btn--primary" data-magnetic data-cursor="let's talk">
-            Open to senior &amp; fractional roles <span aria-hidden="true">→</span>
-          </a>
-          <a href="#afterthought" class="btn btn--ghost" data-magnetic>
-            Work with AfterThought <span aria-hidden="true">→</span>
-          </a>
+        <div class="hero__cta" data-reveal>
+          <a href="#contact" class="btn btn--primary">Open to roles <span aria-hidden="true">→</span></a>
+          <a href="#afterthought" class="btn btn--ghost">Work with AfterThought <span aria-hidden="true">→</span></a>
         </div>
       </div>
-
-      <div class="hero__scroll" aria-hidden="true"><span>SCROLL</span><i></i></div>
+      <span class="hero__scroll" aria-hidden="true">Scroll <i></i></span>
     </section>
 
-    <!-- ============ PROOF BAR ============ -->
+    <!-- PROOF -->
     <section class="proof" aria-label="Career metrics">
-      <div class="proof__marquee" id="proofMarquee">
-        <div class="proof__track">
-          <div class="proof__cell"><b data-count="6">₹6&nbsp;Cr+</b><span>B2B revenue generated</span></div>
-          <div class="proof__cell"><b>$2M</b><span>raised</span></div>
-          <div class="proof__cell"><b>25,000+</b><span>users on a launched product</span></div>
-          <div class="proof__cell"><b>7+ yrs</b><span>building, since 18</span></div>
-          <!-- duplicate for seamless loop -->
-          <div class="proof__cell" aria-hidden="true"><b>₹6&nbsp;Cr+</b><span>B2B revenue generated</span></div>
-          <div class="proof__cell" aria-hidden="true"><b>$2M</b><span>raised</span></div>
-          <div class="proof__cell" aria-hidden="true"><b>25,000+</b><span>users on a launched product</span></div>
-          <div class="proof__cell" aria-hidden="true"><b>7+ yrs</b><span>building, since 18</span></div>
-        </div>
+      <div class="proof__grid">
+        <div class="proof__cell" data-reveal><b>₹6 Cr+</b><span>B2B revenue generated</span></div>
+        <div class="proof__cell" data-reveal><b>$2M</b><span>raised</span></div>
+        <div class="proof__cell" data-reveal><b>25,000+</b><span>users on a launched product</span></div>
+        <div class="proof__cell" data-reveal><b>7+ yrs</b><span>building, since 18</span></div>
       </div>
     </section>
 
-    <!-- ============ ABOUT ============ -->
+    <!-- ABOUT -->
     <section class="about" id="about">
-      <div class="about__label section-label"><span>01</span> THROUGH-LINE</div>
       <div class="about__grid">
         <div class="about__portrait" data-reveal>
-          <!-- Drop your headshot at /public/portrait.jpg (≈900×1100, duotone-friendly). -->
-          <img src="/portrait.svg" alt="Anurag Gautam" id="portrait"
-               onerror="this.onerror=null;this.src='/portrait.svg';" />
-          <span class="about__portrait-tag">BENGALURU, IN</span>
+          <!-- Drop your headshot at /public/portrait.jpg (≈900×1100). -->
+          <img src="/portrait.svg" alt="Anurag Gautam" id="portrait" />
+          <span class="about__portrait-tag">Bengaluru, IN</span>
         </div>
-        <div class="about__copy" data-reveal>
-          <p class="about__lead">
-            I'm a dropout. I started working at <em>18</em>, in 2017, and I've
-            been building ever since.
-          </p>
-          <p>
-            I don't sit in one lane. I've designed the product, built the team,
-            run the launch, and owned the pipeline. That range is the point —
-            I take an idea from zero to in-market, and I can do most of it myself.
-          </p>
-          <a href="#contact" class="text-link" data-cursor="let's talk">Let's build something →</a>
+        <div class="about__copy">
+          <p class="about__lead" data-reveal>I'm a dropout. I started working at <em>18</em>, in 2017, and I've been building ever since.</p>
+          <p data-reveal>I don't sit in one lane. I've designed the product, built the team, run the launch, and owned the pipeline. That range is the point — I take an idea from zero to in-market, and I can do most of it myself.</p>
+          <a href="#contact" class="text-link" data-reveal>Let's build something <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
 
-    <!-- ============ CAPABILITIES ============ -->
+    <!-- CAPABILITIES -->
     <section class="caps" id="capabilities">
-      <div class="section-label"><span>02</span> CAPABILITIES — ONE OPERATOR'S TOOLKIT</div>
-      <ul class="caps__list">
-        <li class="caps__item" data-reveal>
-          <span class="caps__no">01</span>
-          <h3>Product &amp; Visual Design</h3>
-          <p>Design systems, app UI, and brand-grade visual work. I built a full design system from scratch across three products.</p>
-        </li>
-        <li class="caps__item" data-reveal>
-          <span class="caps__no">02</span>
-          <h3>Motion Design</h3>
-          <p>Kinetic identity, product motion, and launch films.</p>
-        </li>
-        <li class="caps__item" data-reveal>
-          <span class="caps__no">03</span>
-          <h3>Content &amp; Video</h3>
-          <p>Short-form and long-form, shot and edited end to end.</p>
-        </li>
-        <li class="caps__item" data-reveal>
-          <span class="caps__no">04</span>
-          <h3>GTM Strategy</h3>
-          <p>Outbound systems, ICP, deliverability, and pipeline that compounds. This is what The PipelineLab does.</p>
-        </li>
-        <li class="caps__item" data-reveal>
-          <span class="caps__no">05</span>
-          <h3>Vibe Coding</h3>
-          <p>I ship real, working product — not just mockups. This site is one example.</p>
-        </li>
+      <div class="section-head"><span class="num">01</span><span class="label">Capabilities — one operator's toolkit</span></div>
+      <ul style="list-style:none">
+        <li class="caps__item" data-reveal><span class="caps__no">01</span><h3>Product &amp; Visual Design</h3><p>Design systems, app UI, and brand-grade visual work. I built a full design system from scratch across three products.</p></li>
+        <li class="caps__item" data-reveal><span class="caps__no">02</span><h3>Motion Design</h3><p>Kinetic identity, product motion, and launch films.</p></li>
+        <li class="caps__item" data-reveal><span class="caps__no">03</span><h3>Content &amp; Video</h3><p>Short-form and long-form, shot and edited end to end.</p></li>
+        <li class="caps__item" data-reveal><span class="caps__no">04</span><h3>GTM Strategy</h3><p>Outbound systems, ICP, deliverability, and pipeline that compounds. This is what The PipelineLab does.</p></li>
+        <li class="caps__item" data-reveal><span class="caps__no">05</span><h3>Vibe Coding</h3><p>I ship real, working product — not just mockups. This site is one example.</p></li>
       </ul>
     </section>
 
-    <!-- ============ EXPERIENCE / TIMELINE ============ -->
+    <!-- TRACK RECORD -->
     <section class="track" id="experience">
-      <div class="section-label"><span>03</span> TRACK RECORD</div>
-      <h2 class="track__head" data-scramble>A real sequence, <em>newest first.</em></h2>
-      <ol class="track__list">
+      <div class="section-head"><span class="num">02</span><span class="label">Track record — newest first</span></div>
+      <ol style="list-style:none">
         <li class="track__item" data-reveal>
           <div class="track__year">2024 — present</div>
-          <div class="track__body">
-            <h3>The PipelineLab <span>Founder</span></h3>
-            <p>GTM studio. I build scalable outbound systems for B2B teams — ICP, list-building, deliverability, multichannel sequences — and deliver consistent pipeline. Work here is part of the ₹6 Cr+ in B2B revenue I've generated.</p>
-          </div>
+          <div class="track__body"><h3>The PipelineLab <span>Founder</span></h3><p>GTM studio. I build scalable outbound systems for B2B teams — ICP, list-building, deliverability, multichannel sequences — and deliver consistent pipeline. Work here is part of the ₹6 Cr+ in B2B revenue I've generated.</p></div>
         </li>
         <li class="track__item" data-reveal>
           <div class="track__year">[year] — present</div>
-          <div class="track__body">
-            <h3>AfterThought <span>Founder</span></h3>
-            <p>Creative studio. Brand identity, marketing design, motion and content for founders and growing teams. Runs in parallel with PipelineLab.</p>
-          </div>
+          <div class="track__body"><h3>AfterThought <span>Founder</span></h3><p>Creative studio. Brand identity, marketing design, motion and content for founders and growing teams. Runs in parallel with PipelineLab.</p></div>
         </li>
         <li class="track__item" data-reveal>
           <div class="track__year">[2018] — [2023]</div>
-          <div class="track__body">
-            <h3>Suggaa <span>Product &amp; Marketing</span></h3>
-            <p>Designed the entire design system from scratch — rider app, driver app, and operator console. Built the design and development team from the ground up. Launched the product city by city with on-ground events and press. The product reached 25,000+ users.</p>
-          </div>
+          <div class="track__body"><h3>Suggaa <span>Product &amp; Marketing</span></h3><p>Designed the entire design system from scratch — rider app, driver app, and operator console. Built the design and development team from the ground up. Launched the product city by city with on-ground events and press. The product reached 25,000+ users.</p></div>
         </li>
         <li class="track__item" data-reveal>
           <div class="track__year">2017</div>
-          <div class="track__body">
-            <h3>Marketing agency <span>Sales</span></h3>
-            <p>Started at 18, finding and closing clients for a marketing agency. Learned to sell before I learned anything else.</p>
-          </div>
+          <div class="track__body"><h3>Marketing agency <span>Sales</span></h3><p>Started at 18, finding and closing clients for a marketing agency. Learned to sell before I learned anything else.</p></div>
         </li>
       </ol>
     </section>
 
-    <!-- ============ SELECTED WORK ============ -->
+    <!-- SELECTED WORK -->
     <section class="work" id="work">
-      <div class="section-label"><span>04</span> SELECTED WORK</div>
-      <h2 class="work__head" data-scramble>A few things I've designed, built, branded, or shipped.</h2>
+      <div class="section-head"><span class="num">03</span><span class="label">Selected work</span></div>
+      <p class="work__intro" data-reveal>A few things I've designed, built, branded, or shipped.</p>
 
       <div class="work__list">
-        <!-- Featured 1 -->
-        <a class="work__row work__row--feature" href="/work/suggaa" data-reveal data-cursor="case study">
+        <a class="work__row" href="/work/suggaa" data-reveal data-img data-color="#c66a3e" data-label="Suggaa">
           <span class="work__index">01</span>
-          <div class="work__thumb" data-tilt>
-            <div class="ph ph--suggaa"><span>SUGGAA</span></div>
-            <span class="work__star">★ DEEP CASE STUDY</span>
-          </div>
-          <div class="work__meta">
-            <h3>Suggaa</h3>
-            <p class="work__tags">Design system · Iconography · Rider app · Driver app</p>
-            <p class="work__desc">A full product design system from scratch, plus the rider and driver apps, for a ride-hailing platform that reached 25,000+ users.</p>
-          </div>
+          <div><span class="work__name">Suggaa <span class="star">★ CASE STUDY</span></span><p class="work__tags">Design system · Iconography · Rider app · Driver app</p></div>
           <span class="work__go" aria-hidden="true">→</span>
         </a>
-
-        <!-- Featured 2 -->
-        <a class="work__row work__row--feature" href="/work/srijan" data-reveal data-cursor="case study">
+        <a class="work__row" href="/work/srijan" data-reveal data-img data-color="#7c7a52" data-label="Srijan">
           <span class="work__index">02</span>
-          <div class="work__thumb" data-tilt>
-            <div class="ph ph--srijan"><span>SRIJAN</span></div>
-            <span class="work__star">★ DEEP CASE STUDY</span>
-          </div>
-          <div class="work__meta">
-            <h3>Srijan</h3>
-            <p class="work__tags">Branding · AI video ad · Social media · Website</p>
-            <p class="work__desc">End-to-end: identity, an AI-made video ad, social, and the site — one brand taken from zero to in-market across every surface.</p>
-          </div>
+          <div><span class="work__name">Srijan <span class="star">★ CASE STUDY</span></span><p class="work__tags">Branding · AI video ad · Social media · Website</p></div>
           <span class="work__go" aria-hidden="true">→</span>
         </a>
-
-        <!-- Featured 3 -->
-        <a class="work__row work__row--feature" href="/work/pipelinelab" data-reveal data-cursor="case study">
+        <a class="work__row" href="/work/pipelinelab" data-reveal data-img data-color="#3f5560" data-label="The PipelineLab">
           <span class="work__index">03</span>
-          <div class="work__thumb" data-tilt>
-            <div class="ph ph--pipeline"><span>PIPELINELAB</span></div>
-            <span class="work__star">★ DEEP CASE STUDY</span>
-          </div>
-          <div class="work__meta">
-            <h3>The PipelineLab</h3>
-            <p class="work__tags">Branding · Website · Explainer motion</p>
-            <p class="work__desc">My own GTM studio: identity, site, and an explainer film. Proof I brand and ship the thing, not just advise on it.</p>
-          </div>
+          <div><span class="work__name">The PipelineLab <span class="star">★ CASE STUDY</span></span><p class="work__tags">Branding · Website · Explainer motion</p></div>
           <span class="work__go" aria-hidden="true">→</span>
         </a>
-
-        <!-- The other six -->
-        <div class="work__row" data-reveal data-cursor="">
+        <div class="work__row" data-reveal data-img data-color="#9a5340" data-label="Formeye">
           <span class="work__index">04</span>
-          <div class="work__meta work__meta--wide">
-            <h3>Formeye</h3>
-            <p class="work__tags">Branding · Website</p>
-            <p class="work__desc">Identity and site.</p>
-          </div>
+          <div><span class="work__name">Formeye</span><p class="work__tags">Branding · Website</p></div>
         </div>
-        <div class="work__row" data-reveal>
+        <div class="work__row" data-reveal data-img data-color="#5a6b57" data-label="CA4SME">
           <span class="work__index">05</span>
-          <div class="work__meta work__meta--wide">
-            <h3>CA4SME</h3>
-            <p class="work__tags">Website</p>
-            <p class="work__desc">Website design and build.</p>
-          </div>
+          <div><span class="work__name">CA4SME</span><p class="work__tags">Website</p></div>
         </div>
-        <div class="work__row" data-reveal>
+        <div class="work__row" data-reveal data-img data-color="#6e5a48" data-label="The Combover">
           <span class="work__index">06</span>
-          <div class="work__meta work__meta--wide">
-            <h3>The Combover</h3>
-            <p class="work__tags">Branding</p>
-            <p class="work__desc">Brand identity.</p>
-          </div>
+          <div><span class="work__name">The Combover</span><p class="work__tags">Branding</p></div>
         </div>
-        <div class="work__row" data-reveal>
+        <div class="work__row" data-reveal data-img data-color="#806a4a" data-label="Hair Cycle">
           <span class="work__index">07</span>
-          <div class="work__meta work__meta--wide">
-            <h3>Hair Cycle</h3>
-            <p class="work__tags">Branding</p>
-            <p class="work__desc">Brand identity.</p>
-          </div>
+          <div><span class="work__name">Hair Cycle</span><p class="work__tags">Branding</p></div>
         </div>
-        <div class="work__row" data-reveal>
+        <div class="work__row" data-reveal data-img data-color="#4a5a66" data-label="Justach">
           <span class="work__index">08</span>
-          <div class="work__meta work__meta--wide">
-            <h3>Justach</h3>
-            <p class="work__tags">Branding</p>
-            <p class="work__desc">Brand identity.</p>
-          </div>
+          <div><span class="work__name">Justach</span><p class="work__tags">Branding</p></div>
         </div>
-        <a class="work__row" href="#afterthought" data-reveal data-cursor="view">
+        <a class="work__row" href="#afterthought" data-reveal data-img data-color="#bc5a3c" data-label="AfterThought">
           <span class="work__index">09</span>
-          <div class="work__meta work__meta--wide">
-            <h3>AfterThought</h3>
-            <p class="work__tags">Branding · Website</p>
-            <p class="work__desc">My own studio's identity and site.</p>
-          </div>
+          <div><span class="work__name">AfterThought</span><p class="work__tags">Branding · Website</p></div>
           <span class="work__go" aria-hidden="true">→</span>
         </a>
       </div>
     </section>
 
-    <!-- ============ AFTERTHOUGHT ============ -->
+    <!-- AFTERTHOUGHT -->
     <section class="studio" id="afterthought">
-      <div class="studio__inner">
-        <div class="section-label section-label--invert"><span>05</span> THE STUDIO</div>
-        <h2 class="studio__head" data-scramble>AfterThought — <em>my studio.</em></h2>
-        <p class="studio__body">
-          Brand identity, marketing design, motion and content — for founders who
-          need work that looks like the company they're trying to become.
-        </p>
-        <ul class="studio__chips">
-          <li>Brand identity</li>
-          <li>Marketing design</li>
-          <li>Motion &amp; content</li>
-          <li>Launch support</li>
-        </ul>
-        <a href="mailto:anuraggautamsharma@gmail.com?subject=AfterThought%20project" class="btn btn--invert" data-magnetic data-cursor="start">
-          Start a project <span aria-hidden="true">→</span>
-        </a>
-      </div>
-      <div class="studio__bgtext" aria-hidden="true" data-marquee>AFTERTHOUGHT · AFTERTHOUGHT · AFTERTHOUGHT · </div>
+      <div class="section-head"><span class="num">04</span><span class="label">The studio</span></div>
+      <h2 class="studio__head" data-reveal>AfterThought — <em>my studio.</em></h2>
+      <p class="studio__body" data-reveal>Brand identity, marketing design, motion and content — for founders who need work that looks like the company they're trying to become.</p>
+      <ul class="studio__chips" data-reveal>
+        <li>Brand identity</li><li>Marketing design</li><li>Motion &amp; content</li><li>Launch support</li>
+      </ul>
+      <a href="mailto:anuraggautamsharma@gmail.com?subject=AfterThought%20project" class="btn btn--primary" data-reveal>Start a project <span aria-hidden="true">→</span></a>
     </section>
 
-    <!-- ============ CONTENT ============ -->
+    <!-- CONTENT -->
     <section class="content" id="content">
-      <div class="section-label"><span>06</span> IN PUBLIC</div>
-      <h2 class="content__head" data-scramble>I build in public.</h2>
-      <p class="content__body">Design, GTM and the messy middle of building — on Instagram and YouTube.</p>
-      <div class="content__links">
+      <div class="section-head"><span class="num">05</span><span class="label">In public</span></div>
+      <h2 class="content__head" data-reveal>I build in public.</h2>
+      <p class="content__body" data-reveal>Design, GTM and the messy middle of building — on Instagram and YouTube.</p>
+      <div class="content__links" data-reveal>
         <!-- TODO: replace # with your Instagram / YouTube URLs -->
-        <a href="#" class="content__link" data-magnetic data-cursor="watch" aria-label="Instagram (add URL)">
-          <span>Instagram</span><i aria-hidden="true">↗</i>
-        </a>
-        <a href="#" class="content__link" data-magnetic data-cursor="watch" aria-label="YouTube (add URL)">
-          <span>YouTube</span><i aria-hidden="true">↗</i>
-        </a>
+        <a href="#" class="content__link" aria-label="Instagram (add URL)"><span>Instagram</span><i aria-hidden="true">↗</i></a>
+        <a href="#" class="content__link" aria-label="YouTube (add URL)"><span>YouTube</span><i aria-hidden="true">↗</i></a>
       </div>
     </section>
 
-    <!-- ============ CONTACT / FOOTER ============ -->
+    <!-- CONTACT -->
     <footer class="contact" id="contact">
-      <div class="section-label section-label--invert"><span>07</span> CONTACT</div>
-      <h2 class="contact__head" data-scramble>Let's talk.</h2>
-      <p class="contact__body">
-        Open to senior and fractional roles in design, marketing and GTM — and to
-        AfterThought projects. Fastest way to reach me is email.
-      </p>
-      <a href="mailto:anuraggautamsharma@gmail.com" class="contact__mail" data-magnetic data-cursor="copy">
-        anuraggautamsharma@gmail.com
-      </a>
-      <div class="contact__socials">
+      <div class="section-head"><span class="num">06</span><span class="label">Contact</span></div>
+      <h2 class="contact__head" data-reveal>Let's <em>talk.</em></h2>
+      <p class="contact__body" data-reveal>Open to senior and fractional roles in design, marketing and GTM — and to AfterThought projects. Fastest way to reach me is email.</p>
+      <a href="mailto:anuraggautamsharma@gmail.com" class="contact__mail" data-reveal>anuraggautamsharma@gmail.com</a>
+      <div class="contact__socials" data-reveal>
         <!-- TODO: replace # with LinkedIn / Instagram / YouTube URLs -->
-        <a href="#" data-cursor="open">LinkedIn ↗</a>
-        <a href="#" data-cursor="open">Instagram ↗</a>
-        <a href="#" data-cursor="open">YouTube ↗</a>
+        <a href="#">LinkedIn ↗</a>
+        <a href="#">Instagram ↗</a>
+        <a href="#">YouTube ↗</a>
       </div>
       <div class="contact__foot">
         <span>Anurag Gautam · Bengaluru, IN</span>
-        <span>© <span id="year">2026</span> — Built with vibe code.</span>
-        <button class="contact__top" id="backTop" data-cursor="up">Back to top ↑</button>
+        <span>© <span id="year">2026</span></span>
+        <button class="contact__top" id="backTop">Back to top ↑</button>
       </div>
     </footer>
   </main>
