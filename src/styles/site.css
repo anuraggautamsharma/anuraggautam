@@ -207,9 +207,14 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .page-hero p { margin-top: 24px; max-width: 52ch; font-size: clamp(17px, 1.8vw, 24px); color: var(--muted); }
 
 .about-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(30px, 5vw, 80px); align-items: start; padding-top: clamp(40px, 7vh, 90px); padding-bottom: clamp(40px, 7vh, 90px); }
-.about-portrait { aspect-ratio: 4/5; border-radius: 20px; overflow: hidden; background: var(--card); position: relative; }
-.about-portrait img { width: 100%; height: 100%; object-fit: cover; }
-.about-portrait .tag { position: absolute; left: 14px; bottom: 14px; }
+.about-portrait { aspect-ratio: 4/5; border-radius: 20px; overflow: hidden; background: #0e0e12; position: relative; }
+/* default: grayscale so the teal cast doesn't fight the lime palette;
+   hover: real cinematic colour returns + a soft zoom and a lime frame */
+.about-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.06) brightness(1.02); transition: filter 0.6s var(--ease), transform 1.2s var(--ease); }
+.about-portrait:hover img { filter: grayscale(0) contrast(1); transform: scale(1.04); }
+.about-portrait::after { content: ''; position: absolute; inset: 0; border-radius: 20px; box-shadow: inset 0 0 0 0 var(--lime); transition: box-shadow 0.5s var(--ease); pointer-events: none; }
+.about-portrait:hover::after { box-shadow: inset 0 0 0 3px var(--lime); }
+.about-portrait .tag { position: absolute; left: 14px; bottom: 14px; z-index: 2; }
 .about-copy p { font-size: clamp(18px, 2vw, 28px); line-height: 1.4; margin-bottom: 26px; }
 .about-copy p.lead { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 50px); line-height: 1.1; }
 .about-copy em { color: var(--ink); }

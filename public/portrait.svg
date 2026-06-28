@@ -1,9 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" preserveAspectRatio="xMidYMid slice">
-  <rect width="900" height="1100" fill="#deded6"/>
-  <g fill="#c2f23c">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0" stop-color="#16181c"/><stop offset="1" stop-color="#0b0c0e"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1100" fill="url(#bg)"/>
+  <g fill="#2b2f33">
     <ellipse cx="450" cy="430" rx="185" ry="215"/>
     <path d="M210 1100 C210 825 322 705 450 705 C578 705 690 825 690 1100 Z"/>
   </g>
-  <text x="50%" y="150" text-anchor="middle" font-family="'Playfair Display', serif" font-style="italic" font-size="30" fill="#71706a">Anurag Gautam</text>
-  <text x="50%" y="1035" text-anchor="middle" font-family="Inter, sans-serif" font-size="19" fill="#71706a" letter-spacing="1">drop /portrait.jpg here</text>
+  <text x="50%" y="150" text-anchor="middle" font-family="'Playfair Display', serif" font-style="italic" font-size="30" fill="#7d8288">Anurag Gautam</text>
+  <text x="50%" y="1035" text-anchor="middle" font-family="Inter, sans-serif" font-size="19" fill="#7d8288" letter-spacing="1">drop /portrait.jpg here</text>
 </svg>

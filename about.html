@@ -54,8 +54,10 @@
 
     <section class="about-grid">
       <div class="about-portrait" data-reveal>
-        <!-- Drop your headshot at /public/portrait.jpg -->
-        <img src="/portrait.svg" alt="Anurag Gautam" id="portrait" />
+        <!-- Drop your headshot at /public/portrait.jpg — the CSS treats it
+             (grayscale by default, real colour on hover) to match the palette. -->
+        <img src="/portrait.jpg" alt="Anurag Gautam" id="portrait"
+             onerror="this.onerror=null;this.src='/portrait.svg'" />
         <span class="sticker-tag sticker-tag--lime tag">Bengaluru, IN</span>
       </div>
       <div class="about-copy">
