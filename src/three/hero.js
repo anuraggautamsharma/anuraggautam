@@ -40,14 +40,16 @@ export function initHero(canvas) {
   }
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const dpr = Math.min(window.devicePixelRatio || 1, 2)
+  const isMobile = window.innerWidth < 768
+  const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 1.75)
   renderer.setPixelRatio(dpr)
 
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
   camera.position.z = 6.2
 
-  const geo = new THREE.IcosahedronGeometry(2.1, 64)
+  // detail 22 ≈ 29k points (was 64 ≈ 245k). Plenty dense, far cheaper.
+  const geo = new THREE.IcosahedronGeometry(2.1, isMobile ? 12 : 22)
 
   const uniforms = {
     uTime: { value: 0 },
@@ -69,9 +71,8 @@ export function initHero(canvas) {
       ${SNOISE}
       void main(){
         vec3 p = position;
-        float n = snoise(p * 0.55 + vec3(0.0, 0.0, uTime * 0.12));
-        float n2 = snoise(p * 1.7 + vec3(uTime * 0.18));
-        float disp = n * 0.45 + n2 * 0.12;
+        float n = snoise(p * 0.6 + vec3(0.0, 0.0, uTime * 0.14));
+        float disp = n * 0.5;
         p += normalize(position) * disp;
 
         // cursor push
@@ -139,13 +140,18 @@ export function initHero(canvas) {
   const clock = new THREE.Clock()
   let raf
   let visible = true
+  let acc = 0
+  const frameMin = isMobile ? 1 / 30 : 1 / 60 // cap so high-refresh screens don't 2-3x the work
   const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0 })
   io.observe(canvas)
 
   function tick() {
     raf = requestAnimationFrame(tick)
-    if (!visible) return
+    if (!visible) return // skip entirely once hero scrolls off screen
     const dt = clock.getDelta()
+    acc += dt
+    if (acc < frameMin) return
+    acc = 0
     uniforms.uTime.value += reduced ? dt * 0.15 : dt
     mouse.x += (target.x - mouse.x) * 0.05
     mouse.y += (target.y - mouse.y) * 0.05

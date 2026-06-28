@@ -1,7 +1,6 @@
 import './styles/main.css'
 import Lenis from 'lenis'
 import gsap from 'gsap'
-import { initHero } from './three/hero.js'
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
@@ -169,27 +168,39 @@ function heroIntro() {
 function initMarquees() {
   const proof = document.querySelector('.proof__track')
   const bg = document.querySelector('[data-marquee]')
+  if (reduced || (!proof && !bg)) return
+
   let proofX = 0, bgX = 0, last = 0, vel = 0
+  // Cache widths once (and on resize) — reading scrollWidth in the loop forces
+  // a full layout reflow every frame and was the main source of scroll jank.
+  let proofHalf = proof ? proof.scrollWidth / 2 : 0
+  let bgHalf = bg ? bg.scrollWidth / 2 : 0
+  let resizeT
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT)
+    resizeT = setTimeout(() => {
+      proofHalf = proof ? proof.scrollWidth / 2 : 0
+      bgHalf = bg ? bg.scrollWidth / 2 : 0
+    }, 200)
+  })
+
   if (lenis) lenis.on('scroll', ({ velocity }) => { vel = velocity })
 
   function loop(now) {
+    requestAnimationFrame(loop)
     const dt = Math.min((now - last) / 16.67, 3) || 1
     last = now
-    const base = reduced ? 0 : 0.6
     const extra = Math.abs(vel) * 0.25
     if (proof) {
-      proofX -= (base + extra) * dt
-      const half = proof.scrollWidth / 2
-      if (-proofX >= half) proofX += half
+      proofX -= (0.6 + extra) * dt
+      if (-proofX >= proofHalf) proofX += proofHalf
       proof.style.transform = `translate3d(${proofX}px,0,0)`
     }
     if (bg) {
-      bgX -= (base * 0.7 + extra * 0.6) * dt
-      const w = bg.scrollWidth / 2
-      if (-bgX >= w) bgX += w
+      bgX -= (0.42 + extra * 0.6) * dt
+      if (-bgX >= bgHalf) bgX += bgHalf
       bg.style.transform = `translate3d(${bgX}px,0,0)`
     }
-    requestAnimationFrame(loop)
   }
   requestAnimationFrame(loop)
 }
@@ -272,9 +283,12 @@ function boot() {
   initNav()
   initMarquees()
   initCopyMail()
+  // Lazy-load Three.js so it doesn't block first paint / interactivity.
   if (!window.__NOGL__) {
-    const destroyHero = initHero(document.getElementById('heroCanvas'))
-    window.addEventListener('beforeunload', () => destroyHero && destroyHero())
+    import('./three/hero.js').then(({ initHero }) => {
+      const destroyHero = initHero(document.getElementById('heroCanvas'))
+      window.addEventListener('beforeunload', () => destroyHero && destroyHero())
+    }).catch(() => {})
   }
 }
 
