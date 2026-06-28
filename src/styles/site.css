@@ -152,7 +152,16 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .key--w2 { grid-column: span 2; }
 .key--ghost { opacity: 0.55; }
 
-.hero__foot { margin-top: auto; }
+/* full-bleed marquee band, lifted above the keycaps with an opaque bg so the
+   keys can't overlap it — runs clean edge to edge */
+.hero__foot {
+  margin-top: auto;
+  position: relative;
+  z-index: 4;
+  margin-left: calc(-1 * var(--pad));
+  margin-right: calc(-1 * var(--pad));
+  background: var(--bg);
+}
 
 /* ============================================================
    GENERIC SECTION HEADINGS
