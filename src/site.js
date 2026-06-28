@@ -99,6 +99,56 @@ function initKeyboard() {
   })()
 }
 
+/* ---------- INTERACTIVE KEYCAPS ---------- */
+function navWithFx(href) {
+  const fx = document.getElementById('pageFx')
+  if (!fx || reduced) { window.location.href = href; return }
+  fx.classList.remove('is-open')
+  fx.style.transition = 'none'; fx.style.transform = 'translateY(100%)'
+  void fx.offsetWidth
+  fx.style.transition = ''; fx.style.transform = 'translateY(0)'
+  setTimeout(() => { window.location.href = href }, 600)
+}
+function initKeycaps() {
+  document.querySelectorAll('.key[data-href]').forEach((k) => {
+    k.addEventListener('pointerdown', () => k.classList.add('is-press'))
+    k.addEventListener('pointerup', () => k.classList.remove('is-press'))
+    k.addEventListener('pointerleave', () => k.classList.remove('is-press'))
+    k.addEventListener('click', () => navWithFx(k.getAttribute('data-href')))
+  })
+}
+
+/* ---------- WORK FLOAT (cursor preview + hover-to-play video) ---------- */
+function initWorkFloat() {
+  if (!finePointer) return
+  const float = document.getElementById('workFloat')
+  if (!float) return
+  const inner = float.querySelector('.work-float__inner')
+  const tints = ['#c2f23c', '#dff5a0', '#a6d62e', '#e7eec0', '#cfe72e']
+  let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, active = false
+  document.querySelectorAll('.work-card').forEach((card, i) => {
+    card.addEventListener('pointerenter', () => {
+      const v = card.dataset.video, m = card.dataset.media
+      const label = (card.querySelector('.work-card__name')?.firstChild?.textContent || '').trim()
+      inner.innerHTML = v
+        ? `<video src="${v}" muted loop autoplay playsinline></video>`
+        : m ? `<img src="${m}" alt="">` : `<span class="label">${label}</span>`
+      inner.style.background = (v || m) ? '#000' : tints[i % tints.length]
+      float.classList.add('is-visible'); active = true
+    })
+    card.addEventListener('pointerleave', () => {
+      float.classList.remove('is-visible'); active = false
+      setTimeout(() => { if (!active) inner.innerHTML = '' }, 320)
+    })
+  })
+  addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY }, { passive: true })
+  ;(function loop() {
+    x += (tx - x) * 0.16; y += (ty - y) * 0.16
+    float.style.left = x + 'px'; float.style.top = y + 'px'
+    requestAnimationFrame(loop)
+  })()
+}
+
 /* ---------- MARQUEES ---------- */
 function initMarquees() {
   const tracks = document.querySelectorAll('.marquee__track')
@@ -180,6 +230,6 @@ function initCopyMail() {
 /* ---------- BOOT ---------- */
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initMarquees(); initReveals(); initNav(); initCopyMail()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initMarquees(); initReveals(); initNav(); initCopyMail()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

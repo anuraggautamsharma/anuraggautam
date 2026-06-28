@@ -327,6 +327,56 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* ============================================================
+   SERVICES
+   ============================================================ */
+.services { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(20px, 4vh, 60px); }
+.services__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 1.6vw, 24px); }
+.service { background: var(--card); border-radius: 22px; padding: clamp(24px, 2.4vw, 40px); display: flex; flex-direction: column; min-height: clamp(300px, 30vw, 420px); position: relative; transition: transform 0.45s var(--ease-bounce); }
+.service::after { content: ''; position: absolute; inset: 0; border-radius: 22px; border: 2px solid transparent; transition: border-color 0.4s; pointer-events: none; }
+.service:hover { transform: translateY(-8px); }
+.service:hover::after { border-color: var(--lime); }
+.service__no { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); }
+.service h3 { font-family: var(--serif); font-size: clamp(26px, 2.8vw, 40px); margin: 14px 0; line-height: 1; }
+.service p { color: var(--muted); font-size: clamp(15px, 1.3vw, 18px); margin-bottom: 18px; }
+.service ul { list-style: none; margin-bottom: auto; }
+.service li { font-size: 14px; padding: 9px 0 9px 22px; border-top: 1px solid var(--line); position: relative; }
+.service li::before { content: '+'; position: absolute; left: 0; color: var(--lime-deep); }
+.service__cta { margin-top: 24px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+.service__cta i { font-style: normal; transition: transform 0.3s var(--ease); }
+.service:hover .service__cta { color: var(--lime-deep); }
+.service:hover .service__cta i { transform: translateX(5px); }
+
+/* ============================================================
+   NOW / AVAILABILITY BAR
+   ============================================================ */
+.now-bar { background: var(--card); border-radius: 18px; padding: clamp(20px, 2vw, 30px) clamp(24px, 3vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: clamp(20px, 4vw, 56px); }
+.now-bar__item { display: flex; flex-direction: column; gap: 6px; }
+.now-bar__k { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.now-bar__v { font-family: var(--serif); font-size: clamp(18px, 1.8vw, 24px); display: inline-flex; align-items: center; gap: 8px; }
+.now-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--lime-deep); box-shadow: 0 0 0 4px rgba(166,214,46,0.25); animation: nowpulse 2s var(--ease) infinite; }
+@keyframes nowpulse { 50% { box-shadow: 0 0 0 7px rgba(166,214,46,0); } }
+.now-bar .btn { margin-left: auto; }
+@media (max-width: 700px) { .now-bar .btn { margin-left: 0; width: 100%; justify-content: space-between; } }
+
+/* ============================================================
+   INTERACTIVE KEYCAPS
+   ============================================================ */
+.key { pointer-events: auto; transition: transform 0.35s var(--ease-bounce), filter 0.35s; }
+.key[data-href] { cursor: pointer; }
+.key[data-href]:hover { transform: translateZ(30px); filter: brightness(1.07) saturate(1.12); z-index: 6; }
+.key.is-press { transform: translateZ(6px) scale(0.95) !important; filter: brightness(0.92); }
+
+/* ============================================================
+   WORK FLOAT (cursor preview + hover video)
+   ============================================================ */
+.work-float { position: fixed; top: 0; left: 0; z-index: 90; width: clamp(220px, 22vw, 300px); aspect-ratio: 4/3; border-radius: 14px; overflow: hidden; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(0.9) rotate(-3deg); transition: opacity 0.3s var(--ease), transform 0.45s var(--ease); box-shadow: 0 26px 54px -22px rgba(0,0,0,0.4); }
+.work-float.is-visible { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-2deg); }
+.work-float__inner { width: 100%; height: 100%; display: grid; place-items: center; }
+.work-float__inner img, .work-float__inner video { width: 100%; height: 100%; object-fit: cover; }
+.work-float__inner .label { font-family: var(--serif); font-size: clamp(22px, 2vw, 30px); color: var(--ink); }
+@media (hover: none) { .work-float { display: none; } }
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
@@ -336,6 +386,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
   .kbd-wrap { position: relative; right: auto; top: auto; width: 100%; margin: 10px auto 0; max-width: 540px; }
   .proof__grid { grid-template-columns: 1fr 1fr; }
   .work-grid { grid-template-columns: 1fr; }
+  .services__grid { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
   .about-portrait { max-width: 420px; }
   .caps__item { grid-template-columns: 50px 1fr; }
