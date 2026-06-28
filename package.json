@@ -1,0 +1,19 @@
+{
+  "name": "anurag-gautam-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio for Anurag Gautam — Product Design, GTM & 0→1 operator.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
+  },
+  "dependencies": {
+    "three": "^0.169.0",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.18"
+  }
+}

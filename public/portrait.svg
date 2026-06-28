@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" preserveAspectRatio="xMidYMid slice">
+  <rect width="900" height="1100" fill="#141414"/>
+  <!-- halftone dots -->
+  <defs>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="9" cy="9" r="2.4" fill="#2a2a2a"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="1100" fill="url(#dots)"/>
+  <!-- abstract head silhouette -->
+  <g fill="#d6ff1f">
+    <ellipse cx="450" cy="430" rx="190" ry="220"/>
+    <path d="M205 1100 C205 820 320 700 450 700 C580 700 695 820 695 1100 Z"/>
+  </g>
+  <text x="50%" y="160" text-anchor="middle" font-family="'Space Mono', monospace" font-size="34" fill="#ededea" letter-spacing="6">ANURAG GAUTAM</text>
+  <text x="50%" y="1040" text-anchor="middle" font-family="'Space Mono', monospace" font-size="22" fill="#0a0a0a" letter-spacing="3">DROP /portrait.jpg HERE</text>
+</svg>
