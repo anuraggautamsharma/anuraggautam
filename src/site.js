@@ -1,0 +1,174 @@
+import './styles/site.css'
+import Lenis from 'lenis'
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
+/* ---------- LOADER (home only) ---------- */
+function runLoader(done) {
+  const loader = document.getElementById('loader')
+  if (!loader) return done()
+  const count = document.getElementById('loaderCount')
+  const bar = document.getElementById('loaderBar')
+  const dur = reduced ? 250 : 950
+  const start = performance.now()
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1)
+    const n = Math.floor((1 - Math.pow(1 - t, 3)) * 100)
+    if (count) count.textContent = n
+    if (bar) bar.style.width = n + '%'
+    if (t < 1) requestAnimationFrame(step)
+    else { loader.classList.add('is-done'); setTimeout(done, reduced ? 0 : 350) }
+  }
+  requestAnimationFrame(step)
+}
+
+/* ---------- PAGE TRANSITION ---------- */
+let lenis
+function initTransition() {
+  const fx = document.getElementById('pageFx')
+  // reveal on load
+  if (fx) requestAnimationFrame(() => requestAnimationFrame(() => fx.classList.add('is-open')))
+
+  document.querySelectorAll('a[href]').forEach((a) => {
+    const href = a.getAttribute('href')
+    if (!href) return
+    const isHash = href.startsWith('#')
+    const isExternal = /^(https?:|mailto:|tel:)/.test(href)
+    const newTab = a.target === '_blank'
+    if (isExternal || newTab) return
+
+    a.addEventListener('click', (e) => {
+      if (isHash) {
+        const el = document.querySelector(href)
+        if (el && lenis) { e.preventDefault(); lenis.scrollTo(el, { offset: -10 }); closeMenu() }
+        return
+      }
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return
+      if (!fx || reduced) return
+      e.preventDefault()
+      closeMenu()
+      // sweep cover up from bottom
+      fx.classList.remove('is-open')
+      fx.style.transition = 'none'
+      fx.style.transform = 'translateY(100%)'
+      void fx.offsetWidth
+      fx.style.transition = ''
+      fx.style.transform = 'translateY(0)'
+      setTimeout(() => { window.location.href = href }, 620)
+    })
+  })
+}
+
+/* ---------- SMOOTH SCROLL ---------- */
+function initScroll() {
+  if (reduced) return
+  lenis = new Lenis({ duration: 1.1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true })
+  const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf) }
+  requestAnimationFrame(raf)
+}
+
+/* ---------- CURSOR ---------- */
+function initCursor() {
+  if (!finePointer) return
+  const cur = document.getElementById('cursor')
+  const label = document.getElementById('cursorLabel')
+  if (!cur) return
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y
+  addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY }, { passive: true })
+  ;(function loop() {
+    cx += (x - cx) * 0.22; cy += (y - cy) * 0.22
+    cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`
+    requestAnimationFrame(loop)
+  })()
+  const hoverables = 'a, button, [data-cursor], .work-card, .proof__cell'
+  document.querySelectorAll(hoverables).forEach((el) => {
+    el.addEventListener('pointerenter', () => { cur.classList.add('is-hover'); if (label) label.textContent = el.getAttribute('data-cursor') || '' })
+    el.addEventListener('pointerleave', () => { cur.classList.remove('is-hover'); if (label) label.textContent = '' })
+  })
+}
+
+/* ---------- MARQUEES ---------- */
+function initMarquees() {
+  const tracks = document.querySelectorAll('.marquee__track')
+  if (!tracks.length || reduced) return
+  let vel = 0
+  if (lenis) lenis.on('scroll', ({ velocity }) => { vel = velocity })
+  tracks.forEach((track) => {
+    // duplicate content for seamless loop
+    track.innerHTML += track.innerHTML
+    let x = 0, last = 0
+    const half = () => track.scrollWidth / 2
+    let halfW = half()
+    addEventListener('resize', () => { halfW = half() })
+    const dir = track.dataset.dir === 'rev' ? 1 : -1
+    function loop(now) {
+      requestAnimationFrame(loop)
+      const dt = Math.min((now - last) / 16.67, 3) || 1; last = now
+      x += dir * (0.7 + Math.abs(vel) * 0.25) * dt
+      if (x <= -halfW) x += halfW
+      if (x >= 0) x -= halfW
+      track.style.transform = `translate3d(${x}px,0,0)`
+    }
+    requestAnimationFrame(loop)
+  })
+}
+
+/* ---------- REVEALS ---------- */
+function initReveals() {
+  const ro = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('is-in'); ro.unobserve(e.target) }
+  }), { threshold: 0.12, rootMargin: '0px 0px -7% 0px' })
+  document.querySelectorAll('[data-reveal], .line').forEach((el) => ro.observe(el))
+}
+
+/* ---------- NAV ---------- */
+const nav = document.getElementById('nav')
+const mobileMenu = document.getElementById('mobileMenu')
+function closeMenu() {
+  nav?.classList.remove('is-open'); mobileMenu?.classList.remove('is-open')
+  document.getElementById('navToggle')?.setAttribute('aria-expanded', 'false')
+}
+function initNav() {
+  let lastY = 0
+  const onScroll = (yPos) => {
+    if (yPos > lastY && yPos > 500) nav?.classList.add('is-hidden')
+    else nav?.classList.remove('is-hidden')
+    lastY = yPos
+  }
+  if (lenis) lenis.on('scroll', ({ scroll }) => onScroll(scroll))
+  else addEventListener('scroll', () => onScroll(scrollY), { passive: true })
+
+  const toggle = document.getElementById('navToggle')
+  toggle?.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open')
+    mobileMenu?.classList.toggle('is-open', open)
+    toggle.setAttribute('aria-expanded', String(open))
+  })
+  document.getElementById('backTop')?.addEventListener('click', () => {
+    if (lenis) lenis.scrollTo(0); else scrollTo({ top: 0, behavior: 'smooth' })
+  })
+}
+
+/* ---------- COPY EMAIL ---------- */
+function initCopyMail() {
+  document.querySelectorAll('[data-copy-mail]').forEach((mail) => {
+    mail.addEventListener('click', (e) => {
+      if (!navigator.clipboard) return
+      e.preventDefault()
+      const addr = mail.getAttribute('data-copy-mail')
+      navigator.clipboard.writeText(addr).then(() => {
+        const old = mail.textContent
+        mail.textContent = 'Copied ✓'
+        setTimeout(() => { mail.textContent = old }, 1300)
+      }).catch(() => { window.location.href = 'mailto:' + addr })
+    })
+  })
+}
+
+/* ---------- BOOT ---------- */
+function boot() {
+  const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
+  initScroll(); initTransition(); initCursor(); initMarquees(); initReveals(); initNav(); initCopyMail()
+}
+addEventListener('DOMContentLoaded', () => { runLoader(boot) })

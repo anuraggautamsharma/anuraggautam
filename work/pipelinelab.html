@@ -3,37 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#f7f5f0" />
+  <meta name="theme-color" content="#07060c" />
   <title>The PipelineLab — Brand, site & explainer for my GTM studio | Anurag Gautam</title>
   <meta name="description" content="My own GTM studio: identity, site, and an explainer film. Proof I brand and ship the thing, not just advise on it." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <script type="module" src="/src/case.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script type="module" src="/src/site.js"></script>
 </head>
-<body>  <a class="skip-link" href="#main">Skip to content</a>
+<body>
+  <div class="page-fx is-open" id="pageFx" aria-hidden="true"><span>GTM</span></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="case-nav">
-    <a href="/" class="back" data-cursor="home"><span aria-hidden="true">←</span> Anurag Gautam</a>
-    <a href="/#work" data-cursor="all">All work</a>
+  <header class="nav" id="nav">
+    <a href="/" class="nav__brand"><span class="dot"></span> Anurag Gautam</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="/">Home</a><a href="/work.html" class="is-active">Work</a><a href="/about.html">About</a><a href="/contact.html">Contact</a>
+    </nav>
+    <a href="/contact.html" class="nav__cta"><i></i> Open to work</a>
+    <button class="nav__menu" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
   </header>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="/">Home</a><a href="/work.html">Work</a><a href="/about.html">About</a><a href="/contact.html">Contact</a>
+  </div>
 
   <main id="main">
     <section class="case-hero">
-      <p class="case-hero__eyebrow">Case study · Brand · Web · Motion</p>
-      <h1 class="case-hero__title" data-reveal>The PipelineLab</h1>
-      <p class="case-hero__sub">My own GTM studio — identity, site, and an explainer film. Proof I <em>brand and ship the thing</em>, not just advise on it.</p>
+      <div class="hero__stickers"><span class="sticker sticker--lime">★ Case study</span><span class="sticker sticker--violet">Brand · Web · Motion</span></div>
+      <h1>The PipelineLab</h1>
+      <p>My own GTM studio — identity, site, and an explainer film. Proof I <em>brand and ship the thing</em>, not just advise on it.</p>
     </section>
 
-    <dl class="case-meta">
-      <div><dt>Role</dt><dd>Founder — everything</dd></div>
-      <div><dt>Years</dt><dd>2024 — present</dd></div>
-      <div><dt>Scope</dt><dd>Branding · Website · Explainer motion</dd></div>
-      <div><dt>What it does</dt><dd>Outbound systems &amp; pipeline for B2B</dd></div>
-    </dl>
+    <section>
+      <dl class="case-meta">
+        <div><dt>Role</dt><dd>Founder — everything</dd></div>
+        <div><dt>Years</dt><dd>2024 — present</dd></div>
+        <div><dt>Scope</dt><dd>Branding · Website · Explainer motion</dd></div>
+        <div><dt>What it does</dt><dd>Outbound systems &amp; pipeline for B2B</dd></div>
+      </dl>
+    </section>
 
-    <div class="case-cover"><div class="ph ph--pipeline"><span>PIPELINELAB</span></div></div>
+    <section><div class="case-cover"><div class="ph ph--3">PIPELINELAB</div></div></section>
 
     <section class="case-section">
       <h2 data-reveal>The brief</h2>
@@ -64,30 +76,22 @@
     <section class="case-section">
       <h2 data-reveal>Outcome</h2>
       <div class="case-stats" data-reveal>
-        <div><b>₹6 Cr+</b><span>B2B revenue (career)</span></div>
+        <div><b class="holo">₹6 Cr+</b><span>B2B revenue (career)</span></div>
         <div><b>Multi-</b><span>channel outbound</span></div>
         <div><b>0→1</b><span>brand, site &amp; film</span></div>
       </div>
-      <p data-reveal style="font-size:14px;color:var(--muted)">[Add client results you can share — pipeline value, meetings booked, or reply rates.]</p>
+      <p data-reveal style="font-family:var(--font-mono);font-size:14px">[Add client results you can share — pipeline value, meetings booked, or reply rates.]</p>
     </section>
 
-    <div class="case-gallery">
-      <figure><div class="ph ph--pipeline"><span>IDENTITY</span></div></figure>
-      <figure><div class="ph ph--pipeline"><span>WEBSITE</span></div></figure>
-      <figure><div class="ph ph--pipeline"><span>EXPLAINER</span></div></figure>
-    </div>
+    <section><div class="case-gallery">
+      <figure><div class="ph ph--3">Identity</div></figure>
+      <figure><div class="ph ph--3">Website</div></figure>
+      <figure><div class="ph ph--3">Explainer</div></figure>
+    </div></section>
 
-    <nav class="case-next">
-      <a href="/work/suggaa" data-cursor="next">
-        <span><small>Next case study</small><b>Suggaa</b></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </nav>
+    <section class="case-next"><a href="/work/suggaa.html" data-cursor="next"><span><small>Next case study</small><b>Suggaa</b></span><span class="arrow" aria-hidden="true">→</span></a></section>
 
-    <footer class="case-foot">
-      <span>Anurag Gautam · Bengaluru, IN</span>
-      <span>© <span id="year">2026</span></span>
-    </footer>
+    <footer class="footer"><div class="footer__base"><span>Anurag Gautam · Bengaluru, IN</span><span>© <span id="year">2026</span></span><button class="footer__top" id="backTop" data-cursor="up">Back to top ↑</button></div></footer>
   </main>
 </body>
 </html>

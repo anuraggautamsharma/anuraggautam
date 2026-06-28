@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#07060c" />
+  <title>Contact — Anurag Gautam</title>
+  <meta name="description" content="Open to senior and fractional roles in design, marketing and GTM — and to AfterThought projects. Fastest way to reach me is email." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script type="module" src="/src/site.js"></script>
+</head>
+<body>
+  <div class="page-fx is-open" id="pageFx" aria-hidden="true"><span>HELLO</span></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <a href="/" class="nav__brand"><span class="dot"></span> Anurag Gautam</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/work.html">Work</a>
+      <a href="/about.html">About</a>
+      <a href="/contact.html" class="is-active">Contact</a>
+    </nav>
+    <a href="mailto:anuraggautamsharma@gmail.com" class="nav__cta"><i></i> Email me</a>
+    <button class="nav__menu" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="/">Home</a>
+    <a href="/work.html">Work</a>
+    <a href="/about.html">About</a>
+    <a href="mailto:anuraggautamsharma@gmail.com" class="mm-mail">anuraggautamsharma@gmail.com</a>
+  </div>
+
+  <main id="main">
+    <section class="contact-hero">
+      <div class="hero__stickers"><span class="sticker sticker--lime">★ Open to roles</span><span class="sticker sticker--pink">Fractional</span><span class="sticker sticker--cyan">AfterThought projects</span></div>
+      <h1><span class="outline-text">LET'S</span><br><span class="holo">TALK.</span></h1>
+      <p style="margin-top:28px;max-width:48ch;font-size:clamp(17px,2vw,24px);color:var(--muted)">Open to senior and fractional roles in design, marketing and GTM — and to AfterThought projects. Fastest way to reach me is email.</p>
+    </section>
+
+    <section class="contact-grid">
+      <div class="contact-card" data-reveal>
+        <h3>Email — fastest</h3>
+        <a class="big" href="mailto:anuraggautamsharma@gmail.com" data-copy-mail="anuraggautamsharma@gmail.com" data-cursor="copy">anuraggautamsharma@gmail.com</a>
+        <div style="margin-top:28px"><a href="mailto:anuraggautamsharma@gmail.com" class="btn btn--primary" data-cursor="write">Write to me <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="contact-card" data-reveal>
+        <h3>Elsewhere</h3>
+        <div class="contact-links">
+          <!-- TODO: replace # with real URLs -->
+          <a href="#" data-cursor="open">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="#" data-cursor="open">Instagram <span aria-hidden="true">↗</span></a>
+          <a href="#" data-cursor="open">YouTube <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDIO -->
+    <section class="studio" data-reveal>
+      <span class="eyebrow" style="color:#07060c">For founders</span>
+      <h2 style="margin-top:18px">Need brand &amp; marketing?</h2>
+      <p>AfterThought — my studio. Brand identity, marketing design, motion and content for founders and growing teams.</p>
+      <a href="mailto:anuraggautamsharma@gmail.com?subject=AfterThought%20project" class="btn btn--primary" data-cursor="start">Start an AfterThought project <span aria-hidden="true">→</span></a>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__base" style="margin-top:clamp(40px,7vh,80px)">
+        <span>Anurag Gautam · Bengaluru, IN</span>
+        <span>© <span id="year">2026</span> · Built with vibe code</span>
+        <button class="footer__top" id="backTop" data-cursor="up">Back to top ↑</button>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

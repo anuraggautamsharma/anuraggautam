@@ -1,16 +1,22 @@
 # Anurag Gautam — Portfolio
 
-Light, editorial, premium personal site. Warm paper palette, refined serif display
-(Fraunces) + clean sans (Inter), one quiet terracotta accent, generous space and calm
-motion. The signature interaction is a cursor-following thumbnail on the work list.
-Single long-scroll home page plus three deep case-study pages (Suggaa, Srijan, The
-PipelineLab).
+Retro-future / Y2K **multipage** portfolio. Off-black base, chrome + holographic
+gradient type, neon accents, sticker UI, page-transition wipes, custom cursor and
+marquees. Built to feel like an Awwwards-grade creative-designer site — while staying
+fast (~24 KB of JS, no heavy 3D).
+
+## Pages
+- `/` — Home (hero, thesis, proof, featured work, studio, contact)
+- `/work.html` — all 9 projects
+- `/about.html` — story, capabilities, timeline, AfterThought, in-public
+- `/contact.html` — contact + AfterThought CTA
+- `/work/suggaa.html`, `/work/srijan.html`, `/work/pipelinelab.html` — case studies
 
 ## Stack
-- **Vite** (multi-page) — vanilla, no framework
+- **Vite** (multipage) — vanilla, no framework
 - **Lenis** — smooth scroll
-- Custom, lightweight JS: gentle scroll reveals, cursor-following work thumbnail,
-  loader, sticky nav. No heavy 3D libraries — the whole site is ~25 KB of JS.
+- One shared module `src/site.js` + one stylesheet `src/styles/site.css` used by every
+  page: loader, page-transition wipe, custom cursor, marquees, scroll reveals, nav.
 
 ## Run
 ```bash
@@ -21,50 +27,32 @@ npm run preview    # preview the build
 ```
 
 ## Deploy (Vercel)
-Push the repo and import it in Vercel. `vercel.json` sets the build command (`npm run build`),
-output (`dist`) and `cleanUrls` (so `/work/suggaa` works). No env vars needed.
+Push and import in Vercel. `vercel.json` sets build (`npm run build`), output (`dist`)
+and `cleanUrls`. Internal links use explicit `.html` paths so they work in dev, preview
+and production alike. No env vars needed.
 
-## Project structure
+## Structure
 ```
-index.html              # home (all sections)
-work/suggaa.html        # case study
-work/srijan.html        # case study
-work/pipelinelab.html   # case study
-src/main.js             # home JS (loader, smooth scroll, reveals, work thumbnail, nav)
-src/case.js             # lighter JS for case pages
-src/styles/main.css     # design tokens + all home styles
-src/styles/case.css     # case-study styles (imports main.css)
-public/                 # favicon.svg, portrait.svg, og.svg
+index.html / work.html / about.html / contact.html   # top-level pages
+work/suggaa.html · srijan.html · pipelinelab.html     # case studies
+src/site.js          # shared JS for every page
+src/styles/site.css  # design system + all page styles
+public/              # favicon.svg, portrait.svg, og.svg
 ```
-
-### Work thumbnails
-Each project row in the work list shows a colour block that follows your cursor on hover.
-To use a real image instead, add `data-imgsrc="/work/suggaa.jpg"` to that row's `<a>`/`<div>`
-in `index.html` (the colour block is the fallback until you do).
 
 ## ⚠️ Before you ship — replace these
-Search the codebase for these and swap in real values:
-
-1. **Headshot** — drop `public/portrait.jpg` (≈900×1100). The `<img>` in the About
-   section points at `/portrait.svg`; change it to `/portrait.jpg`.
-2. **Social links** — `index.html` Content + Contact sections have `href="#"` on
-   Instagram / YouTube / LinkedIn. Add real URLs.
-3. **Dates** — `[year]`, `[2018]`, `[2023]`, `[N]` placeholders in the timeline,
-   case-study meta, and Suggaa stats.
-4. **Email** — currently `anuraggautamsharma@gmail.com` everywhere. Swap to
-   `anurag@anuraggautam.com` if you prefer the domain address.
-5. **Project images** — the work thumbnails and case-study galleries use CSS placeholder
-   blocks (`.ph`). Replace with real `<img>`/`<video>` (e.g. Srijan's AI ad →
-   `public/srijan-ad.mp4`).
-6. **Case-study outcomes** — each case page has a `[bracketed]` line where a real
-   number/result should go.
-7. **OG image** — `public/og.svg` is a placeholder. For best link previews, export a
-   1200×630 PNG and point the `og:image` / `twitter:image` tags at it.
-8. **Analytics** — add your privacy-light snippet (e.g. Vercel Analytics, Plausible)
-   to `index.html`.
-9. **Domain** — update the `canonical` / `og:url` in each page's `<head>`.
+1. **Headshot** — drop `public/portrait.jpg` and point the About `<img>` (`/portrait.svg`) at it.
+2. **Social links** — Instagram / YouTube / LinkedIn are `href="#"` in the footers and on
+   About/Contact. Add real URLs.
+3. **Dates** — `[year]`, `[2018]`, `[2023]`, `[N]` placeholders in the timeline and case meta.
+4. **Email** — `anuraggautamsharma@gmail.com` everywhere; swap if you prefer the domain address.
+5. **Project visuals** — work cards and case galleries use neon gradient placeholder blocks
+   (`.ph`). Replace with real `<img>`/`<video>` (e.g. Srijan's ad → `public/srijan-ad.mp4`).
+6. **Case-study outcomes** — each case page has a `[bracketed]` line for a real number.
+7. **OG image** — `public/og.svg` is a placeholder; export a 1200×630 PNG for best previews.
+8. **Analytics** — add a privacy-light snippet (Vercel Analytics / Plausible).
 
 ## Accessibility / performance
-Responsive to mobile, visible keyboard focus, skip-link, semantic landmarks, alt text,
-`prefers-reduced-motion` honored (3D slows, scramble/marquees stop), fonts load with
-`display=swap`. Three.js loads only on the home page; case pages are ~2 KB JS.
+Responsive, visible keyboard focus, skip links, semantic landmarks, alt text, and
+`prefers-reduced-motion` honored (gradients/marquees/transitions calm down). Motion is
+CSS-driven (cheap) — no WebGL, no per-frame layout reads.
