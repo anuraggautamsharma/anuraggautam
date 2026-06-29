@@ -155,7 +155,15 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
   color: #33450d; font-weight: 700; font-size: clamp(9px, 1vw, 17px); text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
 .key span { transform: scaleY(1.15); }
 .key--w2 { grid-column: span 2; }
-.key--ghost { opacity: 0.55; }
+.key--ghost { opacity: 0.5; }
+/* skill keys = lime, the meaningful + clickable caps (default .key style),
+   nudged to read as the loudest layer */
+.key--skill { letter-spacing: 0.01em; font-size: clamp(9px, 1.05vw, 18px); }
+/* filler keys = neutral frosted glass — keyboard texture, not content */
+.key--mute {
+  background: linear-gradient(150deg, rgba(255,255,255,0.92), rgba(231,231,225,0.7) 60%, rgba(212,212,204,0.72));
+  box-shadow: 0 8px 0 rgba(190,190,181,0.85), 0 12px 18px rgba(120,120,108,0.2), inset 0 3px 6px rgba(255,255,255,0.9), inset 0 -6px 10px rgba(168,168,158,0.25);
+  color: rgba(21, 21, 15, 0.3); font-weight: 600; }
 
 /* full-bleed marquee band, lifted above the keycaps with an opaque bg so the
    keys can't overlap it — runs clean edge to edge */
