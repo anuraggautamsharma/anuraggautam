@@ -92,11 +92,23 @@ function initKeyboard() {
     tx = (e.clientX / innerWidth - 0.5)
     ty = (e.clientY / innerHeight - 0.5)
   }, { passive: true })
-  ;(function loop() {
-    cxv += (tx - cxv) * 0.06; cyv += (ty - cyv) * 0.06
-    kbd.style.transform = `rotateX(${baseX - cyv * 8}deg) rotateZ(${baseZ + cxv * 8}deg) translate3d(${cxv * 18}px, ${cyv * 18}px, 0)`
+  const t0 = performance.now()
+  function loop(now) {
+    const t = (now - t0) / 1000
+    // snappier cursor follow (was 0.06 — too damped, felt laggy)
+    cxv += (tx - cxv) * 0.1
+    cyv += (ty - cyv) * 0.1
+    // always-on idle life: layered sine sway + vertical float so the slab is
+    // never fully still, even when the cursor isn't moving
+    const swayX = Math.sin(t * 0.7) * 1.5 + Math.sin(t * 0.27) * 0.8
+    const swayZ = Math.cos(t * 0.55) * 1.7 + Math.sin(t * 0.19) * 0.9
+    const float = Math.sin(t * 0.9) * 6
+    const rx = baseX - cyv * 12 + swayX
+    const rz = baseZ + cxv * 12 + swayZ
+    kbd.style.transform = `rotateX(${rx}deg) rotateZ(${rz}deg) translate3d(${cxv * 34}px, ${cyv * 30 + float}px, 0)`
     requestAnimationFrame(loop)
-  })()
+  }
+  requestAnimationFrame(loop)
 }
 
 /* ---------- INTERACTIVE KEYCAPS ---------- */

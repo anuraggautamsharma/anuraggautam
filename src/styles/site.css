@@ -149,7 +149,9 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 
 /* glassy keycap cluster */
 .kbd-wrap { position: absolute; right: -1%; top: 4%; width: min(60vw, 900px); aspect-ratio: 1.34; perspective: 1700px; pointer-events: none; z-index: 0; }
-.kbd { position: absolute; inset: 0; transform: rotateX(56deg) rotateZ(-44deg); transform-style: preserve-3d; display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 1fr; gap: clamp(6px, 1vw, 14px); will-change: transform; transition: transform 0.5s var(--ease); }
+/* no CSS transition on transform — the JS rAF loop in initKeyboard() owns the
+   tilt frame-by-frame; a transition here would double-smooth and lag it ~0.5s */
+.kbd { position: absolute; inset: 0; transform: rotateX(56deg) rotateZ(-44deg); transform-style: preserve-3d; display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 1fr; gap: clamp(6px, 1vw, 14px); will-change: transform; }
 /* .key = the STATIC hit-target — it never transforms, so hovering near an edge
    can't shift it out from under the cursor (no flicker/oscillation). The inner
    .key__cap carries all the glass visuals and is what lifts on hover. */
