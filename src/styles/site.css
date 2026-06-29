@@ -77,7 +77,7 @@ em { font-style: italic; }
    ============================================================ */
 .page-fx { position: fixed; inset: 0; z-index: 1050; background: var(--lime); transform: translateY(0); transition: transform 0.7s var(--ease); pointer-events: none; display: grid; place-items: center; }
 .page-fx.is-open { transform: translateY(-100%); }
-.page-fx span { font-family: var(--serif); font-size: clamp(40px, 9vw, 120px); color: var(--ink); }
+.page-fx span { font-family: var(--serif); font-style: italic; font-size: clamp(38px, 8vw, 104px); letter-spacing: -0.01em; color: var(--ink); }
 
 /* ============================================================
    NAV (top bar)
@@ -371,7 +371,10 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
    LOADER
    ============================================================ */
 .loader { position: fixed; inset: 0; z-index: 1080; background: var(--bg); display: grid; place-items: center; }
-.loader__count { font-family: var(--serif); font-size: clamp(80px, 20vw, 240px); }
+.loader__word { font-family: var(--serif); font-style: italic; font-size: clamp(40px, 8vw, 96px); letter-spacing: -0.01em; line-height: 1; color: var(--ink); will-change: transform, opacity; }
+.loader__word.is-name { color: var(--lime-deep); }
+.loader__word.is-flip { animation: loaderFlip 0.42s var(--ease); }
+@keyframes loaderFlip { from { opacity: 0; transform: translateY(0.42em); } to { opacity: 1; transform: none; } }
 .loader__bar { position: absolute; left: var(--pad); right: var(--pad); bottom: 40px; height: 2px; background: var(--line); }
 .loader__bar span { display: block; height: 100%; width: 0; background: var(--ink); }
 .loader.is-done { opacity: 0; transition: opacity 0.5s var(--ease); pointer-events: none; }

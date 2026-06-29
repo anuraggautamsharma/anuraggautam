@@ -4,23 +4,48 @@ import Lenis from 'lenis'
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
-/* ---------- LOADER (home only) ---------- */
+/* ---------- LOADER (home only) ----------
+   the craft, spoken: words flip through the disciplines and land on the name
+   as the bar fills — not a cliché 0–100 counter */
 function runLoader(done) {
   const loader = document.getElementById('loader')
   if (!loader) return done()
-  const count = document.getElementById('loaderCount')
+  const word = document.getElementById('loaderWord')
   const bar = document.getElementById('loaderBar')
-  const dur = reduced ? 250 : 900
+  const words = ['Product', 'Motion', 'Content', 'GTM', 'Vibe code', 'Anurag Gautam']
+  const dur = reduced ? 280 : 1150
   const start = performance.now()
+  let lastIdx = -1
   function step(now) {
     const t = Math.min((now - start) / dur, 1)
-    const n = Math.floor((1 - Math.pow(1 - t, 3)) * 100)
-    if (count) count.textContent = n
-    if (bar) bar.style.width = n + '%'
+    const e = 1 - Math.pow(1 - t, 3)
+    if (bar) bar.style.width = e * 100 + '%'
+    const idx = Math.min(words.length - 1, Math.floor(e * words.length))
+    if (word && idx !== lastIdx) {
+      lastIdx = idx
+      word.textContent = words[idx]
+      word.classList.toggle('is-name', idx === words.length - 1)
+      word.classList.remove('is-flip'); void word.offsetWidth; word.classList.add('is-flip')
+    }
     if (t < 1) requestAnimationFrame(step)
-    else { loader.classList.add('is-done'); setTimeout(done, reduced ? 0 : 350) }
+    else { loader.classList.add('is-done'); setTimeout(done, reduced ? 0 : 380) }
   }
   requestAnimationFrame(step)
+}
+
+/* destination-aware label for the page-transition wipe */
+function pageLabel(href) {
+  try {
+    const p = (new URL(href, location.origin).pathname).replace(/\/+$/, '') || '/'
+    if (p === '/' || p.endsWith('/index.html')) return 'Home'
+    if (p.startsWith('/work/')) return 'Case study'
+    const name = p.split('/').pop().replace('.html', '')
+    return name.charAt(0).toUpperCase() + name.slice(1)
+  } catch { return '' }
+}
+function setFxLabel(href) {
+  const sp = document.querySelector('#pageFx span')
+  if (sp) sp.textContent = pageLabel(href)
 }
 
 /* ---------- PAGE TRANSITION ---------- */
@@ -43,6 +68,7 @@ function initTransition() {
       if (e.metaKey || e.ctrlKey || e.shiftKey) return
       if (!fx || reduced) return
       e.preventDefault(); closeMenu()
+      setFxLabel(href)
       fx.classList.remove('is-open')
       fx.style.transition = 'none'; fx.style.transform = 'translateY(100%)'
       void fx.offsetWidth
@@ -115,6 +141,7 @@ function initKeyboard() {
 function navWithFx(href) {
   const fx = document.getElementById('pageFx')
   if (!fx || reduced) { window.location.href = href; return }
+  setFxLabel(href)
   fx.classList.remove('is-open')
   fx.style.transition = 'none'; fx.style.transform = 'translateY(100%)'
   void fx.offsetWidth
