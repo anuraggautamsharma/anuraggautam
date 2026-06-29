@@ -136,6 +136,25 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 }
 .work-card:hover::before, .service:hover::before, .proof__cell:hover::before { opacity: 1; }
 
+/* ---- pointer-reactive magic (work + service cards) ----
+   the glass reflection follows the cursor (--mx/--my set by initGlassCards);
+   work cards tilt in 3D, service cards bloom a lime spotlight. */
+.work-card:hover::before {
+  background: radial-gradient(58% 52% at var(--mx, 28%) var(--my, 12%), rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.18) 42%, rgba(255,255,255,0) 68%);
+}
+.work-card:hover { box-shadow: 0 2px 10px rgba(21,21,15,0.04), 0 38px 70px rgba(21,21,15,0.16), inset 0 1px 0 rgba(255,255,255,0.9); }
+.service:hover::before {
+  background:
+    radial-gradient(42% 42% at var(--mx, 50%) var(--my, 50%), rgba(194,242,60,0.42) 0%, rgba(194,242,60,0) 70%),
+    radial-gradient(56% 50% at var(--mx, 28%) var(--my, 10%), rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 66%);
+  opacity: 1;
+}
+/* lift the service list in on hover, gently staggered */
+.service li { transition: transform 0.4s var(--ease), color 0.3s; }
+.service:hover li { transform: translateX(4px); }
+.service:hover li:nth-child(2) { transition-delay: 0.04s; }
+.service:hover li:nth-child(3) { transition-delay: 0.08s; }
+
 .btn { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; padding: 15px 26px; border-radius: 50px; border: 1.5px solid var(--ink); background: transparent; transition: background 0.3s var(--ease), color 0.3s, transform 0.3s var(--ease-bounce); }
 .btn span { transition: transform 0.3s var(--ease); }
 .btn:hover span { transform: translateX(4px); }
@@ -234,6 +253,9 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .intro__text .w { color: rgba(21, 21, 15, 0.16); transition: color 0.35s var(--ease); }
 .intro__text .w.is-on { color: var(--ink); }
 .intro__text .w.i { font-family: var(--serif); font-style: italic; }
+/* key italic phrases ignite with a lime highlighter-marker as they fill */
+.intro__text .w.i { background-image: linear-gradient(transparent 58%, rgba(194,242,60,0) 58%); background-size: 100% 100%; transition: color 0.35s var(--ease), background-image 0.4s var(--ease); border-radius: 2px; padding: 0 0.04em; }
+.intro__text .w.i.is-on { background-image: linear-gradient(transparent 58%, rgba(194,242,60,0.7) 58%); }
 
 /* ---------- proof ---------- */
 .proof { padding-bottom: clamp(40px, 8vh, 100px); }
@@ -248,7 +270,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
    WORK CARDS
    ============================================================ */
 .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(14px, 1.6vw, 24px); }
-.work-card { position: relative; border-radius: 22px; overflow: hidden; padding: clamp(22px, 2.4vw, 38px); min-height: clamp(260px, 30vw, 440px); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.45s var(--ease-bounce); }
+.work-card { position: relative; border-radius: 22px; overflow: hidden; padding: clamp(22px, 2.4vw, 38px); min-height: clamp(260px, 30vw, 440px); display: flex; flex-direction: column; justify-content: space-between; will-change: transform; transition: transform 0.18s var(--ease), box-shadow 0.4s var(--ease); }
 .work-card:hover { transform: translateY(-8px); }
 .work-card::after { content: ''; position: absolute; inset: 0; border-radius: 22px; border: 2px solid transparent; transition: border-color 0.4s; pointer-events: none; }
 .work-card:hover::after { border-color: var(--lime); }
@@ -332,8 +354,9 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
    FOOTER
    ============================================================ */
 .footer { padding-top: clamp(60px, 11vh, 150px); padding-bottom: 30px; }
-.footer__cta { font-family: var(--serif); font-size: clamp(56px, 15vw, 230px); line-height: 0.84; }
-.footer__cta em { color: var(--ink); }
+.footer__cta { font-family: var(--serif); font-size: clamp(56px, 15vw, 230px); line-height: 0.84; cursor: default; }
+.footer__cta em { color: var(--ink); transition: color 0.4s var(--ease); }
+.footer__cta:hover em { color: var(--lime-deep); }
 .footer__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 30px; margin-top: clamp(30px, 5vh, 56px); }
 .footer__mail { font-size: clamp(16px, 2.2vw, 26px); border-bottom: 1.5px solid var(--ink); padding-bottom: 4px; word-break: break-all; }
 .footer__mail:hover { color: var(--lime-deep); border-color: var(--lime-deep); }
@@ -396,8 +419,12 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 /* ============================================================
    REVEAL
    ============================================================ */
-[data-reveal] { opacity: 0; transform: translateY(30px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-[data-reveal].is-in { opacity: 1; transform: none; }
+/* sections "materialize": rise + unblur + settle scale */
+[data-reveal] { opacity: 0; transform: translateY(32px) scale(0.985); filter: blur(7px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), filter 0.9s var(--ease); }
+[data-reveal].is-in { opacity: 1; transform: none; filter: none; }
+/* staggered cascade for grid children */
+.work-grid [data-reveal]:nth-child(2), .services__grid [data-reveal]:nth-child(2) { transition-delay: 0.09s; }
+.work-grid [data-reveal]:nth-child(3), .services__grid [data-reveal]:nth-child(3) { transition-delay: 0.18s; }
 
 /* ============================================================
    SERVICES
@@ -484,5 +511,5 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
-  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
 }

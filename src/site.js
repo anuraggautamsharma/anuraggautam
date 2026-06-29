@@ -268,9 +268,60 @@ function initCopyMail() {
   })
 }
 
+/* ---------- POINTER-REACTIVE GLASS CARDS ----------
+   shares the hero keyboard's DNA: work cards tilt in 3D toward the cursor and
+   their glass reflection follows the pointer; service cards get a lime
+   spotlight that tracks the cursor. Pointer position is published as --mx/--my
+   (percent) and consumed by the card's ::before in CSS. */
+function initGlassCards() {
+  if (!finePointer || reduced) return
+  document.querySelectorAll('.work-card, .service').forEach((card) => {
+    const tilt = card.classList.contains('work-card')
+    let raf = 0, mx = 50, my = 50, rx = 0, ry = 0
+    function apply() {
+      raf = 0
+      card.style.setProperty('--mx', mx.toFixed(1) + '%')
+      card.style.setProperty('--my', my.toFixed(1) + '%')
+      if (tilt) card.style.transform = `perspective(1000px) rotateY(${rx.toFixed(2)}deg) rotateX(${ry.toFixed(2)}deg) translateY(-8px)`
+    }
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect()
+      const px = (e.clientX - r.left) / r.width
+      const py = (e.clientY - r.top) / r.height
+      mx = px * 100; my = py * 100
+      if (tilt) { rx = (px - 0.5) * 9; ry = -(py - 0.5) * 9 }
+      if (!raf) raf = requestAnimationFrame(apply)
+    }, { passive: true })
+    card.addEventListener('pointerleave', () => {
+      if (raf) { cancelAnimationFrame(raf); raf = 0 }
+      card.style.setProperty('--mx', '28%'); card.style.setProperty('--my', '10%')
+      if (tilt) card.style.transform = ''
+    })
+  })
+}
+
+/* ---------- MAGNETIC ELEMENTS ----------
+   subtly lean toward the cursor while hovered (footer email, primary CTAs) */
+function initMagnetic() {
+  if (!finePointer || reduced) return
+  document.querySelectorAll('[data-magnetic]').forEach((el) => {
+    let raf = 0, tx = 0, ty = 0
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect()
+      tx = (e.clientX - (r.left + r.width / 2)) * 0.3
+      ty = (e.clientY - (r.top + r.height / 2)) * 0.3
+      if (!raf) raf = requestAnimationFrame(() => { raf = 0; el.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)` })
+    }, { passive: true })
+    el.addEventListener('pointerleave', () => {
+      if (raf) { cancelAnimationFrame(raf); raf = 0 }
+      el.style.transform = ''
+    })
+  })
+}
+
 /* ---------- BOOT ---------- */
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initMagnetic()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })
