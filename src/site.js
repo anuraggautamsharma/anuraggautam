@@ -169,15 +169,25 @@ function initMarquees() {
   if (lenis) lenis.on('scroll', ({ velocity }) => { vel = velocity })
   tracks.forEach((track) => {
     track.innerHTML += track.innerHTML
-    let x = 0, last = 0, halfW = track.scrollWidth / 2
-    addEventListener('resize', () => { halfW = track.scrollWidth / 2 })
+    let x = 0, last = 0, period = 0
+    // exact tile period = start-to-start of the two copies. This includes the
+    // flex gap between them; scrollWidth/2 split that single seam gap in half
+    // and made the loop jump ~gap/2 px every cycle. Re-measure on resize and
+    // once web fonts land (a late font swap changes the text width).
+    const measure = () => {
+      const a = track.children[0], b = track.children[1]
+      period = b ? b.offsetLeft - a.offsetLeft : track.scrollWidth / 2
+    }
+    measure()
+    addEventListener('resize', measure)
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure)
     const dir = track.dataset.dir === 'rev' ? 1 : -1
     function loop(now) {
       requestAnimationFrame(loop)
-      const dt = Math.min((now - last) / 16.67, 3) || 1; last = now
+      if (!last) last = now           // first frame: dt = 0, no startup jump
+      const dt = Math.min((now - last) / 16.67, 3); last = now
       x += dir * (0.6 + Math.abs(vel) * 0.25) * dt
-      if (x <= -halfW) x += halfW
-      if (x >= 0) x -= halfW
+      if (period) { if (x <= -period) x += period; if (x >= 0) x -= period }
       track.style.transform = `translate3d(${x}px,0,0)`
     }
     requestAnimationFrame(loop)
