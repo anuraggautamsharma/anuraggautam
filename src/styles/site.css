@@ -168,8 +168,8 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .sticker-tag--lime { background: var(--glass-lime-bg); border-color: rgba(255,255,255,0.5); box-shadow: 0 2px 10px rgba(140,190,40,0.25), inset 0 1px 0 rgba(255,255,255,0.85); }
 
 .eyebrow { font-size: 13px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
-.section-tag { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line-2); margin-bottom: clamp(28px, 5vh, 56px); font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; }
-.section-tag .n { font-family: var(--serif); font-style: italic; text-transform: none; font-size: 18px; }
+.section-tag { display: flex; align-items: center; gap: 14px; padding: 18px 0; border-top: 1px solid var(--line-2); margin-bottom: clamp(38px, 6vh, 72px); font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; }
+.section-tag .n { display: none; }
 .section-tag .l { color: var(--muted); }
 
 /* ---------- marquee ---------- */
@@ -246,7 +246,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .big-head { font-family: var(--serif); font-size: clamp(34px, 6vw, 96px); line-height: 0.98; letter-spacing: -0.01em; }
 .big-head em { color: var(--ink); }
 
-.intro { padding-top: clamp(60px, 10vh, 130px); padding-bottom: clamp(60px, 10vh, 130px); }
+.intro { padding-top: clamp(80px, 13vh, 175px); padding-bottom: clamp(80px, 13vh, 175px); }
 .intro__text { font-size: clamp(26px, 4.2vw, 64px); line-height: 1.06; letter-spacing: -0.015em; max-width: 22ch; font-weight: 400; }
 .intro__text .serif-i { color: var(--ink); }
 /* scroll-fill: words start faint and ignite to ink as they scroll past */
@@ -258,7 +258,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .intro__text .w.i.is-on { background-image: linear-gradient(transparent 58%, rgba(194,242,60,0.7) 58%); }
 
 /* ---------- proof ---------- */
-.proof { padding-bottom: clamp(40px, 8vh, 100px); }
+.proof { padding-top: clamp(70px, 11vh, 150px); padding-bottom: clamp(70px, 11vh, 150px); }
 .proof__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .proof__cell { border-radius: 20px; padding: clamp(22px, 2.4vw, 38px); transition: transform 0.4s var(--ease-bounce); }
 .proof__cell:hover { transform: translateY(-6px) rotate(-1deg); }
@@ -432,7 +432,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 /* ============================================================
    SERVICES
    ============================================================ */
-.services { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(20px, 4vh, 60px); }
+.services { padding-top: clamp(70px, 11vh, 150px); padding-bottom: clamp(30px, 5vh, 70px); }
 .services__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 1.6vw, 24px); }
 .service { border-radius: 22px; padding: clamp(24px, 2.4vw, 40px); display: flex; flex-direction: column; min-height: clamp(300px, 30vw, 420px); position: relative; transition: transform 0.45s var(--ease-bounce); }
 .service::after { content: ''; position: absolute; inset: 0; border-radius: 22px; border: 2px solid transparent; transition: border-color 0.4s; pointer-events: none; }
@@ -460,7 +460,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 /* ---- HOW I WORK (process) ----
    giant outlined numerals carry the hierarchy; copy is one tight line. Airy and
    graphic, so it reads distinctly from the solid glass service cards below. */
-.process { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(30px, 5vh, 70px); }
+.process { padding-top: clamp(70px, 11vh, 150px); padding-bottom: clamp(40px, 6vh, 90px); }
 .process__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 80px); }
 .process__step { position: relative; }
 .process__no { display: block; font-family: var(--serif); font-size: clamp(86px, 11vw, 180px); line-height: 0.8; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1.5px var(--lime-deep); }
@@ -470,7 +470,7 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 @supports not ((-webkit-text-stroke: 1px red)) { .process__no { color: var(--lime-deep); } }
 
 /* ---- FAQ (objection handling, accordion) ---- */
-.faq { padding-top: clamp(40px, 6vh, 80px); padding-bottom: clamp(20px, 4vh, 50px); }
+.faq { padding-top: clamp(60px, 9vh, 120px); padding-bottom: clamp(30px, 5vh, 70px); }
 .faq__item { border-top: 1px solid var(--line-2); }
 .faq__item:last-of-type { border-bottom: 1px solid var(--line-2); }
 .faq__item summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 18px; padding: clamp(20px, 2.6vh, 30px) 0; font-family: var(--serif); font-size: clamp(20px, 2.4vw, 32px); line-height: 1.15; transition: color 0.25s; }
