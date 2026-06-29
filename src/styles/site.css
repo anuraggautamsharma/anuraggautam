@@ -454,13 +454,17 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .section-lead { max-width: 62ch; margin: -8px 0 clamp(30px, 4.5vh, 56px); font-size: clamp(17px, 1.6vw, 23px); line-height: 1.5; color: var(--muted); }
 .section-lead em { font-family: var(--serif); font-style: italic; color: var(--ink); }
 
-/* ---- HOW I WORK (process) ---- */
-.process { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(20px, 4vh, 60px); }
-.process__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(22px, 3vw, 56px); }
-.process__step { border-top: 1.5px solid var(--ink); padding-top: 20px; }
-.process__no { font-family: var(--serif); font-style: italic; font-size: clamp(26px, 2.6vw, 40px); color: var(--lime-deep); line-height: 1; }
-.process__step h3 { font-family: var(--serif); font-size: clamp(22px, 2.2vw, 32px); margin: 14px 0 12px; line-height: 1.05; }
-.process__step p { color: var(--muted); font-size: clamp(15px, 1.2vw, 18px); line-height: 1.55; }
+/* ---- HOW I WORK (process) ----
+   giant outlined numerals carry the hierarchy; copy is one tight line. Airy and
+   graphic, so it reads distinctly from the solid glass service cards below. */
+.process { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(30px, 5vh, 70px); }
+.process__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 80px); }
+.process__step { position: relative; }
+.process__no { display: block; font-family: var(--serif); font-size: clamp(86px, 11vw, 180px); line-height: 0.8; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1.5px var(--lime-deep); }
+.process__step h3 { font-family: var(--serif); font-size: clamp(26px, 2.6vw, 40px); margin: clamp(14px, 1.6vw, 22px) 0 10px; line-height: 1.02; }
+.process__step h3 em { font-style: italic; }
+.process__step p { color: var(--muted); font-size: clamp(15px, 1.15vw, 18px); line-height: 1.5; max-width: 30ch; }
+@supports not ((-webkit-text-stroke: 1px red)) { .process__no { color: var(--lime-deep); } }
 
 /* ---- FAQ (objection handling, accordion) ---- */
 .faq { padding-top: clamp(40px, 6vh, 80px); padding-bottom: clamp(20px, 4vh, 50px); }
