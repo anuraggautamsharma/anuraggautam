@@ -212,6 +212,7 @@ function closeMenu() {
 function initNav() {
   let lastY = 0
   const onScroll = (yPos) => {
+    nav?.classList.toggle('is-scrolled', yPos > 24)
     if (yPos > lastY && yPos > 500) nav?.classList.add('is-hidden')
     else nav?.classList.remove('is-hidden')
     lastY = yPos
