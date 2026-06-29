@@ -108,7 +108,7 @@ em { font-style: italic; }
 .nav.is-open .nav__menu span:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
 .nav.is-open .nav__menu span:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
 
-.mobile-menu { position: fixed; inset: 0; z-index: 150; background: linear-gradient(160deg, rgba(241,241,236,0.82), rgba(233,233,228,0.72)); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: var(--pad); opacity: 0; pointer-events: none; transition: opacity 0.4s var(--ease); }
+.mobile-menu { position: fixed; inset: 0; z-index: 150; background: linear-gradient(160deg, rgba(243,243,238,0.95), rgba(233,233,228,0.9)); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: var(--pad); opacity: 0; pointer-events: none; transition: opacity 0.4s var(--ease); }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 .mobile-menu a { font-family: var(--serif); font-size: clamp(40px, 13vw, 76px); }
 .mobile-menu a:active { color: var(--lime-deep); }
@@ -519,15 +519,18 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+/* ---- TABLET (≤1024): nav collapses, hero stacks, but grids keep 2 columns
+   so an iPad doesn't get the stretched single-column mobile layout ---- */
 @media (max-width: 1024px) {
   .nav { grid-template-columns: 1fr auto; }
   .nav__center, .nav__links { display: none; }
   .nav__menu { display: flex; }
-  .kbd-wrap { position: relative; right: auto; top: auto; width: 100%; margin: 10px auto 0; max-width: 540px; }
+  .kbd-wrap { position: relative; right: auto; top: auto; width: 100%; margin: 10px auto 0; max-width: 560px; }
+  .hero { min-height: auto; padding-bottom: clamp(40px, 8vh, 90px); }
   .proof__grid { grid-template-columns: 1fr 1fr; }
-  .work-grid { grid-template-columns: 1fr; }
-  .services__grid { grid-template-columns: 1fr; }
-  .process__grid { grid-template-columns: 1fr; gap: clamp(24px, 5vw, 40px); }
+  .work-grid { grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 22px); }
+  .services__grid { grid-template-columns: 1fr 1fr; }
+  /* process: 3 short steps still fit side by side on a tablet */
   .about-grid { grid-template-columns: 1fr; }
   .about-portrait { max-width: 420px; }
   .caps__item { grid-template-columns: 50px 1fr; }
@@ -538,10 +541,16 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
   .case-gallery { grid-template-columns: 1fr; }
   .case-gallery figure:first-child { aspect-ratio: 4/3; }
 }
-@media (max-width: 600px) {
+/* ---- MOBILE (≤700): everything to a single, comfortable column ---- */
+@media (max-width: 700px) {
   .proof__grid { grid-template-columns: 1fr; }
+  .work-grid { grid-template-columns: 1fr; }
+  .services__grid { grid-template-columns: 1fr; }
+  .process__grid { grid-template-columns: 1fr; gap: clamp(28px, 7vw, 44px); }
+  .process__no { font-size: clamp(72px, 22vw, 110px); }
   .hero__ctas .btn { flex: 1 1 100%; justify-content: space-between; }
   .caps__item { grid-template-columns: 1fr; gap: 8px; }
+  .footer__cta { font-size: clamp(64px, 19vw, 120px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
