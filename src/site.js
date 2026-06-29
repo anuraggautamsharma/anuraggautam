@@ -107,31 +107,38 @@ function initCursor() {
   })
 }
 
-/* ---------- KEYBOARD PARALLAX TILT ---------- */
+/* ---------- KEYBOARD PARALLAX TILT ----------
+   Runs on every device. Fine-pointer adds cursor-follow; touch devices (no
+   cursor) get a larger always-on idle sway so the slab still feels alive.
+   Pauses when scrolled out of view to spare the battery on phones. */
 function initKeyboard() {
-  if (!finePointer || reduced) return
+  if (reduced) return
   const kbd = document.getElementById('kbd')
   if (!kbd) return
   const baseX = 56, baseZ = -44
   let tx = 0, ty = 0, cxv = 0, cyv = 0
-  addEventListener('pointermove', (e) => {
-    tx = (e.clientX / innerWidth - 0.5)
-    ty = (e.clientY / innerHeight - 0.5)
-  }, { passive: true })
+  if (finePointer) {
+    addEventListener('pointermove', (e) => {
+      tx = (e.clientX / innerWidth - 0.5)
+      ty = (e.clientY / innerHeight - 0.5)
+    }, { passive: true })
+  }
+  const amp = finePointer ? 1 : 1.7 // touch has no cursor — sway harder
+  let visible = true
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0 }).observe(kbd)
   const t0 = performance.now()
   function loop(now) {
-    const t = (now - t0) / 1000
-    // snappier cursor follow (was 0.06 — too damped, felt laggy)
-    cxv += (tx - cxv) * 0.1
-    cyv += (ty - cyv) * 0.1
-    // always-on idle life: layered sine sway + vertical float so the slab is
-    // never fully still, even when the cursor isn't moving
-    const swayX = Math.sin(t * 0.7) * 1.5 + Math.sin(t * 0.27) * 0.8
-    const swayZ = Math.cos(t * 0.55) * 1.7 + Math.sin(t * 0.19) * 0.9
-    const float = Math.sin(t * 0.9) * 6
-    const rx = baseX - cyv * 12 + swayX
-    const rz = baseZ + cxv * 12 + swayZ
-    kbd.style.transform = `rotateX(${rx}deg) rotateZ(${rz}deg) translate3d(${cxv * 34}px, ${cyv * 30 + float}px, 0)`
+    if (visible) {
+      const t = (now - t0) / 1000
+      cxv += (tx - cxv) * 0.1
+      cyv += (ty - cyv) * 0.1
+      const swayX = (Math.sin(t * 0.7) * 1.5 + Math.sin(t * 0.27) * 0.8) * amp
+      const swayZ = (Math.cos(t * 0.55) * 1.7 + Math.sin(t * 0.19) * 0.9) * amp
+      const float = Math.sin(t * 0.9) * 6 * amp
+      const rx = baseX - cyv * 12 + swayX
+      const rz = baseZ + cxv * 12 + swayZ
+      kbd.style.transform = `rotateX(${rx}deg) rotateZ(${rz}deg) translate3d(${cxv * 34}px, ${cyv * 30 + float}px, 0)`
+    }
     requestAnimationFrame(loop)
   }
   requestAnimationFrame(loop)
