@@ -231,6 +231,8 @@ section, footer { padding-left: var(--pad); padding-right: var(--pad); }
 .caps__no { font-family: var(--serif); font-style: italic; font-size: 20px; }
 .caps__item h3 { font-family: var(--serif); font-size: clamp(26px, 4vw, 54px); }
 .caps__item p { color: var(--muted); font-size: clamp(15px, 1.3vw, 18px); }
+.cap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.cap-tags span { font-size: 12px; border: 1px solid var(--line-2); border-radius: 50px; padding: 6px 13px; color: var(--muted); }
 
 .timeline { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(50px, 8vh, 110px); }
 .timeline__item { display: grid; grid-template-columns: 230px 1fr; gap: clamp(20px, 4vw, 60px); padding: clamp(26px, 4vh, 46px) 0; border-top: 1px solid var(--line); }

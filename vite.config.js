@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         work: resolve(__dirname, 'work.html'),
         about: resolve(__dirname, 'about.html'),
+        capabilities: resolve(__dirname, 'capabilities.html'),
         contact: resolve(__dirname, 'contact.html'),
         suggaa: resolve(__dirname, 'work/suggaa.html'),
         srijan: resolve(__dirname, 'work/srijan.html'),

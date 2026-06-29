@@ -2,16 +2,17 @@
 
 Light, refined & playful **multipage** portfolio (inspired by the feel of
 kkapustin.com). Warm-grey canvas, elegant serif (Playfair Display) + clean grotesque
-(Inter), a single lime accent, and tactile interaction: a glassy lime keycap cluster
-that tilts with your cursor, a custom hand cursor, a spinning "HIRE ME" sticker,
-serif/sans marquees, page-transition wipes and lift-on-hover cards. Fast — ~24 KB of
-JS, no heavy 3D.
+(Inter), a single lime accent, and tactile interaction: an interactive lime keycap
+cluster that tilts with your cursor and links to sections, a scroll-fill thesis line,
+cursor-following work previews, serif/sans marquees and page-transition wipes. Fast,
+no heavy 3D.
 
 ## Pages
-- `/` — Home (hero, thesis, proof, featured work, studio, contact)
-- `/work.html` — all 9 projects
-- `/about.html` — story, capabilities, timeline, AfterThought, in-public
-- `/contact.html` — contact + AfterThought CTA
+- `/` — Home (hero, thesis, proof, featured work, services, contact)
+- `/work.html` — all 8 projects
+- `/about.html` — story, track record, in-public
+- `/capabilities.html` — the five disciplines
+- `/contact.html` — contact, availability, CV
 - `/work/suggaa.html`, `/work/srijan.html`, `/work/pipelinelab.html` — case studies
 
 ## Stack
