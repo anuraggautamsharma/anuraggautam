@@ -86,6 +86,9 @@ em { font-style: italic; }
 .nav__social a { width: 22px; height: 22px; display: grid; place-items: center; transition: transform 0.25s var(--ease-bounce); }
 .nav__social a:hover { transform: translateY(-3px); }
 .nav__social svg { width: 18px; height: 18px; fill: var(--ink); }
+/* outline icons (Instagram) carry a stroke attr — keep them unfilled so the
+   blanket fill above can't flood them into a solid square */
+.nav__social svg[stroke] { fill: none; stroke: var(--ink); }
 .nav__links { justify-self: end; display: inline-flex; gap: clamp(16px, 2vw, 36px); }
 .nav__links a { font-size: 16px; color: var(--ink); position: relative; }
 .nav__links a::after { content: ''; position: absolute; left: 0; bottom: -3px; width: 0; height: 1.5px; background: var(--ink); transition: width 0.3s var(--ease); }
