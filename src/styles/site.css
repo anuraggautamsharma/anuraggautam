@@ -597,6 +597,7 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
    ============================================================ */
 .resume { max-width: 1120px; margin: 0 auto; padding: clamp(108px, 14vh, 172px) var(--pad) 0; }
 .resume > section { padding-left: 0; padding-right: 0; }
+.resume > .footer { padding-left: 0; padding-right: 0; margin-top: clamp(40px, 7vh, 80px); }
 .resume-h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--lime-deep); display: flex; align-items: baseline; gap: 12px; }
 .resume-h2 span { color: var(--muted); letter-spacing: 0.03em; font-weight: 400; text-transform: none; font-size: 12px; }
 /* header */
@@ -656,7 +657,7 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
 
 /* print → a clean PDF of the résumé (hide all chrome, white page) */
 @media print {
-  .nav, .nav__menu, .mobile-menu, .page-fx, .loader, .cursor, .skip-link, .no-print, .footer__top { display: none !important; }
+  .nav, .nav__menu, .mobile-menu, .page-fx, .loader, .cursor, .skip-link, .no-print, .footer { display: none !important; }
   html, body { background: #fff !important; }
   .resume { padding: 0; max-width: none; }
   .resume-head { padding-top: 0; }
