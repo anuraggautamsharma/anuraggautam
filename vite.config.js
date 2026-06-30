@@ -13,6 +13,7 @@ export default defineConfig({
         about: resolve(__dirname, 'about.html'),
         capabilities: resolve(__dirname, 'capabilities.html'),
         contact: resolve(__dirname, 'contact.html'),
+        resume: resolve(__dirname, 'resume.html'),
         suggaa: resolve(__dirname, 'work/suggaa.html'),
         srijan: resolve(__dirname, 'work/srijan.html'),
         pipelinelab: resolve(__dirname, 'work/pipelinelab.html'),
