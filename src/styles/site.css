@@ -299,6 +299,13 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
 .page-hero h1 em { color: var(--ink); }
 .page-hero p { margin-top: 24px; max-width: 52ch; font-size: clamp(17px, 1.8vw, 24px); color: var(--muted); }
 
+/* ---------- 404 ---------- */
+.notfound { padding-top: clamp(150px, 26vh, 300px); padding-bottom: clamp(60px, 12vh, 140px); }
+.notfound__h { font-family: var(--serif); font-size: clamp(56px, 13vw, 200px); line-height: 0.9; letter-spacing: -0.01em; }
+.notfound__h em { color: var(--lime-deep); font-style: italic; }
+.notfound__p { margin-top: 28px; max-width: 46ch; font-size: clamp(17px, 2vw, 24px); color: var(--muted); }
+.notfound__cta { margin-top: 40px; display: flex; gap: 14px; flex-wrap: wrap; }
+
 .about-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(30px, 5vw, 80px); align-items: start; padding-top: clamp(40px, 7vh, 90px); padding-bottom: clamp(40px, 7vh, 90px); }
 .about-portrait { aspect-ratio: 4/5; border-radius: 20px; overflow: hidden; background: #0e0e12; position: relative; }
 /* default: grayscale so the teal cast doesn't fight the lime palette;

@@ -10,6 +10,10 @@ const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matc
 function runLoader(done) {
   const loader = document.getElementById('loader')
   if (!loader) return done()
+  // First visit of the session only — skip the loader on repeat / internal nav.
+  let seen = false
+  try { seen = sessionStorage.getItem('ag_loaded') === '1'; sessionStorage.setItem('ag_loaded', '1') } catch {}
+  if (seen) { loader.remove(); return done() }
   const word = document.getElementById('loaderWord')
   const bar = document.getElementById('loaderBar')
   const words = ['Product', 'Motion', 'Content', 'GTM', 'Vibe code', 'Anurag Gautam']
