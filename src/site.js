@@ -172,7 +172,7 @@ function initWorkFloat() {
   const inner = float.querySelector('.work-float__inner')
   const tints = ['#c2f23c', '#dff5a0', '#a6d62e', '#e7eec0', '#cfe72e']
   let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, active = false
-  document.querySelectorAll('.work-card').forEach((card, i) => {
+  document.querySelectorAll('a.work-card').forEach((card, i) => {
     card.addEventListener('pointerenter', () => {
       const v = card.dataset.video, m = card.dataset.media
       const label = (card.querySelector('.work-card__name')?.firstChild?.textContent || '').trim()
@@ -309,7 +309,7 @@ function initCopyMail() {
    (percent) and consumed by the card's ::before in CSS. */
 function initGlassCards() {
   if (!finePointer || reduced) return
-  document.querySelectorAll('.work-card, .service').forEach((card) => {
+  document.querySelectorAll('a.work-card, .service').forEach((card) => {
     const tilt = card.classList.contains('work-card')
     let raf = 0, mx = 50, my = 50, rx = 0, ry = 0
     function apply() {
