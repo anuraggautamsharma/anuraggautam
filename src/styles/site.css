@@ -348,7 +348,7 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: clamp(40px, 7vh, 90px); padding-bottom: clamp(40px, 7vh, 90px); }
 .contact-card { border-radius: 20px; padding: clamp(26px, 3vw, 44px); }
 .contact-card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 18px; }
-.contact-card .big { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 38px); word-break: break-word; }
+.contact-card .big { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 38px); line-height: 1.12; overflow-wrap: anywhere; }
 .contact-links { display: flex; flex-direction: column; }
 .contact-links a { display: flex; justify-content: space-between; align-items: center; font-size: clamp(16px, 1.6vw, 22px); padding: 16px 0; border-top: 1px solid var(--line); transition: padding-left 0.3s var(--ease); }
 .contact-links a:first-child { border-top: 0; }
@@ -579,6 +579,8 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
   .caps__item { grid-template-columns: 1fr; gap: 8px; }
   .caps__item > div { grid-column: auto; margin-top: 4px; }
   .footer__cta { font-size: clamp(64px, 19vw, 120px); }
+  /* keep the long email on one tidy line instead of breaking mid-word */
+  .contact-card .big { font-size: clamp(16px, 4.6vw, 22px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
