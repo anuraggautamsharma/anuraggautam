@@ -559,7 +559,9 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
   .about-grid { grid-template-columns: 1fr; }
   .about-portrait { max-width: 420px; }
   .caps__item { grid-template-columns: 50px 1fr; }
-  .caps__item p { grid-column: 2; margin-top: 8px; }
+  /* the body is a wrapping <div> (p + tags) — it's the grid child, not the p,
+     so it must drop under the heading in col 2 (was crushed into the 50px col) */
+  .caps__item > div { grid-column: 2; margin-top: 10px; }
   .timeline__item { grid-template-columns: 1fr; gap: 10px; }
   .contact-grid { grid-template-columns: 1fr; }
   .case-meta { grid-template-columns: 1fr 1fr; }
@@ -575,6 +577,7 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
   .process__no { font-size: clamp(72px, 22vw, 110px); }
   .hero__ctas .btn { flex: 1 1 100%; justify-content: space-between; }
   .caps__item { grid-template-columns: 1fr; gap: 8px; }
+  .caps__item > div { grid-column: auto; margin-top: 4px; }
   .footer__cta { font-size: clamp(64px, 19vw, 120px); }
 }
 
