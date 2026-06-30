@@ -531,6 +531,11 @@ a.work-card:hover .work-card__view { opacity: 1; transform: none; }
   .service:active::after { border-color: var(--lime); }
   .btn:active, .sticker-tag:active, .key:active { transform: scale(0.96); }
   .service:active .service__cta { color: var(--lime-deep); }
+  /* the portrait's colour + lime frame is a hover reveal on desktop — touch
+     can't hover, so show the colour photo (with the frame) by default */
+  .about-portrait img { filter: grayscale(0) contrast(1); }
+  .about-portrait::after { box-shadow: inset 0 0 0 2.5px var(--lime); }
+  .caps__item:active { background: rgba(194,242,60,0.07); }
 }
 
 /* ============================================================
