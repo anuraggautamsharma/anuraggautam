@@ -45,11 +45,8 @@
           <span>Bengaluru, India</span>
         </p>
       </div>
-      <!-- Download = print-to-PDF of this page (works instantly, clean print CSS).
-           To serve a designed PDF instead, drop it at /public/Anurag-Gautam-CV.pdf
-           and point this button at it with a download attribute. -->
       <div class="resume-actions no-print">
-        <button class="btn btn--primary" id="dlResume" data-cursor="download">Download PDF <span aria-hidden="true">↓</span></button>
+        <a class="btn btn--primary" href="/Anurag-Gautam-CV.pdf" download="Anurag-Gautam-CV.pdf" data-cursor="download">Download PDF <span aria-hidden="true">↓</span></a>
         <a href="/contact.html" class="btn btn--ghost" data-cursor="say hi">Get in touch <span aria-hidden="true">→</span></a>
       </div>
     </section>
@@ -128,8 +125,5 @@
     </footer>
   </main>
 
-  <script>
-    document.getElementById('dlResume')?.addEventListener('click', () => window.print())
-  </script>
 </body>
 </html>
