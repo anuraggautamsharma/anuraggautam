@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://anuraggautam.vercel.app/sitemap.xml
+Sitemap: https://anuraggautam.com/sitemap.xml
