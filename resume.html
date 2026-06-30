@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#e9e9e4" />
-  <title>Résumé — Anurag Gautam | Product Designer & GTM Operator</title>
-  <meta name="description" content="Résumé of Anurag Gautam — product designer and GTM operator. 7+ years building products and growth engines from zero. View online or download as PDF." />
+  <title>Résumé — Anurag Gautam | Designs, builds & ships</title>
+  <meta name="description" content="Résumé of Anurag Gautam — a multidisciplinary generalist who designs, builds, brands and takes products to market. 7+ years building from zero. View online or save as PDF." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,78 +30,97 @@
   </div>
 
   <main id="main" class="resume">
+    <!-- HEADER -->
     <section class="resume-head">
-      <div>
+      <div class="resume-head__id">
         <h1>Anurag Gautam</h1>
-        <p class="resume-role">Product Designer &amp; GTM Operator</p>
+        <p class="resume-tagline">Multidisciplinary generalist · designs, builds &amp; ships</p>
         <p class="resume-contact">
-          <span>Bengaluru, IN</span>
           <a href="mailto:anuraggautamsharma@gmail.com" data-copy-mail="anuraggautamsharma@gmail.com">anuraggautamsharma@gmail.com</a>
-          <a href="https://www.linkedin.com/in/anuraggautamsharma/" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <a href="https://www.youtube.com/@anuraggautamsharma" target="_blank" rel="noopener">YouTube ↗</a>
+          <span class="sep" aria-hidden="true">/</span>
+          <a href="https://www.linkedin.com/in/anuraggautamsharma/" target="_blank" rel="noopener">/in/anuraggautamsharma</a>
+          <span class="sep" aria-hidden="true">/</span>
+          <a href="/">anuraggautam.com</a>
+          <span class="sep" aria-hidden="true">/</span>
+          <span>Bengaluru, India</span>
         </p>
       </div>
-      <!-- Download = print-to-PDF of this page (works instantly). To serve a
-           designed PDF instead, drop it at /public/Anurag-Gautam-Resume.pdf and
-           change this button to: <a href="/Anurag-Gautam-Resume.pdf" download …> -->
+      <!-- Download = print-to-PDF of this page (works instantly, clean print CSS).
+           To serve a designed PDF instead, drop it at /public/Anurag-Gautam-CV.pdf
+           and point this button at it with a download attribute. -->
       <div class="resume-actions no-print">
         <button class="btn btn--primary" id="dlResume" data-cursor="download">Download PDF <span aria-hidden="true">↓</span></button>
         <a href="/contact.html" class="btn btn--ghost" data-cursor="say hi">Get in touch <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
-    <section class="resume-summary">
-      <p>I build products <em>and</em> the growth engines that ship them — design the system, build the team, ship the app, run the go-to-market. Seven-plus years, building since 18.</p>
+    <!-- SUMMARY + NUMBERS -->
+    <section class="resume-intro">
+      <p class="resume-summary">A rare full-stack generalist: I <em>design</em> the product, <em>build</em> the front-end, craft the <em>brand &amp; motion</em>, and run <em>go-to-market</em> — from zero to launch, mostly with my own hands. One person, the whole stack.</p>
+      <dl class="resume-numbers">
+        <div><dt>₹6 Cr+</dt><dd>B2B revenue</dd></div>
+        <div><dt>$2M</dt><dd>raised</dd></div>
+        <div><dt>25,000+</dt><dd>users launched</dd></div>
+        <div><dt>7+ yrs</dt><dd>since age 18</dd></div>
+      </dl>
     </section>
 
-    <section class="resume-numbers">
-      <div><b>₹6 Cr+</b><span>B2B revenue generated</span></div>
-      <div><b>$2M</b><span>raised</span></div>
-      <div><b>25,000+</b><span>users on a launched product</span></div>
-      <div><b>7+ yrs</b><span>building, since 18</span></div>
-    </section>
-
-    <section class="resume-block">
-      <h2>Experience</h2>
-      <div class="resume-item">
-        <div class="resume-item__when">2024 — present</div>
-        <div class="resume-item__body">
-          <h3>The PipelineLab <span>Operator — GTM studio</span></h3>
-          <p>Build scalable outbound systems for B2B teams — ICP and list-building, deliverability, and multichannel sequences — that deliver consistent pipeline. Brand, website and explainer film built end to end. Part of the ₹6&nbsp;Cr+ in B2B revenue I've generated.</p>
-        </div>
-      </div>
-      <div class="resume-item">
-        <div class="resume-item__when">2018 — 2023</div>
-        <div class="resume-item__body">
-          <h3>Suggaa <span>Product &amp; Marketing</span></h3>
-          <p>Designed a full product design system from scratch across three surfaces — rider app, driver app, and operator console. Built and led the design &amp; development team from the ground up. Took it to market city by city. Reached 25,000+ users.</p>
-        </div>
-      </div>
-      <div class="resume-item">
-        <div class="resume-item__when">2017</div>
-        <div class="resume-item__body">
-          <h3>Marketing agency <span>Sales</span></h3>
-          <p>Started at 18 — finding and closing clients for a marketing agency. Learned to sell before I learned anything else.</p>
-        </div>
+    <!-- THE RANGE -->
+    <section class="resume-range">
+      <h2 class="resume-h2">The range <span>Five disciplines, one operator</span></h2>
+      <div class="resume-range__grid">
+        <div class="resume-range__item"><span class="n">01</span><h3>Design</h3><p>Product, UI, design systems, iconography</p></div>
+        <div class="resume-range__item"><span class="n">02</span><h3>Build</h3><p>Front-end that ships real, working product</p></div>
+        <div class="resume-range__item"><span class="n">03</span><h3>Brand</h3><p>Identity, web, marketing design</p></div>
+        <div class="resume-range__item"><span class="n">04</span><h3>Motion</h3><p>Motion graphics, video, content</p></div>
+        <div class="resume-range__item"><span class="n">05</span><h3>Go-to-Market</h3><p>Outbound, pipeline, launch &amp; growth</p></div>
       </div>
     </section>
 
-    <section class="resume-block">
-      <h2>Capabilities</h2>
-      <div class="cap-tags resume-tags">
-        <span>Product &amp; visual design</span><span>Design systems</span><span>App &amp; product UI</span><span>Motion design</span><span>Content &amp; video</span><span>GTM strategy</span><span>Outbound &amp; pipeline</span><span>Brand identity</span><span>Front-end / vibe coding</span><span>Team building</span>
-      </div>
-    </section>
-
-    <section class="resume-block">
-      <h2>Education</h2>
-      <div class="resume-item">
-        <div class="resume-item__when">2017</div>
-        <div class="resume-item__body">
-          <h3>Self-taught <span>Dropout</span></h3>
-          <p>Left formal education and started working at 18. Everything since has been learned by building and shipping real products.</p>
+    <!-- EXPERIENCE + SIDEBAR -->
+    <section class="resume-body">
+      <div class="resume-main">
+        <h2 class="resume-h2">Experience</h2>
+        <div class="resume-item">
+          <div class="resume-item__head"><h3>The PipelineLab <span>GTM Lead</span></h3><span class="resume-item__when">2024 — present</span></div>
+          <p>Lead a GTM studio building scalable outbound systems for B2B teams — ICP definition, list-building, deliverability, and multichannel sequencing for predictable pipeline. The outbound built here contributes to the ₹6&nbsp;Cr+ in B2B revenue I've generated.</p>
+        </div>
+        <div class="resume-item">
+          <div class="resume-item__head"><h3>Creative Direction <span>Brand &amp; motion</span></h3><span class="resume-item__when">2025 — present</span></div>
+          <p>Brand identity, marketing design, motion and content — delivered end to end. Shipped brand, web, motion and social across Srijan, Formeye, CA4SME, The Combover, Hair Cycle and Justach.</p>
+        </div>
+        <div class="resume-item">
+          <div class="resume-item__head"><h3>Suggaa <span>Product &amp; Marketing · ride-hailing</span></h3><span class="resume-item__when">2018 — 2023</span></div>
+          <p>Designed the entire design system from scratch across three products — rider app, driver app, and operator console. Built and led the design and dev team, launched city by city with on-ground events and press, and grew to 25,000+ users.</p>
+        </div>
+        <div class="resume-item">
+          <div class="resume-item__head"><h3>Marketing agency <span>Sales</span></h3><span class="resume-item__when">2017 — 2018</span></div>
+          <p>Started at 18 in B2B sales — sourced and closed clients, building the client-acquisition foundation I still operate on today.</p>
         </div>
       </div>
+
+      <aside class="resume-side">
+        <div class="resume-side__block">
+          <h2 class="resume-h2">Tools</h2>
+          <div class="resume-tool"><span class="resume-tool__k">Design</span><span class="resume-tool__v">Figma · Illustrator · Photoshop</span></div>
+          <div class="resume-tool"><span class="resume-tool__k">Motion</span><span class="resume-tool__v">After Effects · Premiere Pro</span></div>
+          <div class="resume-tool"><span class="resume-tool__k">Web &amp; commerce</span><span class="resume-tool__v">WordPress · Framer · Shopify</span></div>
+          <div class="resume-tool"><span class="resume-tool__k">GTM &amp; outbound</span><span class="resume-tool__v">Clay · Apollo · Lusha · Aimfox · Smartlead · Instantly</span></div>
+          <div class="resume-tool"><span class="resume-tool__k">Automation &amp; AI</span><span class="resume-tool__v">n8n · Zapier · Codex · Claude Code</span></div>
+        </div>
+        <div class="resume-side__block">
+          <h2 class="resume-h2">Industries</h2>
+          <p>Mobility · B2B SaaS · Creative &amp; brand · Early-stage startups</p>
+        </div>
+        <div class="resume-side__block">
+          <h2 class="resume-h2">Open to</h2>
+          <p>Senior roles and project work in Design, Marketing &amp; GTM.</p>
+        </div>
+        <div class="resume-side__block">
+          <h2 class="resume-h2">Education</h2>
+          <p>No degree — left formal education at 18 to build. 7+ years of hands-on operating experience since 2017.</p>
+        </div>
+      </aside>
     </section>
 
     <footer class="footer">
