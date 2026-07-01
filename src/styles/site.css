@@ -20,8 +20,8 @@
   --serif: 'Playfair Display', Georgia, serif;
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  --pad: clamp(18px, 4vw, 64px);
-  --maxw: 1640px;
+  --pad: clamp(20px, 4.5vw, 76px);
+  --maxw: 1520px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
@@ -125,6 +125,13 @@ em { font-style: italic; }
    SHARED PIECES
    ============================================================ */
 section, footer { padding-left: var(--pad); padding-right: var(--pad); }
+/* hybrid width: the home hero stays full-bleed; every other content section (and
+   the nav) is capped at --maxw and centered, gaining gutters on wide screens
+   without sprawling. max() keeps normal --pad on laptops/phones. Low specificity
+   (:where) so contained blocks like .case-section/.resume keep their own width. */
+main > :where(section:not(.hero), footer) {
+  padding-inline: max(var(--pad), calc((100% - var(--maxw)) / 2));
+}
 
 /* ---- shared liquid-glass surface ----
    any element in this list gets the keycap material: translucent body, soft
