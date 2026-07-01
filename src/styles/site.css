@@ -125,11 +125,12 @@ em { font-style: italic; }
    SHARED PIECES
    ============================================================ */
 section, footer { padding-left: var(--pad); padding-right: var(--pad); }
-/* hybrid width: the home hero stays full-bleed; every other content section (and
-   the nav) is capped at --maxw and centered, gaining gutters on wide screens
-   without sprawling. max() keeps normal --pad on laptops/phones. Low specificity
-   (:where) so contained blocks like .case-section/.resume keep their own width. */
-main > :where(section:not(.hero), footer) {
+/* contained width: nav, hero and every content section are capped at --maxw and
+   centered, gaining gutters on wide screens without sprawling. max() keeps normal
+   --pad on laptops/phones. Low specificity (:where) so contained blocks like
+   .case-section/.resume keep their own width. */
+.nav,
+main > :where(section, footer) {
   padding-inline: max(var(--pad), calc((100% - var(--maxw)) / 2));
 }
 
@@ -249,8 +250,8 @@ a.work-card:hover { box-shadow: 0 2px 10px rgba(21,21,15,0.04), 0 38px 70px rgba
   margin-top: auto;
   position: relative;
   z-index: 4;
-  margin-left: calc(-1 * var(--pad));
-  margin-right: calc(-1 * var(--pad));
+  margin-left: 0;
+  margin-right: 0;
   background: var(--bg);
 }
 
