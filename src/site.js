@@ -358,8 +358,35 @@ function initMagnetic() {
 }
 
 /* ---------- BOOT ---------- */
+/* ---------- COVER IMAGES ----------
+   Graceful, drop-in project covers: any element with data-cover preloads that
+   image; only if it actually loads do we apply it. Drop a file at the path and
+   it lights up on next visit — no broken images, no markup churn if it's absent.
+   work cards get a background + scrim; case-study heroes get a real <img> (alt). */
+function initCovers() {
+  document.querySelectorAll('[data-cover]').forEach((el) => {
+    const src = el.getAttribute('data-cover')
+    if (!src) return
+    const probe = new Image()
+    probe.onload = () => {
+      if (el.classList.contains('case-cover')) {
+        const img = document.createElement('img')
+        img.className = 'case-cover__img'
+        img.src = src
+        img.alt = el.getAttribute('data-alt') || ''
+        el.appendChild(img)
+        el.classList.add('has-cover')
+      } else {
+        el.style.backgroundImage = `url("${src}")`
+        el.classList.add('work-card--cover')
+      }
+    }
+    probe.src = src
+  })
+}
+
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initMagnetic()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })
