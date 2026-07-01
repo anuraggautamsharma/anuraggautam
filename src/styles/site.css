@@ -586,11 +586,11 @@ a.work-card--cover:hover::before { opacity: 1; }
 .key[data-href]:hover { z-index: 6; }
 .key[data-href]:hover .key__cap {
   transform: translateZ(64px) scale(1.07);
-  filter: brightness(1.12) saturate(1.28);
-  box-shadow: 0 18px 0 var(--ink), 0 34px 50px rgba(200,224,150,0.5), 0 0 36px rgba(220,238,177,0.55), inset 0 4px 10px rgba(255,255,255,0.95), inset 0 0 0 1px rgba(255,255,255,0.5);
+  filter: brightness(1.06) saturate(1.08);
+  box-shadow: 0 18px 0 color-mix(in srgb, var(--kc, #dceeb1), #000 15%), 0 34px 50px color-mix(in srgb, var(--kc, #dceeb1), transparent 48%), 0 0 36px color-mix(in srgb, var(--kc, #dceeb1), transparent 42%), inset 0 4px 10px rgba(255,255,255,0.95), inset 0 0 0 1px rgba(255,255,255,0.5);
 }
 .key[data-href]:hover .key__cap::before { opacity: 1; transform: translateY(-9%) scale(1.04); }
-.key.is-press .key__cap { transform: translateZ(14px) scale(0.94); filter: brightness(0.94); box-shadow: 0 4px 0 var(--ink), 0 8px 16px rgba(200,224,150,0.4); }
+.key.is-press .key__cap { transform: translateZ(14px) scale(0.94); filter: brightness(0.96); box-shadow: 0 4px 0 color-mix(in srgb, var(--kc, #dceeb1), #000 15%), 0 8px 16px color-mix(in srgb, var(--kc, #dceeb1), transparent 55%); }
 
 /* ============================================================
    WORK FLOAT (cursor preview + hover video)
