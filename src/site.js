@@ -174,7 +174,7 @@ function initWorkFloat() {
   const float = document.getElementById('workFloat')
   if (!float) return
   const inner = float.querySelector('.work-float__inner')
-  const tints = ['#c2f23c', '#dff5a0', '#a6d62e', '#e7eec0', '#cfe72e']
+  const tints = ['#7ecfa0', '#d7ecdf', '#3fa06e', '#dcecd8', '#6cc48f']
   let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, active = false
   document.querySelectorAll('a.work-card').forEach((card, i) => {
     card.addEventListener('pointerenter', () => {
