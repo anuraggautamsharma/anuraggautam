@@ -10,7 +10,10 @@
   --bg: #ffffff;
   --bg-2: #ffffff;
   --card: #ffffff;
-  --ink: #0f3b2e;
+  /* two-tone text: --ink (near-black) is the reading voice for body/UI;
+     --green (deep forest) is the brand voice for serif display + emphasis */
+  --ink: #191e1a;
+  --green: #0f3b2e;
   --muted: #5e6b61;
   --line: rgba(15, 59, 46, 0.14);
   --line-2: rgba(15, 59, 46, 0.26);
@@ -716,4 +719,31 @@ a.work-card--cover:hover::before { opacity: 1; }
   .resume-range, .resume-item, .resume-head, .resume-side__block { break-inside: avoid; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   a { color: #15150f !important; }
+}
+
+/* ============================================================
+   TEXT COLOR SYSTEM
+   Brand green is reserved for the serif display voice — headings, names,
+   emphasis and display numbers. Everything else (body, labels, nav links,
+   buttons) is the near-black --ink. Placed last so it wins cleanly.
+   ============================================================ */
+.nav__brand,
+.hero__name, .hero__role, .hero__lead em,
+.big-head,
+.page-hero h1, .page-hero h1 em,
+.work-card__name,
+.case-hero h1, .case-hero p em,
+.contact-hero h1, .contact-hero h1 em,
+.contact-card .big,
+.resume-head h1,
+.section-lead em,
+.caps__item h3, .timeline__body h3, .service h3, .process__step h3,
+.resume-range__item h3, .resume-item__head h3, .resume-numbers dt,
+.case-section h2, .case-stats b, .case-next b, .proof__cell b,
+.footer__cta, .footer__cta em,
+.notfound__h, .notfound__h em,
+.marquee__track .i,
+.mobile-menu a,
+.loader__word {
+  color: var(--green);
 }
