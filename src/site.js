@@ -376,6 +376,10 @@ function initCovers() {
         img.alt = el.getAttribute('data-alt') || ''
         el.appendChild(img)
         el.classList.add('has-cover')
+      } else if (el.classList.contains('frame')) {
+        el.style.backgroundImage = `url("${src}")`
+        el.classList.add('has-cover')
+        const wrap = el.closest('[data-frames]'); if (wrap) wrap.hidden = false
       } else {
         el.style.backgroundImage = `url("${src}")`
         el.classList.add('work-card--cover')
