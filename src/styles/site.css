@@ -652,7 +652,10 @@ a.work-card--cover:hover::before { opacity: 1; }
    ============================================================ */
 .resume { max-width: 1120px; margin: 0 auto; padding: clamp(108px, 14vh, 172px) var(--pad) 0; }
 .resume > section { padding-left: 0; padding-right: 0; }
-.resume > .footer { padding-left: 0; padding-right: 0; margin-top: clamp(40px, 7vh, 80px); }
+/* the résumé body is a narrow 1120 column, but the footer should match the rest
+   of the site — break it out of that column and contain it at --maxw like every
+   other page's footer */
+.resume > .footer { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: max(var(--pad), calc(50vw - var(--maxw) / 2)); padding-right: max(var(--pad), calc(50vw - var(--maxw) / 2)); margin-top: clamp(40px, 7vh, 80px); }
 .resume-h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--lime-deep); display: flex; align-items: baseline; gap: 12px; }
 .resume-h2 span { color: var(--muted); letter-spacing: 0.03em; font-weight: 400; text-transform: none; font-size: 12px; }
 /* header */
