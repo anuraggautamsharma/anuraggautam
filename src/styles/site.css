@@ -6,9 +6,9 @@
    ============================================================ */
 
 :root {
-  --bg: #e9e9e4;
-  --bg-2: #f1f1ec;
-  --card: #ffffff;
+  --bg: #ffffff;
+  --bg-2: #f7f7f4;
+  --card: #f3f3f0;
   --ink: #15150f;
   --muted: #71706a;
   --line: rgba(21, 21, 15, 0.12);
@@ -27,11 +27,13 @@
 
   /* ---- liquid-glass material (shared with the hero keycaps) ----
      neutral = surfaces, lime = accents — same hierarchy as the keyboard */
-  --glass-bg: linear-gradient(152deg, rgba(255,255,255,0.74) 0%, rgba(255,255,255,0.46) 60%, rgba(255,255,255,0.5) 100%);
-  --glass-lime-bg: linear-gradient(152deg, rgba(255,255,255,0.6) 0%, rgba(210,245,110,0.5) 55%, rgba(166,214,46,0.55) 100%);
-  --glass-border: rgba(255,255,255,0.6);
+  /* surfaces are tinted light-grey (not white) so they read as clean panels on
+     the white page; a dark hairline + soft shadow give the float/definition */
+  --glass-bg: linear-gradient(152deg, rgba(244,244,241,0.95) 0%, rgba(233,233,229,0.9) 60%, rgba(238,238,234,0.92) 100%);
+  --glass-lime-bg: linear-gradient(152deg, rgba(233,245,196,0.7) 0%, rgba(200,240,110,0.72) 55%, rgba(166,214,46,0.75) 100%);
+  --glass-border: rgba(21,21,15,0.10);
   --glass-blur: blur(14px) saturate(1.5);
-  --glass-shadow: 0 2px 10px rgba(21,21,15,0.04), 0 20px 44px rgba(21,21,15,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  --glass-shadow: 0 2px 10px rgba(21,21,15,0.05), 0 22px 48px rgba(21,21,15,0.10), inset 0 1px 0 rgba(255,255,255,0.9);
   --glass-sheen: radial-gradient(75% 60% at 24% 8%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 38%, rgba(255,255,255,0) 64%);
 }
 
@@ -84,7 +86,7 @@ em { font-style: italic; }
    ============================================================ */
 /* full-width header — transparent at the top, frosts in on scroll */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; padding: 22px var(--pad); border-bottom: 1px solid transparent; transition: transform 0.45s var(--ease), background 0.3s, padding 0.3s, border-color 0.3s; }
-.nav.is-scrolled { background: linear-gradient(180deg, rgba(248,247,242,0.86), rgba(240,239,233,0.7)); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5); border-bottom: 1px solid rgba(21,21,15,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 26px rgba(21,21,15,0.05); padding-top: 14px; padding-bottom: 14px; }
+.nav.is-scrolled { background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72)); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5); border-bottom: 1px solid rgba(21,21,15,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 26px rgba(21,21,15,0.05); padding-top: 14px; padding-bottom: 14px; }
 .nav.is-hidden { transform: translateY(-130%); }
 .nav__brand { justify-self: start; font-family: var(--serif); font-size: clamp(16px, 1.4vw, 19px); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; padding-left: 6px; transition: opacity 0.25s; }
 .nav__brand:hover { opacity: 0.6; }
@@ -112,7 +114,7 @@ em { font-style: italic; }
 .nav.is-open .nav__menu span:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
 .nav.is-open .nav__menu span:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
 
-.mobile-menu { position: fixed; inset: 0; z-index: 150; background: linear-gradient(160deg, rgba(243,243,238,0.95), rgba(233,233,228,0.9)); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: var(--pad); opacity: 0; pointer-events: none; transition: opacity 0.4s var(--ease); }
+.mobile-menu { position: fixed; inset: 0; z-index: 150; background: linear-gradient(160deg, rgba(255,255,255,0.97), rgba(249,249,247,0.93)); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4); display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: var(--pad); opacity: 0; pointer-events: none; transition: opacity 0.4s var(--ease); }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 .mobile-menu a { font-family: var(--serif); font-size: clamp(40px, 13vw, 76px); }
 .mobile-menu a:active { color: var(--lime-deep); }
@@ -229,9 +231,9 @@ a.work-card:hover { box-shadow: 0 2px 10px rgba(21,21,15,0.04), 0 38px 70px rgba
 .key--skill .key__cap { letter-spacing: 0.01em; font-size: clamp(9px, 1.05vw, 18px); }
 /* filler keys = neutral frosted glass — keyboard texture, not content */
 .key--mute .key__cap {
-  background: linear-gradient(150deg, rgba(255,255,255,0.92), rgba(231,231,225,0.7) 60%, rgba(212,212,204,0.72));
-  box-shadow: 0 8px 0 rgba(190,190,181,0.85), 0 12px 18px rgba(120,120,108,0.2), inset 0 3px 6px rgba(255,255,255,0.9), inset 0 -6px 10px rgba(168,168,158,0.25);
-  color: rgba(21, 21, 15, 0.3); font-weight: 600; }
+  background: linear-gradient(150deg, rgba(240,240,235,0.96), rgba(222,222,215,0.82) 60%, rgba(203,203,195,0.85));
+  box-shadow: 0 8px 0 rgba(183,183,173,0.9), 0 12px 20px rgba(120,120,108,0.24), inset 0 3px 6px rgba(255,255,255,0.9), inset 0 -6px 10px rgba(160,160,150,0.28);
+  color: rgba(21, 21, 15, 0.34); font-weight: 600; }
 
 /* full-bleed marquee band, lifted above the keycaps with an opaque bg so the
    keys can't overlap it — runs clean edge to edge */
