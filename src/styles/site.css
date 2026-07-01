@@ -85,12 +85,17 @@ em { font-style: italic; }
 /* ============================================================
    NAV (top bar)
    ============================================================ */
-/* full-width header — transparent at the top, frosts in on scroll */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; padding: 22px var(--pad); border-bottom: 1px solid transparent; transition: transform 0.45s var(--ease), background 0.3s, padding 0.3s, border-color 0.3s; }
-.nav.is-scrolled { background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72)); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5); border-bottom: 1px solid rgba(21,21,15,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 26px rgba(21,21,15,0.05); padding-top: 14px; padding-bottom: 14px; }
+/* floating header — transparent bar; brand + live status on the left, and the
+   whole nav grouped into one floating glass capsule on the right */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px var(--pad); transition: transform 0.45s var(--ease), padding 0.3s var(--ease); }
+.nav.is-scrolled { padding-top: 14px; padding-bottom: 14px; }
 .nav.is-hidden { transform: translateY(-130%); }
-.nav__brand { justify-self: start; font-family: var(--serif); font-size: clamp(16px, 1.4vw, 19px); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; padding-left: 6px; transition: opacity 0.25s; }
+.nav__left { display: flex; align-items: center; gap: 16px; }
+.nav__brand { font-family: var(--serif); font-size: clamp(16px, 1.4vw, 19px); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; transition: opacity 0.25s; }
 .nav__brand:hover { opacity: 0.6; }
+.nav__status { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.nav__status i { width: 7px; height: 7px; border-radius: 50%; background: var(--lime-deep); animation: navPulse 2.4s var(--ease) infinite; }
+@keyframes navPulse { 0% { box-shadow: 0 0 0 0 rgba(166,214,46,0.5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(166,214,46,0); } }
 .nav__center { display: inline-flex; align-items: center; gap: 22px; justify-self: center; }
 .nav__email { font-size: 15px; color: var(--ink); border-bottom: 1px solid transparent; transition: border-color 0.25s; }
 .nav__email:hover { border-color: var(--ink); }
@@ -101,16 +106,13 @@ em { font-style: italic; }
 /* outline icons (Instagram) carry a stroke attr — keep them unfilled so the
    blanket fill above can't flood them into a solid square */
 .nav__social svg[stroke] { fill: none; stroke: var(--ink); }
-/* editorial caps: one voice — tracked uppercase links, muted → ink on hover,
-   a solid ink CTA. Active link = a persistent underline (no font-swap wobble). */
-.nav__links { justify-self: end; display: inline-flex; align-items: center; gap: clamp(20px, 2.2vw, 34px); }
-.nav__links a { font-size: 12.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); position: relative; transition: color 0.25s; }
+/* the nav is one floating glass capsule: tracked-caps links + a solid ink CTA */
+.nav__links { display: inline-flex; align-items: center; gap: clamp(16px, 1.6vw, 26px); background: #fff; border: 1px solid var(--glass-border); border-radius: 50px; padding: 8px 8px 8px 26px; box-shadow: 0 6px 22px rgba(21,21,15,0.08), inset 0 1px 0 rgba(255,255,255,0.85); }
+.nav__links a { font-size: 12px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); transition: color 0.25s; }
 .nav__links a:not(.nav__resume):hover, .nav__links a.is-active:not(.nav__resume) { color: var(--ink); }
-.nav__links a:not(.nav__resume)::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 0; height: 1.5px; background: var(--ink); transition: width 0.3s var(--ease); }
-.nav__links a:not(.nav__resume):hover::after, .nav__links a.is-active:not(.nav__resume)::after { width: 100%; }
-/* Résumé = the one nav CTA: a solid ink pill */
-.nav__resume { background: var(--ink); color: var(--bg); border-radius: 50px; padding: 10px 18px; line-height: 1; transition: transform 0.25s var(--ease-bounce), box-shadow 0.3s var(--ease); }
-.nav__resume:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(21,21,15,0.18); }
+/* Résumé = the one nav CTA: a solid ink pill inside the capsule */
+.nav__resume { background: var(--ink); color: var(--bg); border-radius: 50px; padding: 9px 17px; line-height: 1; transition: transform 0.25s var(--ease-bounce), box-shadow 0.3s var(--ease); }
+.nav__resume:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(21,21,15,0.22); }
 .nav__resume.is-active { box-shadow: inset 0 0 0 1.5px var(--lime); }
 .nav__menu { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; padding: 8px; justify-self: end; }
 .nav__menu span { display: block; width: 26px; height: 2px; background: var(--ink); transition: transform 0.3s var(--ease); }
@@ -612,6 +614,7 @@ a.work-card--cover:hover::before { opacity: 1; }
 }
 /* ---- MOBILE (≤700): everything to a single, comfortable column ---- */
 @media (max-width: 700px) {
+  .nav__status { display: none; }
   .proof__grid { grid-template-columns: 1fr; }
   .work-grid { grid-template-columns: 1fr; }
   .services__grid { grid-template-columns: 1fr; }
