@@ -101,15 +101,17 @@ em { font-style: italic; }
 /* outline icons (Instagram) carry a stroke attr — keep them unfilled so the
    blanket fill above can't flood them into a solid square */
 .nav__social svg[stroke] { fill: none; stroke: var(--ink); }
-.nav__links { justify-self: end; display: inline-flex; align-items: center; gap: clamp(16px, 2vw, 32px); }
-.nav__links a { font-size: 16px; color: var(--ink); position: relative; }
-.nav__links a:not(.nav__resume)::after { content: ''; position: absolute; left: 0; bottom: -3px; width: 0; height: 1.5px; background: var(--ink); transition: width 0.3s var(--ease); }
-.nav__links a:not(.nav__resume):hover::after, .nav__links a.is-active::after { width: 100%; }
-.nav__links a.is-active:not(.nav__resume) { font-style: italic; font-family: var(--serif); font-size: 18px; }
-/* Résumé = the one nav CTA: a compact pill, fills ink on hover */
-.nav__resume { border: 1.5px solid var(--ink); border-radius: 50px; padding: 8px 18px; line-height: 1; transition: background 0.25s, color 0.25s, transform 0.25s var(--ease-bounce); }
-.nav__resume:hover { background: var(--ink); color: var(--bg); transform: translateY(-2px); }
-.nav__resume.is-active { background: var(--ink); color: var(--bg); }
+/* editorial caps: one voice — tracked uppercase links, muted → ink on hover,
+   a solid ink CTA. Active link = a persistent underline (no font-swap wobble). */
+.nav__links { justify-self: end; display: inline-flex; align-items: center; gap: clamp(20px, 2.2vw, 34px); }
+.nav__links a { font-size: 12.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); position: relative; transition: color 0.25s; }
+.nav__links a:not(.nav__resume):hover, .nav__links a.is-active:not(.nav__resume) { color: var(--ink); }
+.nav__links a:not(.nav__resume)::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 0; height: 1.5px; background: var(--ink); transition: width 0.3s var(--ease); }
+.nav__links a:not(.nav__resume):hover::after, .nav__links a.is-active:not(.nav__resume)::after { width: 100%; }
+/* Résumé = the one nav CTA: a solid ink pill */
+.nav__resume { background: var(--ink); color: var(--bg); border-radius: 50px; padding: 10px 18px; line-height: 1; transition: transform 0.25s var(--ease-bounce), box-shadow 0.3s var(--ease); }
+.nav__resume:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(21,21,15,0.18); }
+.nav__resume.is-active { box-shadow: inset 0 0 0 1.5px var(--lime); }
 .nav__menu { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; padding: 8px; justify-self: end; }
 .nav__menu span { display: block; width: 26px; height: 2px; background: var(--ink); transition: transform 0.3s var(--ease); }
 .nav.is-open .nav__menu span:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
