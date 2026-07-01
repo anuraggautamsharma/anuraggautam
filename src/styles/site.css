@@ -6,13 +6,14 @@
    ============================================================ */
 
 :root {
-  --bg: #ffffff;
-  --bg-2: #ffffff;
+  /* palette: warm cream + deep forest green (inspired by Workable), lime accent */
+  --bg: #f3f0e8;
+  --bg-2: #f3f0e8;
   --card: #ffffff;
-  --ink: #15150f;
-  --muted: #71706a;
-  --line: rgba(21, 21, 15, 0.12);
-  --line-2: rgba(21, 21, 15, 0.24);
+  --ink: #0f3b2e;
+  --muted: #5e6b61;
+  --line: rgba(15, 59, 46, 0.14);
+  --line-2: rgba(15, 59, 46, 0.26);
   --lime: #c2f23c;
   --lime-deep: #a6d62e;
   --lime-soft: #dff5a0;
@@ -32,7 +33,7 @@
      reads muddy). Lift comes from shadow, not tint. */
   --glass-bg: #ffffff;
   --glass-lime-bg: linear-gradient(152deg, rgba(223,245,160,0.55) 0%, rgba(194,242,60,0.6) 55%, rgba(166,214,46,0.68) 100%);
-  --glass-border: rgba(21,21,15,0.08);
+  --glass-border: rgba(15,59,46,0.10);
   --glass-blur: blur(14px) saturate(1.5);
   --glass-shadow: 0 1px 2px rgba(21,21,15,0.04), 0 12px 32px -10px rgba(21,21,15,0.16);
   --glass-sheen: radial-gradient(75% 60% at 24% 8%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 38%, rgba(255,255,255,0) 64%);
@@ -90,7 +91,7 @@ em { font-style: italic; }
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px var(--pad); transition: transform 0.45s var(--ease), padding 0.3s var(--ease), background 0.3s, backdrop-filter 0.3s, border-color 0.3s; border-bottom: 1px solid transparent; }
 /* transparent over the hero; a subtle frosted bar fades in on scroll so the
    brand + status stay legible over content (the capsule has its own bg) */
-.nav.is-scrolled { background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.66)); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); border-bottom-color: rgba(21,21,15,0.06); padding-top: 14px; padding-bottom: 14px; }
+.nav.is-scrolled { background: linear-gradient(180deg, rgba(243,240,232,0.9), rgba(243,240,232,0.66)); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); border-bottom-color: rgba(15,59,46,0.08); padding-top: 14px; padding-bottom: 14px; }
 .nav.is-hidden { transform: translateY(-130%); }
 .nav__left { display: flex; align-items: center; gap: 16px; }
 .nav__brand { font-family: var(--serif); font-size: clamp(16px, 1.4vw, 19px); font-weight: 500; color: var(--ink); letter-spacing: -0.01em; transition: opacity 0.25s; }
