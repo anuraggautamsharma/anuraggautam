@@ -450,6 +450,64 @@ function initCountUp() {
   els.forEach((el) => io.observe(el))
 }
 
+/* ---------- CAPABILITY RACK ----------
+   The toolkit as hardware: five liquid-glass keys on a rack. Pressing one
+   (click, tap, or the real 1–5 number keys / arrow keys) keeps it held
+   down and swaps its discipline panel in below — description, tags, how
+   to hire it, and a proof link. The rack doubles as a light rig, same as
+   the hero keyboard. */
+function initRack() {
+  const rack = document.getElementById('rack')
+  const stage = document.getElementById('rackStage')
+  if (!rack || !stage) return
+  const keys = [...rack.querySelectorAll('.rack-key')]
+  const panels = [...stage.querySelectorAll('.cap-panel')]
+  const select = (id, focusKey) => {
+    keys.forEach((k) => {
+      const on = k.dataset.cap === id
+      k.classList.toggle('is-on', on)
+      k.setAttribute('aria-selected', String(on))
+      k.tabIndex = on ? 0 : -1
+      if (on) {
+        stage.style.setProperty('--kc', getComputedStyle(k).getPropertyValue('--kc'))
+        if (focusKey) k.focus()
+      }
+    })
+    panels.forEach((p) => {
+      const on = p.dataset.cap === id
+      if (on) { p.classList.remove('is-live'); void p.offsetWidth; p.classList.add('is-live') }
+      p.classList.toggle('is-on', on)
+      p.setAttribute('aria-hidden', String(!on))
+    })
+  }
+  keys.forEach((k) => {
+    k.addEventListener('click', () => { select(k.dataset.cap); k.blur() })
+  })
+  // physical keys: 1–5 select directly, arrows walk the rack
+  let visible = false
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0.15 }).observe(rack)
+  addEventListener('keydown', (e) => {
+    if (!visible || e.metaKey || e.ctrlKey || e.altKey) return
+    const t = e.target
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
+    const n = parseInt(e.key, 10)
+    if (n >= 1 && n <= keys.length) { select(keys[n - 1].dataset.cap); return }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      const cur = keys.findIndex((k) => k.classList.contains('is-on'))
+      const next = (cur + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length
+      select(keys[next].dataset.cap, true)
+      e.preventDefault()
+    }
+  })
+  // light rig for the rack's caps
+  rack.addEventListener('pointermove', (e) => {
+    const r = rack.getBoundingClientRect()
+    rack.style.setProperty('--lx', ((e.clientX - r.left) / (r.width || 1) * 100).toFixed(1))
+    rack.style.setProperty('--ly', ((e.clientY - r.top) / (r.height || 1) * 100).toFixed(1))
+  }, { passive: true })
+  select('design')
+}
+
 /* ---------- CONTACT COMPOSER (the last key) ----------
    The contact page is one giant keycap away from an email. Picking an
    intent chip types the matching draft into the terminal (typewriter, with
@@ -653,6 +711,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initComposer(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initComposer(); initRack(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

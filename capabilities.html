@@ -62,64 +62,61 @@
     <section class="page-hero">
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px">
         <span class="sticker-tag sticker-tag--lime">★ One operator's toolkit</span>
-        <span class="sticker-tag">Five disciplines, one capability</span>
+        <span class="sticker-tag">Five keys, one capability</span>
       </div>
-      <h1>Capa<em>bilities</em></h1>
-      <p>My five disciplines look scattered on paper. They're not — they're one capability: I take an idea from zero to in-market, and I can do most of it myself.</p>
+      <h1>The <em>toolkit.</em></h1>
+      <p>Five disciplines that look scattered on a résumé — until you see they're one capability: zero to in-market, mostly with my own hands. Go on, press the keys.</p>
     </section>
 
-    <section class="caps">
-      <div class="section-tag"><span class="n">01</span><span class="l">/ The toolkit</span></div>
+    <section class="rack" id="rack">
+      <div class="section-tag"><span class="n">01</span><span class="l">/ Pick a key</span></div>
+      <div class="rack__keys" role="tablist" aria-label="Capabilities">
+        <button class="key key--skill rack-key" style="--kc:#dceeb1" role="tab" id="tab-design" aria-controls="cap-design" data-cap="design" type="button"><i class="key__cap"><span>Design</span></i><em class="rack-key__no" aria-hidden="true">01</em></button>
+        <button class="key key--skill rack-key" style="--kc:#c5b0f4" role="tab" id="tab-motion" aria-controls="cap-motion" data-cap="motion" type="button"><i class="key__cap"><span>Motion</span></i><em class="rack-key__no" aria-hidden="true">02</em></button>
+        <button class="key key--skill rack-key" style="--kc:#efd4d4" role="tab" id="tab-content" aria-controls="cap-content" data-cap="content" type="button"><i class="key__cap"><span>Content</span></i><em class="rack-key__no" aria-hidden="true">03</em></button>
+        <button class="key key--skill rack-key" style="--kc:#f3c9b6" role="tab" id="tab-gtm" aria-controls="cap-gtm" data-cap="gtm" type="button"><i class="key__cap"><span>GTM</span></i><em class="rack-key__no" aria-hidden="true">04</em></button>
+        <button class="key key--skill rack-key" style="--kc:#c8e6cd" role="tab" id="tab-vibe" aria-controls="cap-vibe" data-cap="vibe" type="button"><i class="key__cap"><span>Vibe code</span></i><em class="rack-key__no" aria-hidden="true">05</em></button>
+      </div>
+      <p class="rack__hint" aria-hidden="true">psst — your number keys <b>1</b>–<b>5</b> work too</p>
 
-      <div class="caps__item" data-reveal>
-        <span class="caps__no">01</span>
-        <h3>Product &amp; Visual Design</h3>
-        <div>
-          <p>Design systems, app UI, and brand-grade visual work. I built a full design system from scratch across three products.</p>
+      <div class="rack__stage" id="rackStage">
+        <article class="cap-panel" id="cap-design" role="tabpanel" aria-labelledby="tab-design" data-cap="design">
+          <header><span class="cap-panel__no">01</span><h2>Product &amp; Visual Design</h2></header>
+          <p>Design systems, app UI, and brand-grade visual work. I built a full design system from scratch across three products — rider app, driver app, operator console — and kept them speaking one language for five years.</p>
           <div class="cap-tags"><span>Design systems</span><span>App &amp; product UI</span><span>Iconography</span><span>Visual identity</span><span>Prototyping</span></div>
           <p class="cap-fit"><span class="k">Plugs in as</span> Founding designer · Head of design · 0→1 Launch Sprint</p>
-        </div>
-      </div>
-
-      <div class="caps__item" data-reveal>
-        <span class="caps__no">02</span>
-        <h3>Motion Design</h3>
-        <div>
-          <p>Kinetic identity, product motion, and launch films — motion that makes a brand feel alive and a product feel considered.</p>
+          <a class="cap-panel__proof" href="/work/suggaa.html" data-cursor="proof">See it shipped — Suggaa <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="cap-panel" id="cap-motion" role="tabpanel" aria-labelledby="tab-motion" data-cap="motion">
+          <header><span class="cap-panel__no">02</span><h2>Motion Design</h2></header>
+          <p>Kinetic identity, product motion, and launch films — motion that makes a brand feel alive and a product feel considered, not decorated.</p>
           <div class="cap-tags"><span>Kinetic identity</span><span>Product motion</span><span>Launch films</span><span>UI animation</span></div>
           <p class="cap-fit"><span class="k">Plugs in as</span> Launch films &amp; product motion — inside a sprint, or embedded</p>
-        </div>
-      </div>
-
-      <div class="caps__item" data-reveal>
-        <span class="caps__no">03</span>
-        <h3>Content &amp; Video</h3>
-        <div>
-          <p>Short-form and long-form, shot and edited end to end. I build in public, so I make the content that does it.</p>
+          <a class="cap-panel__proof" href="/work/srijan.html" data-cursor="proof">See it move — Srijan <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="cap-panel" id="cap-content" role="tabpanel" aria-labelledby="tab-content" data-cap="content">
+          <header><span class="cap-panel__no">03</span><h2>Content &amp; Video</h2></header>
+          <p>Short-form and long-form, shot and edited end to end. I build in public, so I make the content that does it — scripting, shooting, cutting, shipping.</p>
           <div class="cap-tags"><span>Short-form</span><span>Long-form</span><span>Shooting</span><span>Editing</span><span>Scripting</span></div>
           <p class="cap-fit"><span class="k">Plugs in as</span> The content engine for your launch — sprint add-on or ongoing</p>
-        </div>
-      </div>
-
-      <div class="caps__item" data-reveal>
-        <span class="caps__no">04</span>
-        <h3>GTM Strategy</h3>
-        <div>
+          <a class="cap-panel__proof" href="/about.html" data-cursor="watch">I build in public — see the engine <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="cap-panel" id="cap-gtm" role="tabpanel" aria-labelledby="tab-gtm" data-cap="gtm">
+          <header><span class="cap-panel__no">04</span><h2>GTM Strategy</h2></header>
           <p>Outbound systems, ICP, deliverability, and pipeline that compounds. This is what The PipelineLab does — part of the ₹6&nbsp;Cr+ in B2B revenue I've generated.</p>
           <div class="cap-tags"><span>ICP &amp; lists</span><span>Deliverability</span><span>Multichannel sequences</span><span>Pipeline</span></div>
           <p class="cap-fit"><span class="k">Plugs in as</span> GTM / growth lead · The PipelineLab retainer</p>
-        </div>
-      </div>
-
-      <div class="caps__item" data-reveal>
-        <span class="caps__no">05</span>
-        <h3>Vibe Coding</h3>
-        <div>
-          <p>I ship real, working product — not just mockups. This site is one example, designed and built end to end.</p>
+          <a class="cap-panel__proof" href="/work/pipelinelab.html" data-cursor="proof">See the engine — The PipelineLab <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="cap-panel" id="cap-vibe" role="tabpanel" aria-labelledby="tab-vibe" data-cap="vibe">
+          <header><span class="cap-panel__no">05</span><h2>Vibe Coding</h2></header>
+          <p>I ship real, working product — not just mockups. The site you're on right now is one example: designed, written and built end to end, keyboard and all.</p>
           <div class="cap-tags"><span>Front-end</span><span>Prototypes → product</span><span>Sites &amp; tools</span><span>Ship fast</span></div>
           <p class="cap-fit"><span class="k">Plugs in as</span> Design-to-shipped-product — what makes the 0→1 sprint real</p>
-        </div>
+          <a class="cap-panel__proof" href="/" data-cursor="you're in it">You're inside the proof right now <span aria-hidden="true">→</span></a>
+        </article>
       </div>
+
       <div class="caps__cta" data-reveal>
         <p>Five disciplines, three ways to hire them — embedded leadership, a 0→1 launch sprint, or the GTM engine.</p>
         <a href="/#services" class="btn btn--primary" data-cursor="see how">Ways to work together <span aria-hidden="true">→</span></a>

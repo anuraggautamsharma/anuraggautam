@@ -762,6 +762,54 @@ a.work-card--cover:hover::before { opacity: 1; }
 .footer__hire strong { color: var(--ink); font-weight: 500; }
 .footer__hire a { color: var(--ink); border-bottom: 1px solid var(--ink); white-space: nowrap; }
 
+/* ---- THE CAPABILITY RACK ----
+   the toolkit as hardware: five liquid-glass keys, one held down at a
+   time; the held key's discipline panel swaps in below, tinted by that
+   key's pastel. The rack shares the keycap material + light-var system. */
+.rack { padding-top: clamp(20px, 4vh, 50px); padding-bottom: clamp(40px, 7vh, 90px); }
+.rack__keys { display: flex; gap: clamp(12px, 1.6vw, 24px); flex-wrap: wrap; perspective: 1200px; margin-top: clamp(20px, 3vh, 36px); }
+.rack-key { position: relative; flex: 1 1 0; min-width: 128px; max-width: 220px; aspect-ratio: 1.3; background: none; border: 0; padding: 0; cursor: pointer; font: inherit; transform: rotateX(9deg); transform-style: preserve-3d; }
+.rack-key .key__cap { font-size: clamp(14px, 1.3vw, 19px); border-radius: 14%; }
+.rack-key__no { position: absolute; top: 10px; right: 14px; z-index: 2; font-family: var(--mono); font-style: normal; font-size: 10px; letter-spacing: 0.06em; color: rgba(0,0,0,0.4); pointer-events: none; transform: translateZ(1px); }
+.rack-key:hover .key__cap { transform: translateZ(34px) scale(1.03); filter: brightness(1.05) saturate(1.08); }
+.rack-key:focus-visible { outline: none; }
+.rack-key:focus-visible .key__cap { box-shadow: 0 0 0 3px var(--ink), 0 7px 0 color-mix(in srgb, var(--kc, #dceeb1), transparent 45%); }
+/* the held key: crushed to the deck and it STAYS down — the engaged tool */
+.rack-key.is-on .key__cap {
+  transform: translateZ(10px) scale(0.95);
+  filter: saturate(1.15);
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--kc, #dceeb1), #000 18%),
+    0 4px 0 color-mix(in srgb, color-mix(in srgb, var(--kc, #dceeb1), #000 34%), transparent 45%),
+    0 8px 12px -3px color-mix(in srgb, var(--kc, #dceeb1), transparent 40%),
+    inset 0 2px 3px rgba(255,255,255,0.85),
+    inset 0 0 0 2px rgba(255,255,255,0.6);
+}
+.rack-key.is-on .rack-key__no { color: var(--ink); }
+.rack__hint { margin-top: 16px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.rack__hint b { font-weight: 500; color: var(--ink); border: 1px solid var(--line-2); border-radius: 5px; padding: 0 6px; }
+
+/* the panel stage — all five stay in the DOM (SEO/no-JS); one is live */
+.rack__stage { display: grid; margin-top: clamp(26px, 4vh, 48px); }
+.cap-panel { grid-area: 1 / 1; border-radius: 24px; border: 1px solid var(--line);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--kc, #dceeb1) 16%, #fff) 0%, #fff 55%);
+  padding: clamp(28px, 3.4vw, 54px);
+  opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.45s var(--ease), transform 0.45s var(--ease), visibility 0s 0.45s; }
+.cap-panel.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity 0.45s var(--ease) 0.08s, transform 0.5s var(--ease-bounce) 0.08s, visibility 0s; }
+.cap-panel header { display: flex; align-items: baseline; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; }
+.cap-panel__no { font-family: var(--serif); font-weight: 350; font-size: clamp(40px, 4.4vw, 76px); line-height: 0.9; letter-spacing: -0.04em; color: var(--ink); }
+.cap-panel h2 { font-family: var(--serif); font-size: clamp(28px, 3.2vw, 54px); letter-spacing: -0.025em; line-height: 1; }
+.cap-panel > p { color: rgba(0,0,0,0.6); font-size: clamp(15.5px, 1.3vw, 19px); line-height: 1.55; max-width: 64ch; margin-bottom: 20px; }
+.cap-panel .cap-tags { margin-bottom: 4px; }
+.cap-panel__proof { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; font-weight: 500; font-size: clamp(14.5px, 1.15vw, 17px); color: var(--ink); border-bottom: 1.5px solid var(--ink); padding-bottom: 2px; transition: gap 0.3s var(--ease); }
+.cap-panel__proof:hover { gap: 14px; }
+
+@media (max-width: 700px) {
+  .rack__keys { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .rack-key { max-width: none; min-width: 0; }
+  .rack__hint { display: none; }
+}
+
 /* ---- THE LAST KEY (contact composer) ----
    The site is a keyboard; contact is the final key. Picking an intent chip
    types the draft into a navy terminal, and the giant liquid-glass SEND cap
