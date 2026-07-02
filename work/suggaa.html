@@ -85,15 +85,18 @@
       <div data-reveal><dt>Where</dt><dd>Jamshedpur &amp; Ranchi live · Bengaluru &amp; Delhi next</dd></div>
     </dl>
 
-    <!-- COVER GALLERY -->
-    <section class="case-band block block--cream" aria-label="Store creatives">
-      <div class="shots shots--tiles">
-        <figure class="shot" data-reveal><img src="/work/suggaa/store-brand.png" alt="Suggaa brand — Instant rides, infinite comfort. The Honest Taxi" loading="eager" /></figure>
-        <figure class="shot" data-reveal><img src="/work/suggaa/store-city.png" alt="City or outstation booking in the Suggaa rider app" /></figure>
-        <figure class="shot" data-reveal><img src="/work/suggaa/store-fleet.png" alt="Fleet selection — bike, auto, toto, mini, sedan" /></figure>
-        <figure class="shot" data-reveal><img src="/work/suggaa/store-pricing.png" alt="Transparent pricing — what you see is what you pay" /></figure>
+    <!-- BRAND BAND -->
+    <section class="brand-band" aria-label="Store creatives">
+      <div class="brand-band__inner">
+        <span class="brand-band__k">Suggaa · The Honest Taxi</span>
+        <div class="brand-band__tiles">
+          <img src="/work/suggaa/store-brand.png" alt="Suggaa brand — Instant rides, infinite comfort. The Honest Taxi" loading="eager" />
+          <img src="/work/suggaa/store-city.png" alt="City or outstation booking in the Suggaa rider app" />
+          <img src="/work/suggaa/store-fleet.png" alt="Fleet selection — bike, auto, toto, mini, sedan" />
+          <img src="/work/suggaa/store-pricing.png" alt="Transparent pricing — what you see is what you pay" />
+        </div>
+        <p class="fig">Fig. 01 — Store creatives, designed in-house. The brand promise in four frames.</p>
       </div>
-      <p class="shot-caption">Store creatives, designed in-house — the brand promise in four frames.</p>
     </section>
 
     <!-- 00 THE BRIEF -->
@@ -121,9 +124,19 @@
         <div><b>8 wks</b><span>system 2.0 build</span></div>
         <div><b>0→2</b><span>designers hired &amp; led</span></div>
       </div>
-      <div class="shots shots--pair">
-        <figure class="shot" data-reveal><img src="/work/suggaa/ds-cover.png" alt="Suggaa Design System 2.0 cover — schedule-ride card, buttons, labels and navigation components" /></figure>
-        <figure class="shot" data-reveal><img src="/work/suggaa/ds-overview.png" alt="Design System overview — 40+ components, 268+ variables, built in 8+ weeks for Rider, Saathi and Fleet" /></figure>
+      <div class="boards" data-reveal>
+        <figure class="board">
+          <div class="board__frame"><img src="/work/suggaa/ds-colors.png" alt="Colour system overview — eleven-step scales for every palette, from Suggaa Green to neutrals" loading="lazy" /></div>
+          <figcaption class="fig">Fig. 02 — The colour system: 11-step scales, every value a token. <b>Scroll the board.</b></figcaption>
+        </figure>
+        <figure class="board">
+          <div class="board__frame"><img src="/work/suggaa/ds-buttons.png" alt="Button component specimen — variants, states and sizes with usage guidance" loading="lazy" /></div>
+          <figcaption class="fig">Fig. 03 — One of 40+ components: variants, states, sizes, guidance.</figcaption>
+        </figure>
+        <figure class="board">
+          <div class="board__frame"><img src="/work/suggaa/ds-overview.png" alt="Design System 2.0 overview — 40+ components, 268+ variables, built in 8+ weeks for Rider, Saathi and Fleet" loading="lazy" /></div>
+          <figcaption class="fig">Fig. 04 — System 2.0: one framework for Rider, Saathi and Fleet.</figcaption>
+        </figure>
       </div>
       <p class="shot-caption">System 2.0 was crafted by the design duo I hired and led — Shubhanshu Singh &amp; Latika Bhawnani — under my direction. Building the team that could build the system <em>was</em> the job.</p>
     </section>
@@ -133,10 +146,16 @@
       <div class="section-tag"><span class="n">02</span><span class="l">/ The rider app — book in seconds</span></div>
       <h2 data-reveal>City, outstation or rental — <em>request in seconds, ride in minutes.</em></h2>
       <p data-reveal>The rider app carries the whole brand promise on one screen: pick a city ride, an outstation trip or a rental; pick your vehicle — bike, auto, toto, mini or sedan; see the real fare before you commit. Under it sit the flows that make it hold up in the real world: 40+ onboarding and login states, favourites, booking for someone else, multi-stop rides, scheduling, and cancellation paths designed for both sides of the trip.</p>
-      <figure class="shot shot--wide" data-reveal><img src="/work/suggaa/rider-home.png" alt="Suggaa rider app homepage — city, outstation and rental tabs, fleet picker and error states" /><figcaption class="shot-caption">The homepage in three states — an existing rider, a new city, and the honest error when a vehicle isn't available.</figcaption></figure>
       <figure class="shot shot--strip" data-reveal>
-        <div class="shot-scroll"><img src="/work/suggaa/rider-booking-flow.png" alt="Ride scheduling flow — end to end screens from destination search to scheduled confirmation" /></div>
-        <figcaption class="shot-caption">The scheduling flow, end to end — <b>drag to walk through it.</b> Every screen is assembled from system components.</figcaption>
+        <div class="shot-scroll flow-strip">
+          <div class="flow-step"><div class="phone"><img src="/work/suggaa/flow/01-home.png" alt="Rider homepage — city, outstation and rental tabs with the fleet picker" loading="lazy" /></div><span class="fig">01 — Home</span></div>
+          <div class="flow-step"><div class="phone"><img src="/work/suggaa/flow/02-drop.png" alt="Choosing the drop location on the map" loading="lazy" /></div><span class="fig">02 — Choose drop</span></div>
+          <div class="flow-step"><div class="phone"><img src="/work/suggaa/flow/03-schedule.png" alt="Scheduling the ride — date and time picker" loading="lazy" /></div><span class="fig">03 — Schedule</span></div>
+          <div class="flow-step"><div class="phone"><img src="/work/suggaa/flow/04-pickup.png" alt="Confirming the pickup point" loading="lazy" /></div><span class="fig">04 — Confirm pickup</span></div>
+          <div class="flow-step"><div class="phone"><img src="/work/suggaa/flow/05-vehicle.png" alt="Choosing a vehicle category with transparent fares" loading="lazy" /></div><span class="fig">05 — Pick the fare</span></div>
+          <div class="flow-step"><div class="phone"><img src="/work/suggaa/flow/06-scheduled.png" alt="Scheduled ride confirmed for today" loading="lazy" /></div><span class="fig">06 — Booked</span></div>
+        </div>
+        <figcaption class="fig">Fig. 05 — The scheduling flow, end to end. <b>Drag to walk through it</b> — every screen assembled from system components.</figcaption>
       </figure>
     </section>
 
@@ -145,7 +164,14 @@
       <div class="section-tag"><span class="n">03</span><span class="l">/ The Saathi app — the driver's side</span></div>
       <h2 data-reveal>Riders feel the brand. <em>Drivers keep it alive.</em></h2>
       <p data-reveal>Saathi — the driver app — is where ride-hailing is actually won or lost. Drivers live in this screen ten hours a day, so it optimises for what they check between rides: today's earnings against a daily target they set themselves, payments that reconcile cleanly, and onboarding a first-time gig worker can finish without a helpdesk. Same design language as the rider app — because a driver who feels like a second-class user drives for someone else.</p>
-      <figure class="shot shot--wide" data-reveal><img src="/work/suggaa/saathi-home.png" alt="Suggaa Saathi driver app — home screens with earnings, daily target and ride requests" /><figcaption class="shot-caption">The Saathi home: online/offline, live earnings against a self-set daily target, and the next job.</figcaption></figure>
+      <figure class="shot shot--wide" data-reveal>
+        <div class="phones">
+          <div class="phone"><img src="/work/suggaa/saathi-1.png" alt="Saathi home — on duty, earnings against the daily target" loading="lazy" /></div>
+          <div class="phone"><img src="/work/suggaa/saathi-2.png" alt="Saathi home — off duty state" loading="lazy" /></div>
+          <div class="phone"><img src="/work/suggaa/saathi-3.png" alt="Saathi home — ride request coming in" loading="lazy" /></div>
+        </div>
+        <figcaption class="fig">Fig. 06 — The Saathi home: on duty, off duty, and the next job coming in. Live earnings against a self-set daily target.</figcaption>
+      </figure>
     </section>
 
     <!-- 04 WEBSITE -->
@@ -154,8 +180,8 @@
       <h2 data-reveal>The pitch, the proof, <em>and the hiring pipeline.</em></h2>
       <p data-reveal>The 2024 website had three jobs: convert riders ("request in seconds, ride in minutes"), recruit Saathis, and carry the city-by-city expansion story — Jamshedpur and Ranchi live, Bengaluru and Delhi next. Designed responsive across desktop, tablet and mobile, with the careers flow and blog built in.</p>
       <figure class="shot shot--tall" data-reveal>
-        <div class="shot-scroll-y"><img src="/work/suggaa/website-home.png" alt="Suggaa website 2024 — full homepage design: hero, fleet, rider and saathi sections, city expansion, safety and blog" /></div>
-        <figcaption class="shot-caption">The full 2024 homepage — <b>scroll inside the frame.</b></figcaption>
+        <div class="shot-scroll-y"><img src="/work/suggaa/website-home.png" alt="Suggaa website 2024 — full homepage design: hero, fleet, rider and saathi sections, city expansion, safety and blog" loading="lazy" /></div>
+        <figcaption class="fig">Fig. 07 — The full 2024 homepage, at actual resolution. <b>Scroll inside the frame.</b></figcaption>
       </figure>
     </section>
 
