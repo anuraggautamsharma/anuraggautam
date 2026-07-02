@@ -469,6 +469,10 @@ a.work-card--cover:hover::before { opacity: 1; }
 .page-hero { padding-top: clamp(130px, 20vh, 220px); padding-bottom: clamp(30px, 5vh, 60px); }
 .page-hero h1 { font-family: var(--serif); font-size: clamp(52px, 12vw, 190px); line-height: 0.92; }
 .page-hero h1 em { color: var(--ink); }
+/* sentence-length heroes (about) — the huge scale is tuned for one-word
+   titles; a full sentence at 12vw eats the whole viewport, so statements
+   step down and let the content share the first screen */
+.page-hero h1.h1--sentence { font-size: clamp(40px, 6.2vw, 96px); line-height: 1.02; letter-spacing: -0.028em; max-width: 18ch; }
 .page-hero p { margin-top: 24px; max-width: 52ch; font-size: clamp(17px, 1.8vw, 24px); color: var(--muted); }
 
 /* ---------- 404 ---------- */
