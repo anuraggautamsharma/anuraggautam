@@ -453,8 +453,14 @@ function initCopyMail() {
    spotlight that tracks the cursor. Pointer position is published as --mx/--my
    (percent) and consumed by the card's ::before in CSS. */
 function initGlassCards() {
+  // process keys press like keycaps on every device (tap included)
+  document.querySelectorAll('.process__key').forEach((k) => {
+    k.addEventListener('pointerdown', () => k.classList.add('is-down'))
+    k.addEventListener('pointerup', () => k.classList.remove('is-down'))
+    k.addEventListener('pointerleave', () => k.classList.remove('is-down'))
+  })
   if (!finePointer || reduced) return
-  document.querySelectorAll('a.work-card, .service').forEach((card) => {
+  document.querySelectorAll('a.work-card, .service, .process__key').forEach((card) => {
     const tilt = card.classList.contains('work-card')
     let raf = 0, mx = 50, my = 50, rx = 0, ry = 0
     function apply() {

@@ -650,13 +650,53 @@ a.work-card--cover:hover::before { opacity: 1; }
    giant outlined numerals carry the hierarchy; copy is one tight line. Airy and
    graphic, so it reads distinctly from the solid glass service cards below. */
 .process { padding-top: clamp(70px, 11vh, 150px); padding-bottom: clamp(40px, 6vh, 90px); }
-.process__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 80px); }
-.process__step { position: relative; }
-.process__no { display: block; font-family: var(--serif); font-size: clamp(86px, 11vw, 180px); line-height: 0.8; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
-.process__step h3 { font-family: var(--serif); font-size: clamp(26px, 2.6vw, 40px); margin: clamp(14px, 1.6vw, 22px) 0 10px; line-height: 1.02; }
-.process__step h3 em { font-style: italic; }
-.process__step p { color: var(--muted); font-size: clamp(15px, 1.15vw, 18px); line-height: 1.5; max-width: 30ch; }
-@supports not ((-webkit-text-stroke: 1px red)) { .process__no { color: var(--ink); } }
+.process__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px, 2.4vw, 34px); }
+/* each step is a giant liquid-glass keycap resting on the lilac block — the
+   hero keyboard's material carried into the method. The glyph is the big ink
+   number (black-on-glass, like a keycap legend); hover lifts the key and a
+   cursor spotlight (via --mx/--my from initGlassCards) rolls across the
+   glass; pressing it actually presses. */
+.process__key { position: relative; isolation: isolate; cursor: pointer;
+  border-radius: clamp(20px, 2vw, 30px);
+  padding: clamp(28px, 3vw, 46px) clamp(24px, 2.6vw, 40px) clamp(30px, 3.4vw, 50px);
+  background: linear-gradient(160deg, rgba(255,255,255,0.58) 0%, rgba(255,255,255,0.16) 55%, rgba(255,255,255,0.3) 100%);
+  border: 1px solid rgba(255,255,255,0.75);
+  -webkit-backdrop-filter: blur(12px) saturate(1.35); backdrop-filter: blur(12px) saturate(1.35);
+  box-shadow:
+    0 9px 0 color-mix(in srgb, var(--block-lilac), #000 14%),
+    0 10px 0 color-mix(in srgb, var(--block-lilac), #000 28%),
+    0 24px 30px -12px rgba(0,0,0,0.22),
+    inset 0 1px 2px rgba(255,255,255,0.9),
+    inset 0 0 0 1px rgba(255,255,255,0.35);
+  transition: transform 0.45s var(--ease-bounce), box-shadow 0.4s var(--ease); }
+/* cursor spotlight rolling on the glass */
+.process__key::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+  background: radial-gradient(300px 240px at var(--mx, 30%) var(--my, 15%), rgba(255,255,255,0.6), rgba(255,255,255,0) 65%);
+  opacity: 0; mix-blend-mode: screen; transition: opacity 0.35s var(--ease); }
+/* wet streak along the top edge, like the keycaps */
+.process__key::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+  background: linear-gradient(165deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.06) 22%, rgba(255,255,255,0) 40%);
+  mix-blend-mode: screen; }
+.process__key:hover, .process__key:focus-visible { transform: translateY(-10px);
+  box-shadow:
+    0 19px 0 color-mix(in srgb, var(--block-lilac), #000 14%),
+    0 20px 0 color-mix(in srgb, var(--block-lilac), #000 28%),
+    0 44px 50px -16px rgba(0,0,0,0.28),
+    inset 0 1px 2px rgba(255,255,255,0.95),
+    inset 0 0 0 1px rgba(255,255,255,0.5); }
+.process__key:hover::before { opacity: 1; }
+.process__key.is-down { transform: translateY(4px) scale(0.99);
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--block-lilac), #000 14%),
+    0 4px 0 color-mix(in srgb, var(--block-lilac), #000 30%),
+    0 8px 12px -4px rgba(0,0,0,0.24),
+    inset 0 1px 2px rgba(255,255,255,0.8),
+    inset 0 0 0 1px rgba(255,255,255,0.3); }
+.process__key > * { position: relative; z-index: 1; }
+.process__no { display: block; font-family: var(--serif); font-size: clamp(64px, 6.6vw, 120px); line-height: 0.85; letter-spacing: -0.045em; font-weight: 350; color: var(--ink); }
+.process__key h3 { font-family: var(--serif); font-size: clamp(24px, 2.2vw, 36px); margin: clamp(18px, 2vw, 30px) 0 10px; line-height: 1.02; }
+.process__key h3 em { font-style: italic; }
+.process__key p { color: rgba(0,0,0,0.55); font-size: clamp(15px, 1.15vw, 18px); line-height: 1.5; max-width: 30ch; }
 
 /* ---- FAQ (objection handling, accordion) ---- */
 .faq { padding-top: clamp(60px, 9vh, 120px); padding-bottom: clamp(30px, 5vh, 70px); }
@@ -892,7 +932,7 @@ a.work-card--cover:hover::before { opacity: 1; }
 .contact-card .big,
 .resume-head h1,
 .section-lead em,
-.caps__item h3, .timeline__body h3, .service h3, .process__step h3,
+.caps__item h3, .timeline__body h3, .service h3, .process__key h3,
 .resume-range__item h3, .resume-item__head h3, .resume-numbers dt,
 .case-section h2, .case-stats b, .case-next b, .proof__cell b,
 .footer__cta, .footer__cta em,
