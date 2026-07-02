@@ -843,10 +843,12 @@ a.work-card--cover:hover::before { opacity: 1; }
 /* ============================================================
    NOW / AVAILABILITY BAR
    ============================================================ */
-.now-bar { border-radius: 18px; padding: clamp(20px, 2vw, 30px) clamp(24px, 3vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: clamp(20px, 4vw, 56px); }
+.now-bar { border-radius: 18px; padding: clamp(20px, 2vw, 30px) clamp(24px, 3vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 2.4vw, 40px); row-gap: 18px; }
 .now-bar__item { display: flex; flex-direction: column; gap: 6px; }
 .now-bar__k { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
-.now-bar__v { font-family: var(--serif); font-size: clamp(18px, 1.8vw, 24px); display: inline-flex; align-items: center; gap: 8px; }
+.now-bar__v { font-family: var(--serif); font-size: clamp(18px, 1.8vw, 24px); display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.now-bar__v a { border-bottom: 1.5px solid var(--line-2); transition: border-color 0.25s; }
+.now-bar__v a:hover { border-color: var(--ink); }
 .now-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--status); box-shadow: 0 0 0 4px rgba(30,166,74,0.18); animation: nowpulse 2s var(--ease) infinite; }
 @keyframes nowpulse { 50% { box-shadow: 0 0 0 7px rgba(207,232,154,0); } }
 .now-bar .btn { margin-left: auto; }
