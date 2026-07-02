@@ -450,16 +450,81 @@ function initCountUp() {
   els.forEach((el) => io.observe(el))
 }
 
-/* ---------- CONTACT INTENT ----------
-   The service cards deep-link to /contact.html?role|?sprint — honour it:
-   pre-light the matching one-click intro chip so the visitor's next step
-   is already picked out when they land. */
-function initIntent() {
-  const wrap = document.querySelector('[data-intent-chips]')
-  if (!wrap) return
+/* ---------- CONTACT COMPOSER (the last key) ----------
+   The contact page is one giant keycap away from an email. Picking an
+   intent chip types the matching draft into the terminal (typewriter, with
+   the [placeholders] highlighted); pressing the giant SEND key — or the
+   real Enter key — crushes the cap and opens the draft in the visitor's
+   mail app. ?role/?sprint/?gtm deep links pre-select the intent. The
+   send-stage doubles as a light rig: pointer position feeds --lx/--ly so
+   the glass caps' rims and speculars track the cursor, and the floating
+   keys parallax at their own depths (--fd). */
+function initComposer() {
+  const stage = document.getElementById('sendStage')
+  const key = document.getElementById('sendKey')
+  const subjEl = document.getElementById('termSubject')
+  const bodyEl = document.getElementById('termBody')
+  if (!stage || !key || !subjEl || !bodyEl) return
+  const MAIL = 'anuraggautamsharma@gmail.com'
+  const drafts = {
+    role: { subject: 'Hiring: [role] at [company]', body: "Hi Anurag,\n\nWe're hiring a [role] at [company] and your profile fits.\nSharing the JD — would love to talk.\n\n[Your name]" },
+    sprint: { subject: '0→1 Launch Sprint: [project]', body: "Hi Anurag,\n\nI want to take [idea] from zero to in-market —\ndesigned, built and launched. Can we scope a sprint?\n\n[Your name]" },
+    gtm: { subject: 'GTM help: [company]', body: "Hi Anurag,\n\nWe need pipeline at [company] — our ICP is roughly [who].\nCan we talk GTM?\n\n[Your name]" },
+    other: { subject: 'Hello from [your name]', body: "Hi Anurag,\n\n[Whatever's on your mind — I read everything.]\n\n[Your name]" },
+  }
+  const CARET = '<span class="term__caret" aria-hidden="true"></span>'
+  const hl = (t) => t.replace(/\[([^\]]*)\]/g, '<b class="hl">[$1]</b>')
+  let current = 'role', timer = 0
+  const render = (id) => {
+    current = id
+    document.querySelectorAll('[data-intent-chips] .intent__chip').forEach((c) => c.classList.toggle('is-on', c.dataset.intent === id))
+    const d = drafts[id]
+    clearInterval(timer)
+    subjEl.innerHTML = hl(d.subject)
+    if (reduced) { bodyEl.innerHTML = hl(d.body) + CARET; return }
+    let i = 0
+    bodyEl.innerHTML = CARET
+    timer = setInterval(() => {
+      i += 2
+      bodyEl.innerHTML = hl(d.body.slice(0, i)) + CARET
+      if (i >= d.body.length) clearInterval(timer)
+    }, 22)
+  }
+  document.querySelectorAll('[data-intent-chips] .intent__chip').forEach((c) => {
+    // blur after picking so a follow-up Enter fires the SEND key (the flow
+    // the hint promises), not a re-click of the still-focused chip
+    c.addEventListener('click', () => { render(c.dataset.intent); c.blur() })
+  })
+  const send = () => {
+    key.classList.add('is-press')
+    setTimeout(() => key.classList.remove('is-press'), 420)
+    const d = drafts[current]
+    setTimeout(() => {
+      window.location.href = `mailto:${MAIL}?subject=${encodeURIComponent(d.subject)}&body=${encodeURIComponent(d.body)}`
+    }, reduced ? 0 : 340)
+  }
+  key.addEventListener('click', send)
+  key.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); send() } })
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || e.metaKey || e.ctrlKey || e.altKey) return
+    const t = e.target
+    if (t && (t.tagName === 'A' || t.tagName === 'BUTTON' || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SUMMARY' || t.isContentEditable)) return
+    send()
+  })
+  // light rig + parallax
+  stage.addEventListener('pointermove', (e) => {
+    const r = stage.getBoundingClientRect()
+    stage.style.setProperty('--lx', ((e.clientX - r.left) / (r.width || 1) * 100).toFixed(1))
+    stage.style.setProperty('--ly', ((e.clientY - r.top) / (r.height || 1) * 100).toFixed(1))
+  }, { passive: true })
+  if (finePointer && !reduced) {
+    addEventListener('pointermove', (e) => {
+      stage.style.setProperty('--px', ((e.clientX / innerWidth - 0.5) * 24).toFixed(1) + 'px')
+      stage.style.setProperty('--py', ((e.clientY / innerHeight - 0.5) * 18).toFixed(1) + 'px')
+    }, { passive: true })
+  }
   const q = location.search.toLowerCase()
-  const hot = q.includes('sprint') ? 'sprint' : q.includes('role') ? 'role' : q.includes('gtm') ? 'gtm' : null
-  if (hot) wrap.querySelector(`[data-intent="${hot}"]`)?.classList.add('is-hot')
+  render(q.includes('sprint') ? 'sprint' : q.includes('gtm') ? 'gtm' : q.includes('role') ? 'role' : 'role')
 }
 
 /* ---------- COPY EMAIL ---------- */
@@ -588,6 +653,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initIntent(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initComposer(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

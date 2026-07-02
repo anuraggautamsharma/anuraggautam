@@ -762,15 +762,72 @@ a.work-card--cover:hover::before { opacity: 1; }
 .footer__hire strong { color: var(--ink); font-weight: 500; }
 .footer__hire a { color: var(--ink); border-bottom: 1px solid var(--ink); white-space: nowrap; }
 
-/* one-click intro chips (contact) — prefilled mailto per intent; ?role/?sprint
-   deep links pre-light the matching chip (initIntent) */
-.intent { margin-top: 30px; }
-.intent .k { display: block; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 12px; }
+/* ---- THE LAST KEY (contact composer) ----
+   The site is a keyboard; contact is the final key. Picking an intent chip
+   types the draft into a navy terminal, and the giant liquid-glass SEND cap
+   (full material + light physics via the shared --lx/--ly/--kx/--ky vars,
+   the stage acting as light rig) opens the finished email on press. */
+.send-hero { padding-top: clamp(120px, 18vh, 200px); padding-bottom: clamp(10px, 2vh, 30px); }
+.send-hero h1 { font-family: var(--serif); font-size: clamp(52px, 12vw, 190px); line-height: 0.92; }
+.send-hero h1 em { color: var(--ink); }
+.send-hero__lead { margin-top: 24px; max-width: 50ch; font-size: clamp(17px, 1.8vw, 24px); color: var(--muted); line-height: 1.5; }
+
+.composer { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(30px, 4.5vw, 80px); align-items: stretch; padding-top: clamp(24px, 4vh, 50px); padding-bottom: clamp(40px, 7vh, 90px); }
+.c-label { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: clamp(24px, 3.4vh, 38px) 0 14px; }
+.composer__left > .c-label:first-child { margin-top: 0; }
 .intent__row { display: flex; gap: 10px; flex-wrap: wrap; }
-.intent__chip { border: 1px solid var(--line-2); border-radius: 999px; padding: 11px 20px; font-size: 14px; font-weight: 500; color: var(--ink); transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.35s var(--ease-bounce); }
-.intent__chip:hover { background: var(--ink); color: #fff; border-color: var(--ink); transform: translateY(-2px); }
-.intent__chip.is-hot { background: var(--ink); color: #fff; border-color: var(--ink); box-shadow: 0 0 0 4px rgba(0,0,0,0.08); }
-.intent__chip.is-hot::after { content: ' ★'; }
+.intent__chip { border: 1px solid var(--line-2); background: var(--bg); border-radius: 999px; padding: 11px 20px; font-size: 14px; font-weight: 500; color: var(--ink); cursor: pointer; transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.35s var(--ease-bounce); }
+.intent__chip:hover { border-color: var(--ink); transform: translateY(-2px); }
+.intent__chip.is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.composer__alt { margin-top: 18px; font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 56ch; }
+.composer__alt a { color: var(--ink); border-bottom: 1px solid var(--ink); }
+.composer__alt .hl-note { font-family: var(--mono); font-size: 12px; background: var(--block-lime); border-radius: 4px; padding: 1px 5px; color: var(--ink); }
+
+/* the terminal — the draft writes itself here */
+.term { background: var(--block-navy); color: rgba(255,255,255,0.92); border-radius: 20px; padding: clamp(22px, 2.6vw, 36px); font-family: var(--mono); font-size: clamp(12.5px, 1.05vw, 14.5px); line-height: 1.8; min-height: clamp(250px, 32vh, 340px); box-shadow: 0 34px 64px -32px rgba(31,29,61,0.55), inset 0 1px 0 rgba(255,255,255,0.08); }
+.term__bar { display: flex; gap: 7px; margin-bottom: 20px; }
+.term__bar i { width: 10px; height: 10px; border-radius: 50%; }
+.term__bar i:nth-child(1) { background: var(--block-pink); }
+.term__bar i:nth-child(2) { background: var(--block-cream); }
+.term__bar i:nth-child(3) { background: var(--block-mint); }
+.term__meta { color: rgba(255,255,255,0.5); }
+.term__meta .k { display: inline-block; min-width: 8ch; color: rgba(255,255,255,0.32); letter-spacing: 0.06em; }
+.term__rule { height: 1px; background: rgba(255,255,255,0.12); margin: 14px 0 16px; }
+.term__body { white-space: pre-wrap; word-break: break-word; }
+.term .hl { color: var(--block-lime); font-weight: 500; }
+.term__caret { display: inline-block; width: 8px; height: 1.05em; margin-left: 2px; background: var(--block-lime); vertical-align: text-bottom; animation: caretBlink 1.05s steps(1) infinite; }
+@keyframes caretBlink { 50% { opacity: 0; } }
+
+/* the send stage — light rig + parallax field for the giant cap */
+.send-stage { position: relative; perspective: 1100px; display: grid; place-items: center; min-height: clamp(340px, 44vh, 480px); }
+.send-key { position: relative; width: clamp(240px, 22vw, 340px); aspect-ratio: 1.5; cursor: pointer; transform: rotateX(16deg) rotateZ(-5deg) translate(var(--px, 0px), var(--py, 0px)); }
+.send-key .key__cap { font-size: clamp(24px, 2.3vw, 34px); letter-spacing: -0.02em; border-radius: 12%; }
+.send-key .key__cap em { font-style: normal; opacity: 0.55; margin-left: 6px; }
+.send-key:hover .key__cap { transform: translateZ(46px) scale(1.04); filter: brightness(1.05) saturate(1.1);
+  box-shadow:
+    0 14px 0 color-mix(in srgb, var(--kc, #dceeb1), transparent 40%),
+    0 15px 0 color-mix(in srgb, color-mix(in srgb, var(--kc, #dceeb1), #000 32%), transparent 50%),
+    0 42px 50px -14px color-mix(in srgb, var(--kc, #dceeb1), transparent 42%),
+    0 58px 70px -26px rgba(0,0,0,0.26),
+    0 0 48px color-mix(in srgb, var(--kc, #dceeb1), transparent 50%),
+    inset calc(var(--dx) * -0.15px) calc(var(--dy) * -0.15px) 6px -2px rgba(255,255,255,1),
+    inset 0 0 0 1px rgba(255,255,255,0.55); }
+.send-stage__hint { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.send-stage__hint b { font-weight: 500; color: var(--ink); border: 1px solid var(--line-2); border-radius: 5px; padding: 1px 7px; }
+
+/* floating decorative keycaps — each drifts on its own bob and parallaxes at
+   its own depth (--fd) against the shared --px/--py pointer offset */
+.float-key { position: absolute; aspect-ratio: 1; pointer-events: none; z-index: 0; transform: translate(calc(var(--px, 0px) * var(--fd, 1)), calc(var(--py, 0px) * var(--fd, 1))) rotate(var(--fr, 0deg)); }
+.float-key .key__cap { font-size: clamp(13px, 1.2vw, 17px); animation: floatBob 6s ease-in-out infinite alternate; }
+.float-key:nth-of-type(2) .key__cap { animation-delay: -2.2s; animation-duration: 7s; }
+.float-key:nth-of-type(3) .key__cap { animation-delay: -4.1s; animation-duration: 5.4s; }
+.float-key:nth-of-type(4) .key__cap { animation-delay: -1.3s; animation-duration: 7.8s; }
+@keyframes floatBob { from { transform: translateY(-6px); } to { transform: translateY(8px); } }
+
+@media (max-width: 1024px) {
+  .composer { grid-template-columns: 1fr; }
+  .send-stage { min-height: 340px; margin-top: 10px; }
+}
 
 /* ---- FAQ (objection handling, accordion) ---- */
 .faq { padding-top: clamp(60px, 9vh, 120px); padding-bottom: clamp(30px, 5vh, 70px); }

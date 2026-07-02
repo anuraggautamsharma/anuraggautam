@@ -63,13 +63,45 @@
   </div>
 
   <main id="main">
-    <section class="contact-hero">
+    <section class="send-hero">
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
         <span class="sticker-tag sticker-tag--lime">★ Open to roles</span>
-        <span class="sticker-tag">Design · Marketing · GTM</span>
+        <span class="sticker-tag">Founding Designer · Head of Design · GTM Lead</span>
+        <span class="sticker-tag">Replies in ~24h</span>
       </div>
-      <h1>Let's <em>talk.</em></h1>
-      <p style="margin-top:28px;max-width:56ch;font-size:clamp(17px,2vw,24px);color:var(--muted)">Open to senior roles — <strong style="color:var(--ink);font-weight:500">Founding Designer, Head of Design, Product Design Lead, GTM / Growth Lead</strong> — and to project work. Fastest way to reach me is email.</p>
+      <h1>Press <em>send.</em></h1>
+      <p class="send-hero__lead">Tell me what you're building. Pick your situation, watch the email write itself, then hit the key — ten seconds, no blank page.</p>
+    </section>
+
+    <section class="composer">
+      <div class="composer__left">
+        <span class="c-label">01 — Pick your situation</span>
+        <div class="intent__row" data-intent-chips>
+          <button class="intent__chip" data-intent="role" type="button">Hiring for a role</button>
+          <button class="intent__chip" data-intent="sprint" type="button">Book a 0→1 sprint</button>
+          <button class="intent__chip" data-intent="gtm" type="button">GTM / pipeline help</button>
+          <button class="intent__chip" data-intent="other" type="button">Something else</button>
+        </div>
+        <span class="c-label">02 — Your draft, writing itself</span>
+        <div class="term" data-reveal>
+          <div class="term__bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="term__meta"><span class="k">TO</span>anuraggautamsharma@gmail.com</div>
+          <div class="term__meta"><span class="k">SUBJECT</span><span id="termSubject"></span></div>
+          <div class="term__rule" aria-hidden="true"></div>
+          <div class="term__body" id="termBody" aria-live="polite"></div>
+        </div>
+        <p class="composer__alt">The <span class="hl-note">[brackets]</span> are yours to fill once it opens in your mail app. Prefer plain email? <a href="mailto:anuraggautamsharma@gmail.com" data-copy-mail="anuraggautamsharma@gmail.com" data-cursor="copy">Copy the address</a> · <a href="/resume.html">view résumé →</a></p>
+      </div>
+      <div class="send-stage" id="sendStage">
+        <div class="float-key" style="--kc:#c5b0f4; left:4%; top:6%; --fd:1.6; --fr:-12deg; width:clamp(44px,4.4vw,62px)" aria-hidden="true"><i class="key__cap"><span>@</span></i></div>
+        <div class="float-key" style="--kc:#efd4d4; right:3%; top:14%; --fd:2.3; --fr:9deg; width:clamp(38px,3.8vw,52px)" aria-hidden="true"><i class="key__cap"><span>★</span></i></div>
+        <div class="float-key" style="--kc:#c8e6cd; left:9%; bottom:14%; --fd:2.8; --fr:7deg; width:clamp(40px,4vw,54px)" aria-hidden="true"><i class="key__cap"><span>→</span></i></div>
+        <div class="float-key" style="--kc:#f4ecd6; right:8%; bottom:5%; --fd:1.2; --fr:-7deg; width:clamp(48px,4.8vw,66px)" aria-hidden="true"><i class="key__cap"><span>hi</span></i></div>
+        <div class="key key--skill send-key" id="sendKey" style="--kc:#dceeb1" role="button" tabindex="0" aria-label="Open the drafted email in your mail app" data-cursor="send it">
+          <i class="key__cap"><span>send <em>↵</em></span></i>
+        </div>
+        <span class="send-stage__hint">03 — press the key, or hit <b>enter</b></span>
+      </div>
     </section>
 
     <section style="padding-bottom:clamp(20px,4vh,40px)">
@@ -78,22 +110,6 @@
         <div class="now-bar__item"><span class="now-bar__k">Based in</span><span class="now-bar__v">Bengaluru, IN · IST</span></div>
         <div class="now-bar__item"><span class="now-bar__k">Replies in</span><span class="now-bar__v">~24 hours</span></div>
         <a href="/Anurag-Gautam-CV.pdf" download="Anurag-Gautam-CV.pdf" class="btn btn--ghost" data-cursor="download">Download CV <span aria-hidden="true">↓</span></a>
-      </div>
-    </section>
-
-    <section class="contact-grid" style="grid-template-columns:1fr">
-      <div class="contact-card" data-reveal>
-        <h3>Email — fastest</h3>
-        <a class="big" href="mailto:anuraggautamsharma@gmail.com" data-copy-mail="anuraggautamsharma@gmail.com" data-cursor="copy">anuraggautamsharma@gmail.com</a>
-        <div class="intent" data-intent-chips>
-          <span class="k">One-click intro — pick your situation</span>
-          <div class="intent__row">
-            <a class="intent__chip" data-intent="role" href="mailto:anuraggautamsharma@gmail.com?subject=Hiring%3A%20%5Brole%5D%20at%20%5Bcompany%5D&body=Hi%20Anurag%2C%0A%0AWe%27re%20hiring%20a%20%5Brole%5D%20at%20%5Bcompany%5D%20and%20your%20profile%20fits.%20Sharing%20the%20JD%20%E2%80%94%20would%20love%20to%20talk.%0A%0A%5BName%5D">Hiring for a role</a>
-            <a class="intent__chip" data-intent="sprint" href="mailto:anuraggautamsharma@gmail.com?subject=0%E2%86%921%20Launch%20Sprint%3A%20%5Bproject%5D&body=Hi%20Anurag%2C%0A%0AI%20want%20to%20take%20%5Bidea/product%5D%20from%20zero%20to%20in-market.%20Can%20we%20scope%20a%20sprint%3F%0A%0A%5BName%5D">Book a 0→1 sprint</a>
-            <a class="intent__chip" data-intent="gtm" href="mailto:anuraggautamsharma@gmail.com?subject=GTM%20help%3A%20%5Bcompany%5D&body=Hi%20Anurag%2C%0A%0AWe%20need%20pipeline%20at%20%5Bcompany%5D%20%E2%80%94%20our%20ICP%20is%20roughly%20%5Bwho%5D.%20Can%20we%20talk%20GTM%3F%0A%0A%5BName%5D">GTM / pipeline help</a>
-          </div>
-        </div>
-        <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap"><a href="mailto:anuraggautamsharma@gmail.com" class="btn btn--primary" data-cursor="write">Write to me <span aria-hidden="true">→</span></a><a href="/resume.html" class="btn btn--ghost" data-cursor="open">View résumé <span aria-hidden="true">→</span></a></div>
       </div>
     </section>
 
