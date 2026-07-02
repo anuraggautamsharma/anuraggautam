@@ -450,6 +450,18 @@ function initCountUp() {
   els.forEach((el) => io.observe(el))
 }
 
+/* ---------- CONTACT INTENT ----------
+   The service cards deep-link to /contact.html?role|?sprint — honour it:
+   pre-light the matching one-click intro chip so the visitor's next step
+   is already picked out when they land. */
+function initIntent() {
+  const wrap = document.querySelector('[data-intent-chips]')
+  if (!wrap) return
+  const q = location.search.toLowerCase()
+  const hot = q.includes('sprint') ? 'sprint' : q.includes('role') ? 'role' : q.includes('gtm') ? 'gtm' : null
+  if (hot) wrap.querySelector(`[data-intent="${hot}"]`)?.classList.add('is-hot')
+}
+
 /* ---------- COPY EMAIL ---------- */
 function initCopyMail() {
   document.querySelectorAll('[data-copy-mail]').forEach((mail) => {
@@ -576,6 +588,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initIntent(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

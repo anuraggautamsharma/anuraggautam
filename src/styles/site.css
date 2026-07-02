@@ -755,6 +755,23 @@ a.work-card--cover:hover::before { opacity: 1; }
 .fit__col--yes li::before { content: '+'; position: absolute; left: 2px; color: var(--ink); font-weight: 600; }
 .fit__col--no li::before { content: '−'; position: absolute; left: 2px; color: var(--muted); font-weight: 600; }
 
+/* sitewide footer hire strip — the recruiter/client can finish their job at
+   the bottom of any page: roles, engagement shapes, response time, CV */
+.footer__hire { margin: clamp(16px, 2.4vh, 26px) 0 clamp(24px, 3.6vh, 38px); max-width: 76ch; font-size: clamp(13.5px, 1.1vw, 16px); line-height: 1.75; color: var(--muted); }
+.footer__hire .k { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink); border: 1px solid var(--line-2); border-radius: 999px; padding: 3px 9px; margin-right: 8px; white-space: nowrap; }
+.footer__hire strong { color: var(--ink); font-weight: 500; }
+.footer__hire a { color: var(--ink); border-bottom: 1px solid var(--ink); white-space: nowrap; }
+
+/* one-click intro chips (contact) — prefilled mailto per intent; ?role/?sprint
+   deep links pre-light the matching chip (initIntent) */
+.intent { margin-top: 30px; }
+.intent .k { display: block; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 12px; }
+.intent__row { display: flex; gap: 10px; flex-wrap: wrap; }
+.intent__chip { border: 1px solid var(--line-2); border-radius: 999px; padding: 11px 20px; font-size: 14px; font-weight: 500; color: var(--ink); transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.35s var(--ease-bounce); }
+.intent__chip:hover { background: var(--ink); color: #fff; border-color: var(--ink); transform: translateY(-2px); }
+.intent__chip.is-hot { background: var(--ink); color: #fff; border-color: var(--ink); box-shadow: 0 0 0 4px rgba(0,0,0,0.08); }
+.intent__chip.is-hot::after { content: ' ★'; }
+
 /* ---- FAQ (objection handling, accordion) ---- */
 .faq { padding-top: clamp(60px, 9vh, 120px); padding-bottom: clamp(30px, 5vh, 70px); }
 .faq__item { border-top: 1px solid var(--line-2); }
