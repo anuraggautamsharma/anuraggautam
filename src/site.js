@@ -485,6 +485,25 @@ function initGlassCards() {
   })
 }
 
+/* ---------- PROCESS SELF-DEMO ----------
+   the method demos itself: the first time the process grid scrolls into
+   view, the three keys press themselves in order — 01, 02, 03 — like a
+   hand walking the keyboard. Runs once; sits out under reduced motion. */
+function initProcessDemo() {
+  if (reduced) return
+  const keys = [...document.querySelectorAll('.process__key')]
+  if (!keys.length) return
+  const io = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return
+    io.disconnect()
+    keys.forEach((k, i) => {
+      setTimeout(() => k.classList.add('is-down'), 450 + i * 360)
+      setTimeout(() => k.classList.remove('is-down'), 450 + i * 360 + 240)
+    })
+  }, { threshold: 0.55 })
+  io.observe(keys[0].parentElement)
+}
+
 /* ---------- MAGNETIC ELEMENTS ----------
    subtly lean toward the cursor while hovered (footer email, primary CTAs) */
 function initMagnetic() {
@@ -538,6 +557,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })
