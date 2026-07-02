@@ -762,6 +762,17 @@ a.work-card--cover:hover::before { opacity: 1; }
 .footer__hire strong { color: var(--ink); font-weight: 500; }
 .footer__hire a { color: var(--ink); border-bottom: 1px solid var(--ink); white-space: nowrap; }
 
+/* ---- WORK QUEUE (honest empty state) ----
+   no placeholder case studies — a single clean card says the write-ups are
+   coming, and routes the visitor somewhere useful meanwhile. Cards return
+   to the grid one by one as each study is actually published. */
+.wip { border: 1px solid var(--line); border-radius: 24px; padding: clamp(30px, 4.5vw, 64px); background: linear-gradient(165deg, var(--bg-2), #fff 60%); }
+.wip__k { display: inline-block; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink); border: 1px solid var(--line-2); border-radius: 999px; padding: 4px 10px; margin-bottom: 18px; }
+.wip h2 { font-family: var(--serif); font-size: clamp(28px, 3.6vw, 60px); letter-spacing: -0.025em; line-height: 1.02; margin-bottom: 16px; }
+.wip h2 em { font-style: italic; }
+.wip p { color: var(--muted); font-size: clamp(15.5px, 1.3vw, 19px); line-height: 1.55; max-width: 62ch; margin-bottom: 26px; }
+.wip__row { display: flex; gap: 12px; flex-wrap: wrap; }
+
 /* ---- THE CAPABILITY RACK ----
    the toolkit as hardware: five liquid-glass keys, one held down at a
    time; the held key's discipline panel swaps in below, tinted by that
