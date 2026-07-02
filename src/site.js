@@ -116,15 +116,30 @@ function initCursor() {
    cursor) get a larger always-on idle sway so the slab still feels alive.
    Pauses when scrolled out of view to spare the battery on phones. */
 function initKeyboard() {
-  if (reduced) return
   const kbd = document.getElementById('kbd')
   if (!kbd) return
+  // every key learns its own centre (kbd-local %, unitless) so the CSS can
+  // compute per-cap specular parallax from the shared --lx/--ly light vars
+  const keys = [...kbd.querySelectorAll('.key')]
+  const setKeyPos = () => {
+    const kw = kbd.offsetWidth || 1, kh = kbd.offsetHeight || 1
+    keys.forEach((k) => {
+      k.style.setProperty('--kx', ((k.offsetLeft + k.offsetWidth / 2) / kw * 100).toFixed(1))
+      k.style.setProperty('--ky', ((k.offsetTop + k.offsetHeight / 2) / kh * 100).toFixed(1))
+    })
+  }
+  setKeyPos()
+  addEventListener('resize', setKeyPos)
+  if (reduced) return // static board keeps the CSS default light position
   const baseX = 56, baseZ = -44
   let tx = 0, ty = 0, cxv = 0, cyv = 0
+  let px = innerWidth * 0.7, py = innerHeight * 0.3 // light source (client px)
+  let lx = 32, ly = 16 // smoothed light, kbd-local %
   if (finePointer) {
     addEventListener('pointermove', (e) => {
       tx = (e.clientX / innerWidth - 0.5)
       ty = (e.clientY / innerHeight - 0.5)
+      px = e.clientX; py = e.clientY
     }, { passive: true })
   }
   const amp = finePointer ? 1 : 1.7 // touch has no cursor — sway harder
@@ -142,6 +157,22 @@ function initKeyboard() {
       const rx = baseX - cyv * 12 + swayX
       const rz = baseZ + cxv * 12 + swayZ
       kbd.style.transform = `rotateX(${rx}deg) rotateZ(${rz}deg) translate3d(${cxv * 34}px, ${cyv * 30 + float}px, 0)`
+      // light: cursor position mapped into the (transformed) board's box, plus
+      // a slow drift so the sheet of light keeps living during idle sway.
+      // Touch devices get a pure orbit — no cursor, but the glass still moves.
+      let tlx, tly
+      if (finePointer) {
+        const r = kbd.getBoundingClientRect()
+        tlx = ((px - r.left) / (r.width || 1)) * 100 + Math.sin(t * 0.5) * 6
+        tly = ((py - r.top) / (r.height || 1)) * 100 + Math.cos(t * 0.42) * 6
+      } else {
+        tlx = 50 + Math.sin(t * 0.33) * 46
+        tly = 26 + Math.cos(t * 0.26) * 30
+      }
+      tlx = Math.max(-50, Math.min(150, tlx)); tly = Math.max(-50, Math.min(150, tly))
+      lx += (tlx - lx) * 0.08; ly += (tly - ly) * 0.08
+      kbd.style.setProperty('--lx', lx.toFixed(1))
+      kbd.style.setProperty('--ly', ly.toFixed(1))
     }
     requestAnimationFrame(loop)
   }
