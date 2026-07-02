@@ -33,7 +33,8 @@ Product & visual design (design systems, app UI, iconography, visual identity) �
 ## Pages
 
 - [Home](https://anuraggautam.com/): overview and thesis
-- [Work](https://anuraggautam.com/work): case studies (being published one by one)
+- [Work](https://anuraggautam.com/work): case studies (publishing one by one)
+- [Suggaa case study](https://anuraggautam.com/work/suggaa): five years, three apps, one design system — 0 to 25,000+ riders across two Indian cities
 - [About](https://anuraggautam.com/about): the story — three bets from 2017 to now
 - [Capabilities](https://anuraggautam.com/capabilities): the five-discipline toolkit and how each is hired
 - [Contact](https://anuraggautam.com/contact): email composer, fit check, FAQ

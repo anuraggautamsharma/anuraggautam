@@ -378,6 +378,22 @@ function initNav() {
   })
 }
 
+/* ---------- DRAG-TO-SCROLL SHOT STRIPS ----------
+   case-study flow strips pan with a mouse drag (touch scrolls natively) */
+function initShotStrips() {
+  document.querySelectorAll('.shot-scroll').forEach((el) => {
+    let down = false, startX = 0, startL = 0
+    el.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return
+      down = true; startX = e.clientX; startL = el.scrollLeft
+      el.setPointerCapture(e.pointerId)
+    })
+    el.addEventListener('pointermove', (e) => { if (down) el.scrollLeft = startL - (e.clientX - startX) })
+    const up = () => { down = false }
+    el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up)
+  })
+}
+
 /* ---------- CHAPTER RAIL (home) ----------
    A mono "you are here" map down the left edge: the homepage reads as a
    build log (/00 thesis → /04 contact) and the rail tracks which chapter
@@ -711,6 +727,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initComposer(); initRack(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initShotStrips(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initComposer(); initRack(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })
