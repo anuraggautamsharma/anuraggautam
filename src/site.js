@@ -168,6 +168,63 @@ function initKeycaps() {
   })
 }
 
+/* ---------- TYPE ON THE KEYBOARD ----------
+   The hero keyboard is a real input surface, not a prop: physical typing
+   presses the matching keycaps in sync, and finishing a key's word ("gtm",
+   "brand"…) or a page name ("work", "about"…) rides the page transition
+   there. Only listens while the keyboard is on screen, and never steals
+   keystrokes from form fields. */
+function initTypeKeys() {
+  const kbd = document.getElementById('kbd')
+  if (!kbd) return
+  const skills = [...kbd.querySelectorAll('.key--skill[data-href]')].map((k) => ({
+    el: k, label: k.textContent.trim().toLowerCase(), href: k.getAttribute('data-href'),
+  }))
+  const symbols = new Map()
+  kbd.querySelectorAll('.key--mute, .key--ghost').forEach((k) => {
+    const ch = k.textContent.trim().toLowerCase()
+    if (ch.length === 1) symbols.set(ch, k)
+  })
+  const pages = { work: '/work.html', about: '/about.html', contact: '/contact.html', resume: '/resume.html', capabilities: '/capabilities.html' }
+  let visible = false
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0.2 }).observe(kbd)
+  let buffer = '', timer = 0, navigating = false
+  // longest prefix of `word` that the buffer currently ends with
+  const prefixLen = (buf, word) => {
+    for (let n = Math.min(buf.length, word.length); n > 0; n--) if (buf.endsWith(word.slice(0, n))) return n
+    return 0
+  }
+  const tap = (el, hold) => {
+    el.classList.add('is-press')
+    setTimeout(() => el.classList.remove('is-press'), hold ? 620 : 150)
+  }
+  addEventListener('keydown', (e) => {
+    if (!visible || navigating || e.metaKey || e.ctrlKey || e.altKey) return
+    const t = e.target
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
+    const ch = e.key.toLowerCase()
+    if (ch.length === 1 && symbols.has(ch)) { tap(symbols.get(ch)); return }
+    if (!/^[a-z0-9]$/.test(ch)) { buffer = ''; return }
+    clearTimeout(timer); timer = setTimeout(() => { buffer = '' }, 1400)
+    buffer = (buffer + ch).slice(-14)
+    let hit = null
+    for (const s of skills) {
+      const n = prefixLen(buffer, s.label)
+      if (n === s.label.length) hit = s
+      else if (n > 0) tap(s.el)
+    }
+    if (hit) {
+      navigating = true
+      tap(hit.el, true)
+      setTimeout(() => navWithFx(hit.href), 430)
+      return
+    }
+    for (const [word, href] of Object.entries(pages)) {
+      if (buffer.endsWith(word)) { navigating = true; setTimeout(() => navWithFx(href), 200); return }
+    }
+  })
+}
+
 /* ---------- WORK FLOAT (cursor preview + hover-to-play video) ---------- */
 function initWorkFloat() {
   if (!finePointer) return
@@ -290,6 +347,59 @@ function initNav() {
   })
 }
 
+/* ---------- CHAPTER RAIL (home) ----------
+   A mono "you are here" map down the left edge: the homepage reads as a
+   build log (/00 thesis → /04 contact) and the rail tracks which chapter
+   you're in. Fades in once you leave the hero; wide screens only (CSS). */
+function initRail() {
+  const rail = document.getElementById('rail')
+  if (!rail) return
+  const items = [...rail.querySelectorAll('.rail__item')]
+  const secs = items.map((a) => document.querySelector(a.getAttribute('href')))
+  const fill = document.getElementById('railFill')
+  const update = () => {
+    const probe = scrollY + innerHeight * 0.42
+    let idx = -1
+    secs.forEach((s, i) => { if (s && s.offsetTop <= probe) idx = i })
+    items.forEach((a, i) => a.classList.toggle('is-active', i === idx))
+    const max = document.documentElement.scrollHeight - innerHeight
+    if (fill) fill.style.height = (max > 0 ? Math.min(1, scrollY / max) * 100 : 0) + '%'
+    rail.classList.toggle('is-live', scrollY > innerHeight * 0.5)
+  }
+  addEventListener('scroll', update, { passive: true })
+  addEventListener('resize', update)
+  update()
+}
+
+/* ---------- COUNT-UP STATS ----------
+   Outcome numbers earn their size by moving: on first sight they roll from
+   zero to the real figure (prefix/suffix like "₹", "K+", "yrs" preserved).
+   Skips ranges like "0→1" and sits out under reduced motion. */
+function initCountUp() {
+  if (reduced) return
+  const els = [...document.querySelectorAll('.case-stats b')]
+  if (!els.length) return
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (!en.isIntersecting) return
+    io.unobserve(en.target)
+    const el = en.target, txt = el.textContent
+    if (txt.includes('→')) return
+    const m = txt.match(/[0-9]+(?:\.[0-9]+)?/)
+    if (!m) return
+    const num = parseFloat(m[0])
+    const pre = txt.slice(0, m.index), post = txt.slice(m.index + m[0].length)
+    const dec = m[0].includes('.') ? 1 : 0
+    const t0 = performance.now(), dur = 1100
+    ;(function step(now) {
+      const t = Math.min((now - t0) / dur, 1)
+      const e = 1 - Math.pow(1 - t, 3)
+      el.textContent = pre + (num * e).toFixed(dec) + post
+      if (t < 1) requestAnimationFrame(step)
+    })(t0)
+  }), { threshold: 0.5 })
+  els.forEach((el) => io.observe(el))
+}
+
 /* ---------- COPY EMAIL ---------- */
 function initCopyMail() {
   document.querySelectorAll('[data-copy-mail]').forEach((mail) => {
@@ -391,6 +501,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })

@@ -291,6 +291,39 @@ main > section.block { max-width: var(--maxw); margin-left: auto; margin-right: 
   background: var(--bg);
 }
 
+/* microcopy that gives the game away — the keyboard is a usable input,
+   not a prop. Sits by the keyboard's lower edge on desktop; flows under it
+   (centered) once the hero stacks on smaller screens. */
+.kbd-hint {
+  position: absolute; right: var(--pad); bottom: clamp(96px, 15vh, 175px); z-index: 3;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); text-align: right;
+  animation: hintIn 0.9s var(--ease) 1.4s backwards;
+}
+.kbd-hint__touch { display: none; }
+@media (hover: none) { .kbd-hint__fine { display: none; } .kbd-hint__touch { display: inline; } }
+@keyframes hintIn { from { opacity: 0; transform: translateY(8px); } }
+
+/* chapter rail (home) — a mono "you are here" map down the left edge.
+   The homepage reads as a build log (/00 → /04); the rail shows the current
+   chapter and total scroll progress. Collapsed to numbers; labels surface
+   for the active chapter and on hover. Wide screens only. */
+.rail {
+  position: fixed; left: clamp(10px, 1.3vw, 24px); top: 50%; transform: translateY(-50%); z-index: 90;
+  display: none; flex-direction: column; align-items: flex-start; gap: 15px;
+  opacity: 0; pointer-events: none; transition: opacity 0.5s var(--ease);
+}
+.rail.is-live { opacity: 1; pointer-events: auto; }
+@media (min-width: 1200px) { .rail { display: flex; } }
+.rail__line { position: relative; width: 2px; height: 52px; margin-left: 8px; margin-bottom: 4px; background: rgba(0,0,0,0.12); border-radius: 2px; overflow: hidden; }
+.rail__line i { position: absolute; left: 0; top: 0; width: 100%; height: 0%; background: var(--ink); }
+.rail__item { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.34); transition: color 0.3s; }
+.rail__item .n { min-width: 18px; }
+.rail__item .l { opacity: 0; transform: translateX(-5px); transition: opacity 0.3s var(--ease), transform 0.3s var(--ease); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; color: var(--muted); white-space: nowrap; }
+.rail__item.is-active { color: var(--ink); }
+.rail__item.is-active .l { opacity: 1; transform: none; color: var(--ink); border-color: var(--ink); }
+.rail:hover .rail__item .l { opacity: 1; transform: none; }
+
 /* ============================================================
    GENERIC SECTION HEADINGS
    ============================================================ */
@@ -633,6 +666,7 @@ a.work-card--cover:hover::before { opacity: 1; }
   .hero { min-height: auto; padding-top: clamp(96px, 14vh, 150px); padding-bottom: clamp(40px, 8vh, 90px); }
   .hero__head { order: 1; }
   .kbd-wrap { order: 2; position: relative; right: auto; top: auto; width: 100%; max-width: 560px; margin: clamp(26px, 5vh, 52px) auto clamp(6px, 2vh, 18px); }
+  .kbd-hint { order: 2; position: static; text-align: center; margin-top: 4px; }
   .hero__foot { order: 3; margin-top: clamp(24px, 4vh, 46px); }
   .proof__grid { grid-template-columns: 1fr 1fr; }
   .work-grid { grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 22px); }
@@ -739,7 +773,7 @@ a.work-card--cover:hover::before { opacity: 1; }
 
 /* print → a clean PDF of the résumé (hide all chrome, white page) */
 @media print {
-  .nav, .nav__menu, .mobile-menu, .page-fx, .loader, .cursor, .skip-link, .no-print, .footer { display: none !important; }
+  .nav, .nav__menu, .mobile-menu, .page-fx, .loader, .cursor, .skip-link, .no-print, .footer, .rail, .kbd-hint { display: none !important; }
   html, body { background: #fff !important; }
   .resume { padding: 0; max-width: none; }
   .resume-head { padding-top: 0; }
