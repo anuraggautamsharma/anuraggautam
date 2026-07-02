@@ -484,8 +484,8 @@ a.work-card--cover:hover::before { opacity: 1; }
    hover: real cinematic colour returns + a soft zoom and a lime frame */
 .about-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.06) brightness(1.02); transition: filter 0.6s var(--ease), transform 1.2s var(--ease); }
 .about-portrait:hover img { filter: grayscale(0) contrast(1); transform: scale(1.04); }
-.about-portrait::after { content: ''; position: absolute; inset: 0; border-radius: 20px; box-shadow: inset 0 0 0 0 var(--lime); transition: box-shadow 0.5s var(--ease); pointer-events: none; }
-.about-portrait:hover::after { box-shadow: inset 0 0 0 3px var(--lime); }
+.about-portrait::after { content: ''; position: absolute; inset: 0; border-radius: 20px; box-shadow: inset 0 0 0 0 rgba(255,255,255,0.9); transition: box-shadow 0.5s var(--ease); pointer-events: none; }
+.about-portrait:hover::after { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9), inset 0 0 40px rgba(255,255,255,0.12); }
 .about-portrait .tag { position: absolute; left: 14px; bottom: 14px; z-index: 2; }
 .about-copy p { font-size: clamp(18px, 2vw, 28px); line-height: 1.4; margin-bottom: 26px; }
 .about-copy p.lead { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 50px); line-height: 1.1; }
@@ -501,13 +501,32 @@ a.work-card--cover:hover::before { opacity: 1; }
 .cap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .cap-tags span { font-size: 12px; border: 1px solid var(--line-2); border-radius: 50px; padding: 6px 13px; color: var(--muted); }
 
+/* ---- the story: three bets, one line ----
+   chronological (zero → in-market, same arc as the thesis). A vertical
+   story-line draws itself down the left edge as you scroll (initStoryLine)
+   and each bet's node lights up as it enters view (via data-reveal's is-in). */
 .timeline { padding-top: clamp(50px, 8vh, 110px); padding-bottom: clamp(50px, 8vh, 110px); }
-.timeline__item { display: grid; grid-template-columns: 230px 1fr; gap: clamp(20px, 4vw, 60px); padding: clamp(26px, 4vh, 46px) 0; border-top: 1px solid var(--line); }
+.timeline__flow { --flowpad: clamp(30px, 4vw, 56px); position: relative; padding-left: var(--flowpad); }
+.story-line { position: absolute; left: 5px; top: 14px; bottom: 14px; width: 2px; border-radius: 2px; background: rgba(0,0,0,0.12); overflow: hidden; }
+.story-line i { position: absolute; inset: 0 0 auto 0; height: 0%; background: var(--ink); }
+.timeline__item { position: relative; display: grid; grid-template-columns: 210px 1fr; gap: clamp(20px, 4vw, 60px); padding: clamp(26px, 4vh, 46px) 0; border-top: 1px solid var(--line); }
 .timeline__item:last-child { border-bottom: 1px solid var(--line); }
-.timeline__year { font-size: 14px; color: var(--muted); padding-top: 8px; }
+/* the node: lights when the bet scrolls into view */
+.timeline__item::before { content: ""; position: absolute; left: calc(-1 * var(--flowpad) + 1px); top: clamp(38px, 5.5vh, 60px); width: 10px; height: 10px; border-radius: 50%; background: var(--block-cream); border: 2px solid rgba(0,0,0,0.3); transition: background 0.5s var(--ease), border-color 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.timeline__item.is-in::before { background: var(--ink); border-color: var(--ink); box-shadow: 0 0 0 5px rgba(0,0,0,0.07); }
+.timeline__year b { display: block; font-family: var(--serif); font-weight: 350; font-size: clamp(34px, 3.6vw, 60px); line-height: 0.95; letter-spacing: -0.035em; color: var(--ink); }
+.timeline__year span { display: block; margin-top: 8px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.timeline__era { display: inline-block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink); border: 1px solid rgba(0,0,0,0.25); border-radius: 999px; padding: 5px 12px; margin-bottom: 14px; }
 .timeline__body h3 { font-family: var(--serif); font-size: clamp(24px, 3vw, 42px); display: flex; flex-wrap: wrap; gap: 14px; align-items: baseline; }
 .timeline__body h3 span { font-family: var(--sans); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); border: 1px solid var(--line-2); border-radius: 50px; padding: 4px 12px; }
 .timeline__body p { margin-top: 14px; color: var(--muted); font-size: clamp(15px, 1.4vw, 19px); max-width: 70ch; }
+
+/* ---- about stats band — the proof, flat and loud ---- */
+.about-stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: clamp(24px, 4vh, 56px); }
+.about-stats > div { padding: clamp(22px, 3vh, 38px) clamp(16px, 2vw, 30px); border-left: 1px solid var(--line); }
+.about-stats > div:first-child { border-left: 0; padding-left: 0; }
+.about-stats b { display: block; font-family: var(--serif); font-weight: 350; font-size: clamp(36px, 4.4vw, 72px); line-height: 1; letter-spacing: -0.035em; color: var(--ink); }
+.about-stats span { display: block; margin-top: 10px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
 
 /* ============================================================
    STUDIO band
@@ -790,7 +809,7 @@ a.work-card--cover:hover::before { opacity: 1; }
   /* the portrait's colour + lime frame is a hover reveal on desktop — touch
      can't hover, so show the colour photo (with the frame) by default */
   .about-portrait img { filter: grayscale(0) contrast(1); }
-  .about-portrait::after { box-shadow: inset 0 0 0 2.5px var(--lime); }
+  .about-portrait::after { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.85); }
   .caps__item:active { background: rgba(220,238,177,0.07); }
 }
 
@@ -831,6 +850,9 @@ a.work-card--cover:hover::before { opacity: 1; }
   .proof__grid { grid-template-columns: 1fr; }
   .work-grid { grid-template-columns: 1fr; }
   .services__grid { grid-template-columns: 1fr; }
+  .about-stats { grid-template-columns: 1fr 1fr; }
+  .about-stats > div:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .about-stats > div:nth-child(n+3) { border-top: 1px solid var(--line); }
   .process__grid { grid-template-columns: 1fr; gap: clamp(28px, 7vw, 44px); }
   .process__no { font-size: clamp(72px, 22vw, 110px); }
   .hero__ctas .btn { flex: 1 1 100%; justify-content: space-between; }

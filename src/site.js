@@ -402,13 +402,32 @@ function initRail() {
   update()
 }
 
+/* ---------- STORY LINE (about) ----------
+   The three-bets timeline draws a vertical line down its left edge as you
+   read — the story literally progresses with you. Nodes light via is-in. */
+function initStoryLine() {
+  const flow = document.querySelector('.timeline__flow')
+  const fill = document.getElementById('storyFill')
+  if (!flow || !fill) return
+  if (reduced) { fill.style.height = '100%'; return }
+  const update = () => {
+    const r = flow.getBoundingClientRect()
+    const readLine = innerHeight * 0.7
+    const p = Math.max(0, Math.min(1, (readLine - r.top) / (r.height || 1)))
+    fill.style.height = (p * 100).toFixed(1) + '%'
+  }
+  addEventListener('scroll', update, { passive: true })
+  addEventListener('resize', update)
+  update()
+}
+
 /* ---------- COUNT-UP STATS ----------
    Outcome numbers earn their size by moving: on first sight they roll from
    zero to the real figure (prefix/suffix like "₹", "K+", "yrs" preserved).
    Skips ranges like "0→1" and sits out under reduced motion. */
 function initCountUp() {
   if (reduced) return
-  const els = [...document.querySelectorAll('.case-stats b')]
+  const els = [...document.querySelectorAll('.case-stats b, .about-stats b')]
   if (!els.length) return
   const io = new IntersectionObserver((entries) => entries.forEach((en) => {
     if (!en.isIntersecting) return
@@ -460,8 +479,8 @@ function initGlassCards() {
     k.addEventListener('pointerleave', () => k.classList.remove('is-down'))
   })
   if (!finePointer || reduced) return
-  document.querySelectorAll('a.work-card, .service, .process__key').forEach((card) => {
-    const tilt = card.classList.contains('work-card')
+  document.querySelectorAll('a.work-card, .service, .process__key, .about-portrait').forEach((card) => {
+    const tilt = card.classList.contains('work-card') || card.classList.contains('about-portrait')
     let raf = 0, mx = 50, my = 50, rx = 0, ry = 0
     function apply() {
       raf = 0
@@ -557,6 +576,6 @@ function initCovers() {
 
 function boot() {
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear()
-  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
+  initScroll(); initTransition(); initKeyboard(); initKeycaps(); initTypeKeys(); initRail(); initStoryLine(); initCountUp(); initWorkFloat(); initScrollFill(); initMarquees(); initReveals(); initNav(); initCopyMail(); initGlassCards(); initProcessDemo(); initMagnetic(); initCovers()
 }
 addEventListener('DOMContentLoaded', () => { runLoader(boot) })
