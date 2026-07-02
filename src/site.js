@@ -262,16 +262,17 @@ function initWorkFloat() {
   const float = document.getElementById('workFloat')
   if (!float) return
   const inner = float.querySelector('.work-float__inner')
-  const tints = ['#7ecfa0', '#d7ecdf', '#3fa06e', '#dcecd8', '#6cc48f']
   let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, active = false
   document.querySelectorAll('a.work-card').forEach((card, i) => {
     card.addEventListener('pointerenter', () => {
+      // only float real media — cards with covers already show their art,
+      // so the old tinted-label fallback would just sit on top of it
       const v = card.dataset.video, m = card.dataset.media
-      const label = (card.querySelector('.work-card__name')?.firstChild?.textContent || '').trim()
+      if (!v && !m) return
       inner.innerHTML = v
         ? `<video src="${v}" muted loop autoplay playsinline></video>`
-        : m ? `<img src="${m}" alt="">` : `<span class="label">${label}</span>`
-      inner.style.background = (v || m) ? '#000' : tints[i % tints.length]
+        : `<img src="${m}" alt="">`
+      inner.style.background = '#000'
       float.classList.add('is-visible'); active = true
     })
     card.addEventListener('pointerleave', () => {
