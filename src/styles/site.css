@@ -602,6 +602,11 @@ a.work-card--cover:hover::before { opacity: 1; }
 .case-meta div { background: var(--card); border-radius: 16px; padding: 20px; }
 .case-meta dt { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
 .case-meta dd { font-size: clamp(15px, 1.3vw, 18px); }
+.series { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: clamp(26px, 4vh, 48px); }
+.series__k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-right: 6px; }
+.series a { font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; padding: 9px 16px; border: 1.5px solid var(--line); border-radius: 999px; color: var(--muted); transition: border-color 0.25s var(--ease), color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease); }
+.series a:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-2px); }
+.series a.is-here { background: var(--ink); border-color: var(--ink); color: var(--bg); pointer-events: none; }
 .case-cover { aspect-ratio: 16/9; border-radius: 22px; overflow: hidden; margin-bottom: clamp(30px, 5vh, 60px); }
 .case-section { max-width: 880px; margin: 0 auto; padding: clamp(36px, 6vh, 80px) var(--pad); }
 .case-section h2 { font-family: var(--serif); font-size: clamp(28px, 4.4vw, 60px); margin-bottom: 26px; }
@@ -846,6 +851,8 @@ a.work-card--cover:hover::before { opacity: 1; }
 /* uniform case-study grid — every published study gets the same-size card */
 .work-grid--uniform { grid-template-columns: repeat(2, 1fr); }
 .work-grid--uniform .work-card { min-height: clamp(300px, 34vw, 480px); }
+.work-grid--uniform .work-card__name { font-size: clamp(28px, 3.2vw, 46px); line-height: 1; }
+.work-card__star { white-space: nowrap; }
 @media (max-width: 700px) { .work-grid--uniform { grid-template-columns: 1fr; } }
 
 /* ---- THE CAPABILITY RACK ----
