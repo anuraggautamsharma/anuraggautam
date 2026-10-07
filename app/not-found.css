@@ -1,0 +1,19 @@
+/* 404: full-bleed sea, text in the open water. */
+.nf { min-block-size: max(100svh, 560px); display: grid; align-items: end; }
+.nf-inner { position: relative; z-index: 1; padding-block: calc(var(--nav-h) + var(--nav-inset) + var(--s-7)) var(--s-8); }
+.nf-text { grid-column: 1 / -1; display: grid; gap: var(--s-4); justify-items: start; }
+.nf-text .t-h1 { text-shadow: var(--text-shadow-photo); }
+.nf-line { color: var(--ink); max-inline-size: 30ch; text-shadow: var(--text-shadow-photo); }
+.nf-err { color: var(--ink); text-shadow: var(--text-shadow-photo); }
+.nf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: var(--s-3); }
+@media (max-width: 39.99rem) { .nf-actions .btn { inline-size: 100%; } }
+@media (min-width: 64rem) {
+  .nf { align-items: center; }
+  .nf-text { grid-column: 6 / span 7; }
+}
+/* Desktop text sits mid-frame, above the photo's bottom scrim: a soft local tint in the sea's own blue keeps the line ≥ 4.5:1. */
+@media (min-width: 64rem) {
+  .nf::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 48% 42% at 72% 50% in oklab, rgb(0 73 115 / .42), rgb(0 73 115 / 0)); }
+}
+@media (forced-colors: active) { .nf::after { display: none; } }

@@ -1,0 +1,28 @@
+/* Native <details> Q&A (used by /method and /about). Only transform and opacity animate. */
+.faq { border-top: 2px solid var(--ink); }
+.faq-item { border-bottom: 1px solid var(--line-strong); }
+.faq-q {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) 44px; align-items: start; gap: 16px;
+  padding-block: var(--s-5); cursor: pointer; list-style: none;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::marker { content: ""; }
+.faq-n { padding-top: .55em; color: var(--ink); }
+.faq-qt { text-wrap: balance; }
+.faq-mark { display: grid; place-items: center; inline-size: 44px; block-size: 44px; margin-top: -.35em; border: 1.5px solid var(--line-strong);
+  transition: transform var(--dur-ui) var(--ease-out), background-color var(--dur-hover) var(--ease-out); }
+.faq-mark > svg { transform: rotate(90deg); transition: transform var(--dur-ui) var(--ease-out); }
+.faq-item[open] .faq-mark > svg { transform: rotate(-90deg); }
+@media (hover: hover) { .faq-q:hover .faq-qt { text-decoration: underline 2px var(--link-line); text-underline-offset: .2em; } .faq-q:hover .faq-mark { border-color: var(--ink); } }
+.faq-q:focus-visible { outline-offset: 4px; }
+.faq-a { padding: 0 60px var(--s-6) calc(2.6em + 16px); }
+.faq-a .t-body { color: var(--ink-muted); }
+.faq-item[open] .faq-a { animation: faq-in var(--dur-panel) var(--ease-arrive) both; }
+@keyframes faq-in { from { opacity: 0; transform: translateY(-6px); } }
+@media (max-width: 39.99rem) {
+  .faq-q { grid-template-columns: minmax(0, 1fr) 44px; }
+  .faq-n { display: none; }
+  .faq-a { padding-inline: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .faq-item[open] .faq-a { animation: none; } }
+:root[data-motion="reduced"] .faq-item[open] .faq-a { animation: none; }

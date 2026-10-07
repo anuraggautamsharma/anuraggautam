@@ -1,0 +1,96 @@
+/* NoteCard + the contour tile (also the article cover). Imported by NoteCard and the
+   article header, so the homepage gets it without the /writing stylesheets. */
+
+/* ───────────── Contour tile ───────────── */
+.wr-tile {
+  --tile-bg: var(--c-alpine-700); --tile-line: var(--c-alpine-300); --tile-light: 255 255 255;
+  position: relative; isolation: isolate; overflow: clip;
+  aspect-ratio: var(--ar, 3 / 2); background: var(--tile-bg);
+}
+.wr-tile[data-hue="glacier"] { --tile-bg: var(--c-glacier-700); --tile-line: var(--c-glacier-300); }
+.wr-tile[data-hue="sunrise"] { --tile-bg: var(--c-sunrise-500); --tile-line: var(--c-sunrise-800); }
+.wr-tile[data-hue="granite"] { --tile-bg: var(--c-granite-800); --tile-line: var(--c-granite-400); }
+
+/* The contours: one of the two generated sheets, a hashed patch of it, used as a mask. */
+.wr-tile::before {
+  content: ""; position: absolute; inset: -16px; z-index: -1; pointer-events: none;
+  background: var(--tile-line); opacity: .6;
+  -webkit-mask: var(--topo-src) var(--tx, 50%) var(--ty, 50%) / var(--tz, 160%) auto no-repeat;
+  mask: var(--topo-src) var(--tx, 50%) var(--ty, 50%) / var(--tz, 160%) auto no-repeat;
+  transition: transform var(--dur-photo) var(--ease-settle);
+}
+/* Low sun from the north-west, the same light as the route map. */
+.wr-tile::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(120% 95% at 12% 0%, rgb(var(--tile-light) / .16), rgb(var(--tile-light) / 0) 62%);
+}
+
+.wr-tile-route { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; overflow: visible; }
+.wr-tile-route path { fill: none; stroke-linecap: round; }
+.wr-tile-route-casing { stroke: rgb(var(--scrim-rgb) / .18); stroke-width: 5; }
+.wr-tile-route-line { stroke: var(--c-paper); stroke-width: 2; stroke-dasharray: 5 6; }
+
+.wr-tile-pin {
+  position: absolute; left: var(--px, 50%); top: var(--py, 45%);
+  display: grid; place-items: center; inline-size: 28px; block-size: 28px;
+  border-radius: var(--r-pin); border: 2px solid var(--c-ink); background: var(--c-paper); color: var(--c-ink);
+  font: 600 10px/1 var(--ff-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 6px rgb(var(--veil-rgb) / .22);
+  translate: -50% -50%;
+  transition: transform var(--dur-panel) var(--ease-drop);
+}
+.wr-tile-pin-dot { inline-size: 8px; block-size: 8px; border-radius: var(--r-pin); background: var(--c-sunrise-500); }
+
+.wr-tile-tag {
+  position: absolute; inset: auto auto 12px 12px; padding: 5px 8px; max-inline-size: calc(100% - 24px);
+  background: rgb(var(--veil-rgb) / .92); color: var(--c-ink); white-space: nowrap; overflow: clip; text-overflow: ellipsis;
+}
+.wr-tile-tag-end { inset: auto 12px 12px auto; }
+
+/* Cover: bigger pin, tags set in from the margin. */
+.wr-tile[data-variant="cover"] .wr-tile-pin { inline-size: 40px; block-size: 40px; font-size: 12px; border-width: 2.5px; box-shadow: 0 0 0 10px rgb(var(--veil-rgb) / .2); }
+.wr-tile[data-variant="cover"] .wr-tile-tag { inset-block-end: clamp(12px, 2vw, 24px); inset-inline-start: clamp(12px, 2vw, 24px); }
+.wr-tile[data-variant="cover"] .wr-tile-tag-end { inset-inline-start: auto; inset-inline-end: clamp(12px, 2vw, 24px); }
+.wr-tile[data-variant="cover"] .wr-tile-route-line { stroke-width: 2.5; stroke-dasharray: 7 8; }
+
+/* ───────────── Card ───────────── */
+.wr-note { position: relative; display: grid; gap: 16px; align-content: start; container-type: inline-size; }
+.wr-note-body { display: grid; gap: 10px; align-content: start; }
+.wr-note-meta { display: flex; align-items: center; gap: 10px; color: var(--ink-muted); }
+.wr-note-blaze { inline-size: 6px; block-size: 14px; flex: none; background: var(--note-accent, currentColor); }
+.wr-note-title { color: var(--ink); max-inline-size: 26ch; }
+.wr-note-link { color: inherit; }
+.wr-note-link::after { content: ""; position: absolute; inset: 0; z-index: 1; } /* the whole card is the hit area */
+.wr-note-link:focus-visible { outline: none; box-shadow: none; }
+.wr-note:has(.wr-note-link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 6px; box-shadow: 0 0 0 9px var(--focus-halo); }
+/* The dek is never clamped: it is one or two sentences, and a CSS ellipsis after a full
+   stop ("convert....") reads as a typo. Write short deks instead. */
+.wr-note-dek { max-inline-size: 52ch; color: var(--ink-muted); font-size: var(--fs-ui); line-height: 1.45; text-wrap: pretty; }
+
+@media (hover: hover) {
+  .wr-note:hover .wr-tile::before { transform: translate(10px, -6px); }
+  .wr-note:hover .wr-tile-pin { transform: translateY(-4px); }
+}
+
+/* Lead card: a wider title; from a roomy container the dek moves beside it. */
+.wr-note[data-size="lg"] .wr-note-title { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--tr-h3); max-inline-size: 22ch; }
+@container (min-width: 44rem) {
+  .wr-note[data-size="lg"] .wr-note-body { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: var(--gutter); align-items: end; }
+  .wr-note[data-size="lg"] .wr-note-meta { grid-column: 1 / -1; }
+  .wr-note[data-size="lg"] .wr-note-dek { justify-self: end; }
+}
+
+@media (forced-colors: active) {
+  .wr-tile { border: 2px solid CanvasText; }
+  .wr-tile-pin, .wr-tile-tag { border: 2px solid CanvasText; }
+}
+
+/* ───────────── Shared element: card tile ⇄ article cover (`note-{slug}`, class wr-morph) ─────────────
+   The tile changes aspect (3:2 → 21:9), so both snapshots fill the morphing box and are
+   clipped by it instead of stretching. Reduced motion falls back to the global crossfade. */
+::view-transition-group(.wr-morph) { animation-duration: var(--dur-route); animation-timing-function: var(--ease-in-out); overflow: clip; }
+::view-transition-old(.wr-morph), ::view-transition-new(.wr-morph) { block-size: 100%; inline-size: 100%; object-fit: cover; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.wr-morph) { animation: none; }
+}
+:root[data-motion="reduced"]::view-transition-group(.wr-morph) { animation: none; }

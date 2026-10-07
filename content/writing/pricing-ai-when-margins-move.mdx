@@ -1,0 +1,104 @@
+---
+title: "Pricing AI when your margins move every quarter"
+seoTitle: "How to Price AI Products When Your Margins Keep Moving"
+description: "Seats, usage, credits or outcomes? A practical way to price AI products when model costs and buyer expectations keep shifting."
+date: "2026-10-06"
+kind: essay
+docNo: AG-E-003
+topic: pricing
+tags: ["AI pricing", "usage-based pricing", "value metric", "paid pilots", "RaaS"]
+takeaways:
+  - "Seats price people. When software does the work, the seat count stops tracking the value."
+  - "A good value metric passes three tests: the buyer understands it, it grows with the value they get, and you can forecast it."
+  - "When your costs move, hybrids hold up best: a platform fee, included usage and a clear overage."
+  - "A paid pilot is your first pricing decision. Credit the fee to year one."
+  - "In physical AI, risk transfer is pricing. RaaS and guarantees take mass out of the decision."
+faqs:
+  - q: "Should AI products be priced per seat or by usage?"
+    a: "It depends on what your product replaces. If it makes people faster, seats can still work. If it does work people used to do, usage, credits or outcomes usually track value better. Most AI companies end up with a hybrid: a platform fee plus included usage and an overage."
+  - q: "How do you price an AI product when model costs keep changing?"
+    a: "Price on the value metric, not on your costs, and build margin protection into the structure: included usage with an overage, credits that expire, and a contract term that lets you revisit rates. Then watch gross margin per customer every month, not every year."
+  - q: "What is a value metric?"
+    a: "A value metric is the unit you charge for, such as seats, tasks, documents, hours of video or robot-hours. A good one is easy for the buyer to understand, grows with the value they get, and is forecastable for both sides."
+draft: true
+---
+
+{/* DRAFT for Anurag's review. EVIDENCE BLOCK goes after "The four models": re-verify Growth Unhinged 2026 and ICONIQ State of AI (July 2026) figures, then add them with links in frontmatter `sources`. Nothing here is a statistic until it's checked. */}
+
+Here is the problem in one line. Your costs move every quarter, and your buyers still think in seats.
+
+When I started pricing AI products, I assumed the hard part would be the number. It isn't. The hard part is the structure, because the two things that set your margin keep changing underneath you. Model costs drop, then a new model is better and more expensive. Usage grows, then one customer finds a workflow that runs your product all night. Meanwhile, procurement wants a per-seat quote because that's what last year's software looked like.
+
+## Why seats break
+
+Seats price people. That worked when software made people faster. A seat was a decent proxy for value, because more users meant more work done.
+
+AI changes the proxy. When the product does the work, the best customers need fewer seats, not more. You get punished for succeeding. And your cost doesn't follow the seat at all. It follows usage, which one seat can multiply.
+
+So seats break in both directions. They under-charge the heavy user and over-charge the light one, and neither side can predict the bill they'll actually feel.
+
+## The four models
+
+There are four basic ways to charge. None of them is right by default. Each fits a situation and breaks in a different one.
+
+| Model | Fits when | Breaks when | Your margin risk | Buyer's risk |
+|---|---|---|---|---|
+| Seats | The product makes people faster | The product replaces the work | High: heavy users cost more than they pay | Low: predictable bill |
+| Usage | Value scales with volume | Usage is spiky or hard to forecast | Low: revenue follows cost | High: surprise invoices |
+| Credits | Many actions with different costs | Credits feel like a second currency | Medium: depends on credit pricing | Medium: prepaid, but abstract |
+| Outcomes | The result is measurable and attributable | Nobody agrees what caused the result | High: you carry delivery risk | Low: pays for results only |
+
+Read the last two columns together. Every model moves risk between you and the buyer. Pricing is deciding who carries what.
+
+## Pick a value metric with three tests
+
+The value metric is the unit you charge for: seats, tasks, documents, hours of video, robot-hours. I put every candidate through three tests.
+
+1. **The buyer understands it.** If a CFO can't predict next month's bill from the metric, they'll discount it in their head and negotiate you down.
+2. **It grows with value.** When the customer gets more out of the product, the metric should go up. When they get less, it should go down. Anything else feels unfair, eventually.
+3. **You can forecast it.** You need to know roughly what each unit costs you to serve, now and after the next model change.
+
+Most metrics pass two tests. The one that passes all three is worth a week of arguing about.
+
+## Hybrids hold up best
+
+When costs move, I rarely recommend a pure model. The structure that survives most changes looks like this:
+
+- **A platform fee.** Covers access, support and the fixed cost of serving the account. It's the predictable part of the bill.
+- **Included usage.** A generous allowance in the value metric, sized so most customers rarely exceed it.
+- **A clear overage.** A published rate for usage above the allowance. No surprises, no renegotiation.
+
+Credits work as a variant of this when your product has many actions with very different costs. Two rules keep them honest. Make credits expire, so they don't sit on your balance sheet as a promise you can't price. And publish what a credit buys, so the buyer isn't converting a second currency in their head.<Sidenote>Whatever you pick, put a rate review in the contract. A clause that lets both sides revisit unit rates at renewal is cheaper than a margin crisis in year two.</Sidenote>
+
+## A paid pilot is your first price
+
+Most AI companies make their first pricing decision by accident: they give the pilot away. That sets an anchor at zero and tells the buyer the real decision comes later.
+
+Charge for the pilot, and credit the fee against the first-year contract. The buyer loses nothing if they convert, and someone with a budget had to approve the spend. That person shows up to the readout. I wrote more about this in [Pilot purgatory is a go-to-market problem](/writing/pilot-purgatory-is-a-gtm-problem).
+
+Agree the rollout price before the pilot starts, too. Not the final contract. A price in principle. If it first appears after the pilot, you've started a second sales cycle at the moment you should be closing the first.
+
+## In physical AI, risk transfer is pricing
+
+Hardware changes the shape of the problem. A robot is a capital purchase with an installation, a site, a safety process and a maintenance plan attached. The decision is heavy before you've named a price.
+
+So the pricing work in physical AI is mostly about removing mass:
+
+- **Robots-as-a-service.** A monthly fee per robot or per robot-hour can turn a capital purchase into an operating expense. That often means a different approver and a faster yes.
+- **Performance guarantees.** Commit to a throughput or uptime level, with a remedy if you miss it. You carry the risk, so price it in.
+- **Site-two pricing up front.** Agree what the second site costs before the first one finishes. Expansion shouldn't be a new negotiation.
+
+Every one of these moves risk from the buyer to you. That's the point. Just make sure the price pays you for carrying it.
+
+## A one-page pricing checklist
+
+- The value metric passes all three tests
+- Cost-to-serve per unit is known, now and after the next model change
+- Platform fee, included usage and overage are published
+- Credits, if any, expire and have a published exchange rate
+- The pilot is paid, and the fee is credited to year one
+- The rollout price is agreed in principle before the pilot starts
+- A rate review is in the contract
+- Gross margin per customer is checked every month
+
+None of this needs a pricing committee. It needs one owner, one page, and a willingness to change the structure when the costs underneath it change. They will.

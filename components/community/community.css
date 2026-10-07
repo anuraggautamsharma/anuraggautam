@@ -1,0 +1,147 @@
+/* /community: The Rope Team. Tokens from app/globals.css; radius 0; no orange blocks here
+   (the founding-list button is the page's one sunrise action). Tones run photo → glacier →
+   paper → alpine → paper → sand → paper, so two deep tones never touch. */
+
+.cm-for, .cm-fmts, .cm-camp, .cm-join, .cm-school, .cm-faq { scroll-margin-top: calc(var(--nav-h) + var(--nav-inset)); }
+
+/* ── Status sign: a small trail marker with an arrow tip (honest status, never a date) ── */
+.cm-status {
+  --tip: 16px;
+  display: inline-flex; align-items: center; min-block-size: 36px; margin: 0;
+  padding: 8px calc(var(--tip) + 12px) 8px 12px;
+  background: var(--c-paper); color: var(--c-ink);
+  font: 500 var(--fs-micro)/1.2 var(--ff-mono), ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase;
+  clip-path: polygon(0 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, 0 100%);
+}
+.cm-status-inline { background: var(--c-ink); color: var(--c-paper); }
+@media (forced-colors: active) { .cm-status { clip-path: none; border: 2px solid CanvasText; } }
+
+/* ── Who it's for (glacier, rising on a ridge over the hero) ── */
+.cm-for { padding-block: var(--s-8) var(--s-9); }
+.cm-for-grid { row-gap: var(--s-6); }
+.cm-for-title, .cm-for-body { grid-column: 1 / -1; }
+.cm-for-title { max-inline-size: 10ch; }
+.cm-for-yes > li { grid-template-columns: 3rem minmax(0, 1fr); }
+.cm-for-yes .t-h4 { color: var(--ink); text-wrap: pretty; }
+.cm-for-mark { color: var(--ink); margin-top: .3em; }
+.cm-for-no { display: grid; gap: 10px; margin: var(--s-5) 0 0; padding: 0; list-style: none; }
+.cm-for-no > li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: baseline; color: var(--ink-muted); font-size: var(--fs-ui); line-height: 1.4; }
+.cm-for-x { color: var(--ink-muted); transform: translateY(2px); }
+@media (min-width: 64rem) {
+  .cm-for-title { grid-column: 1 / span 5; align-self: start; }
+  .cm-for-body { grid-column: 7 / span 6; }
+}
+
+/* ── What happens: three formats on Anurag's own field plates ── */
+.cm-fmts { padding-block: var(--s-9); }
+.cm-fmts-title { max-inline-size: 14ch; }
+.cm-fmt-grid { --cm-fmt-ar: 4 / 3; display: grid; gap: var(--s-7) var(--gutter); margin: var(--s-7) 0 0; padding: 0; list-style: none; }
+@media (min-width: 40rem) { .cm-fmt-grid { --cm-fmt-ar: 4 / 5; grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cm-fmt { position: relative; display: grid; align-content: start; gap: var(--s-3); }
+.cm-fmt-photo { position: relative; margin-bottom: var(--s-3); }
+.cm-fmt-photo .cm-status { position: absolute; inset: auto auto 14px 0; }
+.cm-fmt-photo .plate-img > img { transition: transform var(--dur-photo) var(--ease-settle); }
+.cm-fmt-n { color: var(--ink); padding-top: var(--s-3); border-top: 2px solid var(--ink); }
+.cm-fmt-name { font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem); }
+.cm-fmt-link { color: inherit; text-decoration: underline 2px transparent; text-underline-offset: .18em; transition: text-decoration-color var(--dur-hover) var(--ease-out); }
+.cm-fmt-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.cm-fmt-link:focus-visible { outline: none; }
+.cm-fmt:has(.cm-fmt-link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 6px; }
+.cm-fmt-line { color: var(--ink-muted); font-size: var(--fs-ui); line-height: 1.45; max-inline-size: 32ch; }
+@media (hover: hover) {
+  .cm-fmt:hover .cm-fmt-link { text-decoration-color: var(--link-line); }
+  .cm-fmt:hover .plate-img > img { transform: scale(1.03); }
+}
+
+/* ── Campfires (alpine) ── */
+.cm-camp { padding-block: var(--s-9); }
+.cm-camp-grid { row-gap: var(--s-6); }
+.cm-camp-title, .cm-camp-body { grid-column: 1 / -1; min-width: 0; }
+.cm-camp-body { display: grid; gap: var(--s-6); align-content: start; }
+.cm-camp-empty { color: var(--ink); max-inline-size: 26ch; text-wrap: balance; }
+@media (min-width: 64rem) {
+  .cm-camp-title { grid-column: 1 / span 4; align-self: start; }
+  .cm-camp-body { grid-column: 6 / span 7; }
+}
+
+.cm-ev-list { display: grid; gap: var(--s-6); }
+.cm-ev { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); padding-top: var(--s-5); border-top: 2px solid var(--ink); }
+.cm-ev-date {
+  display: inline-grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 12px; align-items: end; justify-self: start;
+  padding: 12px 16px; background: var(--c-paper); color: var(--c-ink);
+}
+.cm-ev-day { grid-row: 1 / 3; font: 900 clamp(3rem, 2.4rem + 2.6vw, 4.5rem)/.82 var(--ff-display); font-stretch: 112%; letter-spacing: -.03em; }
+.cm-ev-mon, .cm-ev-wd { font: 500 var(--fs-micro)/1.2 var(--ff-mono), ui-monospace, monospace; letter-spacing: var(--tr-label); text-transform: uppercase; }
+.cm-ev-wd { color: var(--c-granite-700); }
+.cm-ev-body { display: grid; gap: var(--s-3); justify-items: start; min-width: 0; }
+.cm-ev-kind { color: var(--ink-muted); }
+.cm-ev-title { max-inline-size: 20ch; }
+.cm-ev-line { color: var(--ink-muted); font-size: var(--fs-ui); line-height: 1.45; max-inline-size: 44ch; }
+.cm-ev-time { color: var(--ink); }
+.cm-ev-cta { margin-top: var(--s-2); }
+@media (min-width: 40rem) {
+  .cm-ev { grid-template-columns: auto minmax(0, 1fr); column-gap: var(--s-6); }
+  .cm-ev-date { grid-template-columns: auto; grid-template-rows: auto; justify-items: center; align-self: start; min-inline-size: 7.5rem; row-gap: 6px; }
+  .cm-ev-day { grid-row: auto; }
+  .cm-ev-photo { grid-column: 2; }
+}
+@media (min-width: 80rem) {
+  .cm-ev:has(.cm-ev-photo) { grid-template-columns: auto minmax(0, 1fr) minmax(0, 16rem); }
+  .cm-ev-photo { grid-column: 3; }
+}
+
+.cm-past-wrap { display: grid; gap: var(--s-4); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+.cm-past-h { color: var(--ink-muted); }
+.cm-past-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: var(--s-5) var(--gutter); margin: 0; padding: 0; list-style: none; }
+.cm-past { display: grid; gap: 8px; align-content: start; }
+.cm-past-title { font-weight: 700; font-size: var(--fs-ui); line-height: 1.3; }
+
+/* ── Join the founding list (paper): the page's one primary action ── */
+.cm-join { padding-block: var(--s-9); }
+.cm-join-grid { row-gap: var(--s-6); }
+.cm-join-form { grid-column: 1 / -1; min-width: 0; }
+@media (min-width: 64rem) { .cm-join-form { grid-column: 1 / span 10; } }
+
+/* ── Field School (sand): the cohort as five weeks on the route profile ── */
+.cm-school { padding-block: var(--s-9); }
+.cm-school-head { display: grid; gap: var(--s-6); }
+.cm-cohort { display: grid; gap: var(--s-4); justify-items: start; }
+.cm-cohort-name { max-inline-size: 18ch; }
+.cm-cohort-line { color: var(--ink-muted); max-inline-size: 36ch; text-wrap: balance; }
+@media (min-width: 64rem) {
+  .cm-school-head { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--gutter); align-items: start; }
+}
+
+.cm-cur { margin-top: var(--s-7); }
+.cm-cur-profile { margin-top: 0; }
+.cm-weeks { position: relative; display: grid; gap: var(--s-4); margin: 0; padding: 0 0 0 28px; list-style: none; }
+/* Phone trail: a dashed line down the left edge, a hue dot per week. */
+.cm-weeks::before { content: ""; position: absolute; inset-block: 10px; inset-inline-start: 7px; border-inline-start: 2px dashed var(--c-sand-600); }
+.cm-week { position: relative; display: grid; gap: 4px; }
+.cm-week-dot { position: absolute; inset-inline-start: -28px; top: 2px; inline-size: 16px; block-size: 16px; border-radius: var(--r-pin); background: var(--c-paper); border: 3px solid var(--hue); }
+.cm-week-k { color: var(--ink); }
+.cm-week-t { font-weight: 800; font-size: clamp(1.125rem, 1rem + .5vw, 1.375rem); line-height: 1.15; letter-spacing: -.01em; }
+@media (min-width: 64rem) {
+  .cm-cur { margin-top: var(--s-6); }
+  .cm-weeks { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin-top: var(--s-4); padding: 0; }
+  .cm-weeks::before, .cm-week-dot { display: none; }
+  .cm-week { padding-top: var(--s-3); border-top: 3px solid var(--hue); }
+}
+
+.cm-school-foot { row-gap: var(--s-7); margin-top: var(--s-8); }
+.cm-cohort-form, .cm-workshop { grid-column: 1 / -1; min-width: 0; }
+.cm-workshop { display: grid; gap: var(--s-4); justify-items: start; align-content: start; padding-top: var(--s-4); border-top: 2px solid var(--ink); }
+.cm-workshop .t-h4 { max-inline-size: 16ch; }
+@media (min-width: 64rem) {
+  .cm-cohort-form { grid-column: 1 / span 7; }
+  .cm-workshop { grid-column: 9 / span 4; }
+}
+
+/* ── FAQ ── */
+.cm-faq { padding-block: var(--s-9); }
+.cm-faq-grid { row-gap: var(--s-6); }
+.cm-faq-title, .cm-faq-list { grid-column: 1 / -1; }
+@media (min-width: 64rem) {
+  .cm-faq-title { grid-column: 1 / span 5; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + 32px); }
+  .cm-faq-list { grid-column: 7 / span 6; }
+}

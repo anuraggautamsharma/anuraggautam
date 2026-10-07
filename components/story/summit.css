@@ -1,0 +1,98 @@
+/* ── Beat 08 · Summit (SummitCta.tsx) ─────────────────────────────────────────────
+   Photo-light: ink text in the bright sky band, no scrim. The sunrise plate is the
+   page's one orange block. Hidden states are gated on JS + full motion and drop out when
+   the head script's 2.5s failsafe sets html[data-revealed]. */
+
+.sm {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sm-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-7);
+  padding-top: calc(var(--nav-h) + var(--nav-inset) + 32px);
+  /* Mobile: the plate sits 140px above the bottom edge so the footer ridge never covers it. */
+  padding-bottom: 140px;
+}
+
+.sm-head .chapter { color: var(--ink); }
+.sm-title { margin-top: var(--s-4); max-inline-size: 9ch; color: var(--ink); }
+.sm-head { min-inline-size: 0; }
+
+.sm-plate {
+  width: 100%;
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  padding: 24px;
+}
+.sm-line { color: var(--ink); max-inline-size: 26ch; }
+.sm-plate .btn { max-inline-size: 100%; }
+.sm-email {
+  font: 500 var(--fs-small) / 1.45 var(--ff-mono), ui-monospace, monospace;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 39.99rem) {
+  .sm-plate .btn { inline-size: 100%; }
+}
+@media (min-width: 40rem) {
+  .sm-plate { width: 520px; max-width: 100%; padding: 32px; }
+}
+@media (max-width: 22.49rem) {
+  .sm-plate { padding: 20px 16px; }
+  .sm-plate .btn { --btn-px: 1rem; }
+}
+/* Desktop: the headline runs on one line in the sky band, clear of the snow crest; the
+   plate sits bottom-right over the lake glare so the trail at the bottom-left stays open. */
+@media (min-width: 64rem) {
+  .sm-inner {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    column-gap: var(--gutter);
+    row-gap: var(--s-7);
+    padding-top: var(--beat-top, calc(var(--nav-h) + var(--nav-inset) + var(--s-7)));
+    /* The footer ridge overlaps the bottom 110px of the photo. */
+    padding-bottom: calc(110px + var(--s-6));
+  }
+  .sm-head { grid-column: 1 / -1; }
+  .sm-title {
+    max-inline-size: none;
+    /* 7vw keeps it on one line up to the page max (11.5em of text in 1312px); 7rem stops
+       it outgrowing the grid on wider screens. */
+    font-size: min(var(--fs-display), 7vw, 7rem);
+    white-space: nowrap;
+  }
+  .sm-plate {
+    grid-column: 8 / span 5;
+    justify-self: end;
+    align-self: end;
+    inline-size: min(520px, 100%);
+  }
+}
+
+/* Iris reveal: the photo opens from the sun, circle(0%) → circle(150%) at 30% 40%. */
+.sm-iris.wipe {
+  clip-path: circle(150% at 30% 40%);
+  transition: clip-path var(--dur-wipe) var(--ease-wipe);
+}
+.sm-iris > img { transform: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-js]:not([data-motion="reduced"]):not([data-revealed]) .sm-iris:not(.is-in) {
+    clip-path: circle(0% at 30% 40%);
+  }
+  :root:not([data-motion="reduced"]) .sm-plate.reveal { transition-delay: 200ms; }
+}
+
+@media (forced-colors: active) {
+  .sm-plate { border: 2px solid CanvasText; }
+}

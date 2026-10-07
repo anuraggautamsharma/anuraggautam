@@ -1,0 +1,9 @@
+/* Per-word masks for .reveal-lines headlines (MaskWords.tsx). The design system's .mask is a
+   block; words must stay inline so the headline wraps and balances naturally. Only the
+   y-axis clips, so glyph overhang on tight tracking is never shaved. */
+.mask.mw {
+  display: inline-block;
+  vertical-align: top;
+  overflow: visible clip;
+}
+.mask.mw > span { display: inline-block; }

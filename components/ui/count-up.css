@@ -1,0 +1,6 @@
+/* The real value stays in the DOM text the whole time (crawlers, screen readers, copy-paste).
+   While counting, it is painted transparent and the moving digits are drawn by ::after,
+   which is not part of the page's text. */
+.cu { position: relative; }
+.cu[data-counting] { color: transparent; }
+.cu[data-counting]::after { content: attr(data-n); position: absolute; inset: 0; color: var(--cu-color); white-space: nowrap; }

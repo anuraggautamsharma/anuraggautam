@@ -1,7 +1,15 @@
 node_modules
-dist
-.DS_Store
-*.local
+.next
+out
 .vercel
-.env
-.env.*
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.content-collections
+photos-inbox
+# Original personal photos (contain GPS/EXIF). Only processed, stripped copies in assets/anurag ship.
+Anurag's Images/
+
+# Internal strategy, specs and review screenshots stay local (the repo is public).
+docs/

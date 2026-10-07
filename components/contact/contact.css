@@ -1,0 +1,104 @@
+/* /contact: the basecamp form. Design-system .field/.input/.chip do the heavy lifting. */
+
+.ct-body { padding-block: var(--beat-top) var(--s-9); }
+.ct-grid { row-gap: var(--s-7); }
+
+.ct-aside { grid-column: 1 / -1; display: grid; gap: var(--s-4); align-content: start; }
+.ct-aside-mark { display: flex; align-items: center; gap: 12px; }
+.ct-aside-mark::before { content: ""; inline-size: 6px; block-size: 18px; background: currentColor; flex: none; }
+.ct-mail { font-weight: 800; font-size: var(--fs-h4); line-height: 1.15; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.ct-time { display: flex; gap: 10px; align-items: baseline; }
+.ct-small { color: var(--ink-muted); }
+.ct-form-col { grid-column: 1 / -1; min-width: 0; }
+
+/* Who reads it: a small square sand plate, zoomed to head and shoulders, with name and role. */
+.ct-who { display: flex; align-items: center; gap: var(--s-4); margin-top: var(--s-3); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+.ct-who-plate { position: relative; overflow: clip; flex: none; inline-size: 80px; aspect-ratio: 1; background: var(--c-sand-200); }
+.ct-who-img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; transform: scale(1.6); transform-origin: 52% 20%; }
+.ct-who-text { display: grid; gap: 2px; min-width: 0; }
+.ct-who-name { font-weight: 700; font-size: var(--fs-ui); line-height: 1.3; color: var(--ink); }
+@media (max-width: 39.99rem) { .ct-who-plate { inline-size: 72px; } }
+
+@media (min-width: 64rem) {
+  .ct-aside { grid-column: 1 / span 4; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + 32px); padding-top: var(--s-4); border-top: 2px solid var(--ink); }
+  .ct-form-col { grid-column: 7 / span 6; }
+}
+
+/* Form */
+.wo-form { --wo-indent: 54px; display: grid; gap: var(--s-6); }
+.wo-intro { color: var(--ink-muted); }
+.wo-q { display: grid; gap: 10px; min-width: 0; margin: 0; padding: 0; border: 0; }
+fieldset.wo-q > legend { padding: 0; margin-bottom: 10px; }
+.wo-head { display: flex; align-items: baseline; gap: 14px; }
+.wo-num { flex: none; inline-size: calc(var(--wo-indent) - 14px); padding-top: 2px; border-top: 2px solid currentColor; color: var(--ink); }
+.wo-head .field-label { font-size: var(--fs-ui); font-weight: 700; }
+.wo-optional { font-weight: 450; color: var(--ink-muted); }
+.wo-q .field-hint, .wo-q .field-error, .wo-q .input, .wo-chips { margin-inline-start: var(--wo-indent); }
+.wo-q .input { inline-size: auto; font-size: 1rem; }
+@media (max-width: 39.99rem) {
+  .wo-q .field-hint, .wo-q .field-error, .wo-q .input, .wo-chips, .wo-sub { margin-inline-start: 0; }
+}
+
+.wo-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.wo-sub { display: grid; gap: 10px; min-width: 0; margin: 6px 0 0; padding: 0; border: 0; }
+.wo-sub > legend { padding: 0; margin-bottom: 10px; margin-inline-start: var(--wo-indent); }
+@media (max-width: 39.99rem) { .wo-sub > legend { margin-inline-start: 0; } }
+.wo-sub + .wo-sub { margin-top: var(--s-4); }
+.wo-sub[aria-invalid="true"] .chip, .wo-q:has(> .field-error) .chip { border-color: var(--danger); }
+
+/* Alert: collapses to nothing until it has something to say */
+.wo-alert:not([data-show]) { display: none; }
+.wo-alert { display: grid; gap: 12px; padding: var(--s-5); background: var(--danger-bg); color: var(--c-ink); border-top: 3px solid var(--danger); }
+.wo-alert:focus-visible { outline-offset: 4px; }
+.wo-alert-list { display: grid; gap: 6px; padding-left: 0; list-style: none; }
+.wo-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+
+/* Honeypot: off-screen, not display:none (some bots skip hidden fields) */
+.wo-hp { position: absolute; left: -10000px; inline-size: 1px; block-size: 1px; overflow: hidden; }
+
+.wo-submit { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+@media (max-width: 39.99rem) { .wo-submit .btn { inline-size: 100%; } }
+
+/* Result */
+.wo-result { position: relative; display: grid; gap: var(--s-5); padding: var(--s-7) var(--s-6); background: var(--surface); box-shadow: var(--sh-2); border-top: 3px solid var(--c-alpine-700); }
+.wo-result[data-state="unsent"] { border-top-color: var(--danger); }
+.wo-result h2 { max-inline-size: 22ch; }
+.wo-result h2:focus { outline: none; }
+.wo-result h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 6px; }
+.wo-stamp { display: flex; align-items: center; gap: 10px; }
+.wo-flag { position: absolute; inset: var(--s-6) var(--s-6) auto auto; inline-size: 28px; block-size: 36px; pointer-events: none;
+  background: linear-gradient(var(--c-ink), var(--c-ink)) 0 0 / 2px 100% no-repeat, var(--accent);
+  clip-path: polygon(0 0, 100% 0, 78% 28%, 100% 56%, 2px 56%, 2px 100%, 0 100%); }
+.wo-summary { margin: 0; padding: var(--s-4); background: var(--surface-2); font: 400 var(--fs-small)/1.6 var(--ff-mono), ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.wo-essays { display: grid; list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.wo-essay { display: grid; gap: 6px; padding-block: var(--s-4); border-bottom: 1px solid var(--line); }
+.wo-essay .t-h4 { font-size: var(--fs-ui); line-height: 1.3; }
+@media (hover: hover) { .wo-essay:hover .t-h4 { text-decoration: underline 2px var(--link-line); text-underline-offset: .2em; } }
+.wo-cal { inline-size: 100%; min-block-size: 640px; border: 1px solid var(--line); background: var(--surface); }
+
+@media (forced-colors: active) {
+  .wo-num { border-top-color: CanvasText; }
+  .wo-alert, .wo-result { border: 2px solid CanvasText; }
+}
+
+/* "What's this about?": only a GTM engagement asks stuck / stage / timing (and is routed for fit).
+   Pure CSS (:has), so it works before and without JS; the action validates the same way. */
+.wo-type { padding-bottom: var(--s-5); border-bottom: 1px solid var(--line); }
+.wo-type .wo-head .field-label { font-size: var(--fs-ui); }
+.wo-type .wo-type-chips { margin-inline-start: 0; }
+.wo-other-only { display: none; }
+.wo-form:has(input[name="type"]:checked):not(:has(input[name="type"][value="engagement"]:checked)) .wo-eng-only { display: none; }
+.wo-form:has(input[name="type"]:checked):not(:has(input[name="type"][value="engagement"]:checked)) .wo-other-only { display: inline; }
+
+/* "Also send me Field Notes": optional, unticked, a square instrument box with a 48px target. */
+.wo-notes { position: relative; display: flex; align-items: center; gap: 14px; min-block-size: 48px; cursor: pointer; inline-size: fit-content; }
+.wo-notes input { position: absolute; opacity: 0; inline-size: 1px; block-size: 1px; }
+.wo-notes-box { position: relative; flex: none; inline-size: 24px; block-size: 24px; border: 1.5px solid var(--line-strong); background: var(--surface); transition: background-color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out); }
+.wo-notes-box::after { content: ""; position: absolute; inset: 4px 7px 7px; border: solid var(--bg); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg) scale(0); transition: transform var(--dur-hover) var(--ease-out); }
+.wo-notes:hover .wo-notes-box { border-color: var(--ink); }
+.wo-notes input:checked + .wo-notes-box { background: var(--ink); border-color: var(--ink); }
+.wo-notes input:checked + .wo-notes-box::after { transform: rotate(45deg) scale(1); }
+.wo-notes input:focus-visible + .wo-notes-box { outline: 3px solid var(--focus); outline-offset: 3px; }
+.wo-notes-text { font-weight: 600; font-size: var(--fs-small); }
+@media (min-width: 40rem) { .wo-notes { margin-inline-start: var(--wo-indent); } }
+@media (forced-colors: active) { .wo-notes-box { border-color: CanvasText; } .wo-notes input:checked + .wo-notes-box { background: Highlight; } }

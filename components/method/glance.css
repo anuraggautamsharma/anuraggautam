@@ -1,0 +1,62 @@
+/* ── /method · The route at a glance (elevation profile + camp cards) ───────────── */
+.mg { padding-block: var(--beat-top) var(--s-8); }
+.mg-head { display: grid; gap: var(--s-4); }
+.mg-title { max-inline-size: 16ch; }
+.mg-line { max-inline-size: 44ch; color: var(--ink-muted); text-wrap: balance; }
+
+/* Profile: hidden on phones, where the cards become a vertical trail instead. */
+.mg-profile { display: none; }
+
+.mg-camps { list-style: none; margin: var(--s-7) 0 0; padding: 0 0 0 28px; position: relative; display: grid; gap: var(--s-5); }
+/* Phone trail: a dashed sunrise line down the left edge, a dot per camp. */
+.mg-camps::before { content: ""; position: absolute; inset-block: 12px 12px; inset-inline-start: 7px; border-inline-start: 2px dashed var(--c-sunrise-500); opacity: .7; }
+.mg-camp { position: relative; }
+.mg-card { display: grid; gap: 6px; padding: var(--s-4) var(--s-4) var(--s-4) var(--s-4); background: var(--c-surface, #FCFAF4); border: 1px solid var(--line); border-top: 3px solid var(--hue); color: var(--ink); text-decoration: none; transition: transform var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out); }
+.mg-dot { position: absolute; inset-inline-start: -28px; top: 18px; inline-size: 16px; block-size: 16px; border-radius: 50%; background: var(--c-paper, #F7F2E8); border: 3px solid var(--hue); }
+.mg-label { font-family: var(--ff-mono), ui-monospace, monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hue); font-weight: 600; }
+.mg-camp-title { font-weight: 800; font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); line-height: 1.1; letter-spacing: -.01em; }
+.mg-camp-line { font-size: .9375rem; line-height: 1.45; color: var(--ink-muted); }
+.mg-clears { margin-top: 4px; font-family: var(--ff-mono), ui-monospace, monospace; font-size: 11.5px; line-height: 1.5; color: var(--ink-muted); }
+.mg-clears-k { text-transform: uppercase; letter-spacing: .08em; color: var(--c-alpine-700); font-weight: 600; }
+.mg-clears s { text-decoration-color: var(--c-ember-500); text-decoration-thickness: 1.5px; }
+.mg-more { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .875rem; color: var(--ink); }
+.mg-more svg { transition: transform var(--dur-ui) var(--ease-out); }
+@media (hover: hover) {
+  .mg-card:hover { transform: translateY(-3px); border-color: color-mix(in oklab, var(--hue) 45%, var(--line)); }
+  .mg-card:hover .mg-more svg { transform: translateX(4px); }
+}
+.mg-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+@media (min-width: 64rem) {
+  .mg-head { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: var(--gutter); }
+  .mg-line { justify-self: end; }
+
+  .mg-profile { display: block; position: relative; margin-top: var(--s-7); aspect-ratio: 1000 / 220; }
+  .mg-svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; overflow: visible; }
+  .mg-far { fill: var(--c-alpine-100); }
+  .mg-ridge { fill: var(--c-alpine-700); }
+  .mg-route-casing { fill: none; stroke: var(--c-paper, #F7F2E8); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+  .mg-route { fill: none; stroke: var(--c-sunrise-500); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+  html[data-js] .mg-profile:not(.is-in) .mg-route { stroke-dashoffset: 1; }
+  .mg-profile .mg-route { transition: stroke-dashoffset 1600ms var(--ease-out); }
+
+  /* Pins: stake down to the ridge, numbered head in the camp's hue. */
+  .mg-pin { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -100%); display: grid; justify-items: center; }
+  .mg-pin::after { content: ""; inline-size: 2px; block-size: 18px; background: var(--ink); }
+  .mg-pin-head { display: grid; place-items: center; inline-size: 34px; block-size: 34px; border-radius: 50%; background: var(--c-paper, #F7F2E8); border: 3px solid var(--hue); font-family: var(--ff-mono), ui-monospace, monospace; font-size: 12px; font-weight: 700; color: var(--ink); }
+  html[data-js] .mg-profile:not(.is-in) .mg-pin { opacity: 0; transform: translate(-50%, -80%); }
+  .mg-profile .mg-pin { transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); transition-delay: calc(300ms + var(--i) * 220ms); }
+
+  /* Cards: five columns whose centres sit under the pins (10/30/50/70/90%). */
+  .mg-camps { margin-top: var(--s-5); padding: 0; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .mg-camps::before, .mg-dot { display: none; }
+  .mg-card { block-size: 100%; align-content: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-profile .mg-route, .mg-profile .mg-pin { transition: none; }
+}
+:root[data-motion="reduced"] .mg-profile .mg-route, :root[data-motion="reduced"] .mg-profile .mg-pin { transition: none; }
+
+/* The first camp follows the glance directly: no second nav allowance, one hairline. */
+.mg + .m-camp { padding-top: var(--s-8); border-top: 1px solid var(--line); }

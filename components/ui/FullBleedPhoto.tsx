@@ -1,0 +1,1 @@
+export { FullBleedPhoto } from './Photo'

@@ -1,0 +1,138 @@
+[
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "camp": "position",
+    "role": "Narrative & visual design",
+    "src": "/logos/figma.svg",
+    "ratio": 3.542
+  },
+  {
+    "slug": "webflow",
+    "name": "Webflow",
+    "camp": "position",
+    "role": "Marketing site & AEO",
+    "src": "/logos/webflow.svg",
+    "ratio": 5.967
+  },
+  {
+    "slug": "stripe",
+    "name": "Stripe",
+    "camp": "price",
+    "role": "Pricing & billing",
+    "src": "/logos/stripe.svg",
+    "ratio": 2.4
+  },
+  {
+    "slug": "posthog",
+    "name": "PostHog",
+    "camp": "price",
+    "role": "Usage analytics & experiments",
+    "src": "/logos/posthog.svg",
+    "ratio": 5.714
+  },
+  {
+    "slug": "clay",
+    "name": "Clay",
+    "camp": "market",
+    "role": "Enrichment & signals",
+    "src": "/logos/clay.webp",
+    "ratio": 3.177
+  },
+  {
+    "slug": "apollo",
+    "name": "Apollo.io",
+    "camp": "market",
+    "role": "B2B data & sequencing",
+    "src": "/logos/apollo.svg",
+    "ratio": 3.8
+  },
+  {
+    "slug": "unify",
+    "name": "Unify",
+    "camp": "market",
+    "role": "Signal-based outbound",
+    "src": "/logos/unify.svg",
+    "ratio": 1.947
+  },
+  {
+    "slug": "instantly",
+    "name": "Instantly",
+    "camp": "market",
+    "role": "Cold email at scale",
+    "src": "/logos/instantly.svg",
+    "ratio": 4.393
+  },
+  {
+    "slug": "heyreach",
+    "name": "HeyReach",
+    "camp": "market",
+    "role": "LinkedIn outreach",
+    "src": "/logos/heyreach.svg",
+    "ratio": 5.257
+  },
+  {
+    "slug": "attio",
+    "name": "Attio",
+    "camp": "systems",
+    "role": "AI-native CRM",
+    "src": "/logos/attio.svg",
+    "ratio": 4
+  },
+  {
+    "slug": "n8n",
+    "name": "n8n",
+    "camp": "systems",
+    "role": "Workflow automation",
+    "src": "/logos/n8n.svg",
+    "ratio": 3.6
+  },
+  {
+    "slug": "openai",
+    "name": "OpenAI",
+    "camp": "systems",
+    "role": "LLMs for research & copy",
+    "src": "/logos/openai.svg",
+    "ratio": 3.685
+  },
+  {
+    "slug": "claude",
+    "name": "Claude (Anthropic)",
+    "camp": "systems",
+    "role": "LLMs & agentic workflows",
+    "src": "/logos/claude.svg",
+    "ratio": 4.578
+  },
+  {
+    "slug": "gong",
+    "name": "Gong",
+    "camp": "team",
+    "role": "Call intelligence & coaching",
+    "src": "/logos/gong.svg",
+    "ratio": 2.786
+  },
+  {
+    "slug": "slack",
+    "name": "Slack",
+    "camp": "team",
+    "role": "Deal rooms & team rhythm",
+    "src": "/logos/slack.svg",
+    "ratio": 2.801
+  },
+  {
+    "slug": "notion",
+    "name": "Notion",
+    "camp": "team",
+    "role": "Playbooks & GTM docs",
+    "src": "/logos/notion.svg",
+    "ratio": 3.474
+  },
+  {
+    "slug": "granola",
+    "name": "Granola",
+    "camp": "team",
+    "role": "AI meeting notes",
+    "src": "/logos/granola.svg",
+    "ratio": 4.602
+  }
+]

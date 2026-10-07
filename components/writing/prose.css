@@ -1,0 +1,377 @@
+/* Long-form article typography: a field journal set in Newsreader on paper, with the
+   topic's camp colour (--hue, set on the article) as the only accent in the text.
+   No reveal animation on article text, ever. */
+
+/* ───────────── The reading grid ─────────────
+   .wr-doc and .prose share one column template, so the sticky TOC (a sibling in .wr-doc)
+   and the body (in .prose) line up without subgrid. Both carry the serif font so 66ch
+   resolves identically. From 80rem: TOC | text | sidenotes. */
+.wr-doc,
+.prose {
+  --fs-prose: clamp(1.1875rem, 1.1458rem + .1852vw, 1.3125rem); /* 19 → 21 */
+  font: 400 var(--fs-prose)/1.6 var(--ff-serif), Georgia, "Times New Roman", serif;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--margin), 1fr)
+    [wide-start] minmax(0, 10rem)
+    [text-start] min(66ch, 100% - 2 * var(--margin))
+    [text-end] minmax(0, 10rem)
+    [wide-end] minmax(var(--margin), 1fr)
+    [full-end];
+}
+@media (min-width: 80rem) {
+  .wr-doc,
+  .prose {
+    grid-template-columns:
+      [full-start] minmax(var(--margin), 1fr)
+      [toc-start] 12rem
+      [toc-end] 2.5rem
+      [text-start wide-start] minmax(0, 66ch)
+      [text-end] 2.5rem
+      [note-start] 15rem
+      [note-end wide-end] minmax(var(--margin), 1fr)
+      [full-end];
+  }
+}
+.wr-doc { padding-top: var(--s-8); }
+.wr-doc > .prose { grid-column: full; grid-row: 1; }
+
+.prose {
+  counter-reset: wr-sn wr-fig wr-pull; color: var(--ink);
+  font-kerning: normal; font-variant-ligatures: common-ligatures; font-variant-numeric: oldstyle-nums proportional-nums;
+}
+.prose :where(.wr-table, .wr-cite, .wr-takeaways, pre, code, .wr-refs) { font-variant-numeric: tabular-nums lining-nums slashed-zero; }
+.prose > * { grid-column: text; margin-block: 0; min-width: 0; }
+.prose > .wide { grid-column: wide; }
+.prose > .full { grid-column: full; }
+.prose > * + * { margin-top: 1.1em; }
+.prose > p + p { margin-top: .95em; }
+
+/* ───────────── Reading progress: 3px sunrise bar over the nav ───────────── */
+.wr-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: calc(var(--z-nav) + 1);
+  background: var(--c-sunrise-500); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none;
+}
+@supports (animation-timeline: view()) {
+  .wr-doc { view-timeline: --wr-read block; }
+  .wr-progress { animation: wr-read linear both; animation-timeline: --wr-read; animation-range: contain 0% contain 100%; }
+}
+@keyframes wr-read { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ───────────── TOC ───────────── */
+.wr-toc-slot { display: none; }
+@media (min-width: 80rem) {
+  .wr-toc-slot { display: block; grid-column: toc; grid-row: 1; }
+  .wr-toc-m { display: none; }
+}
+.wr-toc {
+  position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + var(--s-6));
+  max-height: calc(100svh - var(--nav-h) - var(--nav-inset) - var(--s-8)); overflow: auto; overscroll-behavior: contain;
+  font-family: var(--ff-display), system-ui, sans-serif;
+}
+.wr-toc-title {
+  display: flex; align-items: center; gap: .65rem; margin-bottom: var(--s-4);
+  font: 500 var(--fs-micro)/1.2 var(--ff-mono), ui-monospace, monospace; letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--ink);
+}
+.wr-toc-title::before { content: ""; inline-size: 6px; block-size: 14px; background: var(--hue, currentColor); }
+.wr-toc-rail { position: relative; border-left: 1px solid var(--line); }
+.wr-toc-tick {
+  position: absolute; left: -1px; top: 0; width: 3px; height: 1px; background: var(--hue, var(--ink));
+  transform-origin: 0 0; opacity: 0; pointer-events: none;
+  transition: transform var(--dur-ui) var(--ease-out), opacity var(--dur-hover) linear;
+}
+.wr-toc-list { list-style: none; margin: 0; padding: 0; }
+.wr-toc-list a {
+  display: grid; grid-template-columns: 1.9rem 1fr; gap: .25rem; padding: .45rem 0 .45rem .9rem;
+  font-size: var(--fs-small); font-weight: 500; line-height: 1.3; color: var(--ink-muted);
+  transition: color var(--dur-hover) var(--ease-out);
+}
+.wr-toc-list a:hover, .wr-toc-list a[aria-current] { color: var(--ink); }
+.wr-toc-n { font: 500 var(--fs-micro)/1.7 var(--ff-mono), ui-monospace, monospace; color: var(--ink-subtle); letter-spacing: .04em; }
+.wr-toc-list a[aria-current] .wr-toc-n { color: var(--hue, var(--accent-ink)); }
+
+/* Below 80rem: a collapsible contents box at the top of the body. */
+.wr-toc-m { border: 1.5px solid var(--line-strong); background: var(--surface); font-family: var(--ff-display), system-ui, sans-serif; }
+.wr-toc-m summary {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  min-height: 52px; padding: .5rem 1rem; cursor: pointer; list-style: none;
+}
+.wr-toc-m summary .t-label:first-child { color: var(--ink); }
+.wr-toc-m summary::-webkit-details-marker { display: none; }
+.wr-toc-m summary::after { content: "+"; font: 500 1.125rem/1 var(--ff-mono), monospace; color: var(--ink); }
+.wr-toc-m[open] summary::after { content: "−"; }
+.wr-toc-m-count { margin-left: auto; }
+.wr-toc-m ol { list-style: none; margin: 0; padding: 0 1rem .5rem; border-top: 1px solid var(--line); }
+.wr-toc-m a { display: grid; grid-template-columns: 2.1rem 1fr; align-items: baseline; padding: .7rem 0; font-size: var(--fs-small); font-weight: 500; line-height: 1.35; color: var(--ink); }
+.wr-toc-m li + li { border-top: 1px solid var(--line); }
+
+/* ───────────── Key takeaways: sand panel, 2px ink top rule ───────────── */
+.wr-takeaways {
+  padding: var(--s-5) var(--s-5) var(--s-3); background: var(--c-sand-100); border-top: 2px solid var(--c-ink);
+  font-family: var(--ff-display), system-ui, sans-serif;
+}
+.prose > .wr-toc-m + .wr-takeaways { margin-top: var(--s-5); }
+.wr-takeaways-title { color: var(--c-ink); }
+.wr-takeaways ol { list-style: none; margin: var(--s-3) 0 0; padding: 0; }
+.wr-takeaways li {
+  display: grid; grid-template-columns: 2.25rem 1fr; padding-block: .8rem;
+  font-size: var(--fs-ui); font-weight: 500; line-height: 1.45; color: var(--c-ink);
+}
+.wr-takeaways li + li { border-top: 1px solid var(--c-sand-300); }
+.wr-takeaways-n { font: 600 var(--fs-micro)/1.9 var(--ff-mono), ui-monospace, monospace; color: var(--hue, var(--c-sand-700)); }
+.prose > .wr-takeaways + * { margin-top: var(--s-7); }
+
+/* ───────────── Headings ───────────── */
+.prose > h2, .prose > h3 { font-family: var(--ff-display), system-ui, sans-serif; color: var(--ink); scroll-margin-top: calc(var(--nav-h) + var(--nav-inset) + var(--s-5)); }
+.prose > h2 { margin-top: 2.1em; font-weight: 800; font-stretch: 100%; font-size: clamp(1.625rem, 1.35rem + 1.2vw, 2.375rem); line-height: 1.06; letter-spacing: -.022em; }
+.prose > h2 + * { margin-top: .9em; }
+.prose > h3 { margin-top: 1.9em; font-weight: 700; font-size: clamp(1.25rem, 1.15rem + .45vw, 1.5rem); line-height: 1.2; letter-spacing: -.012em; }
+.prose > h3 + * { margin-top: .6em; }
+.wr-h2-n {
+  display: flex; align-items: center; gap: .65rem; margin-bottom: .9rem;
+  font: 500 var(--fs-micro)/1.2 var(--ff-mono), ui-monospace, monospace; letter-spacing: var(--tr-label); color: var(--hue, var(--accent-ink));
+}
+.wr-h2-n::after { content: ""; flex: 0 1 64px; block-size: 1px; background: currentColor; opacity: .5; }
+.prose > h2 > a, .prose > h3 > a { color: inherit; text-decoration: none; }
+.prose > h2 > a:hover, .prose > h3 > a:hover { text-decoration: underline 2px var(--link-line); text-underline-offset: .15em; }
+
+/* ───────────── Running text ───────────── */
+.prose p, .prose li { hanging-punctuation: first last; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+.prose :where(p, li, td, blockquote, figcaption, .wr-callout-body) a:not([class]) {
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .2em; text-decoration-color: var(--link-line);
+  transition: text-decoration-color var(--dur-hover) var(--ease-out), text-decoration-thickness var(--dur-hover) var(--ease-out);
+}
+.prose :where(p, li, td, blockquote, figcaption, .wr-callout-body) a:not([class]):hover { text-decoration-color: currentColor; text-decoration-thickness: 3px; }
+
+/* Drop cap on the opening paragraph: Archivo, in the camp hue. */
+@supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+  .prose > p:first-of-type::first-letter {
+    -webkit-initial-letter: 3; initial-letter: 3;
+    font-family: var(--ff-display), system-ui, sans-serif; font-weight: 800; font-stretch: 112%;
+    margin-right: .12em; color: var(--hue, var(--ink));
+  }
+}
+
+/* Lists: square trail blazes and mono numerals */
+.prose > ul, .prose > ol { padding-left: 0; list-style: none; }
+.prose > ul > li, .prose > ol > li { position: relative; padding-left: 1.75em; }
+.prose > ul > li + li, .prose > ol > li + li { margin-top: .55em; }
+.prose > ul > li::before { content: ""; position: absolute; left: .25em; top: .66em; width: .32em; height: .32em; background: var(--hue, var(--ink)); }
+.prose > ol { counter-reset: wr-ol; }
+.prose > ol > li { counter-increment: wr-ol; }
+.prose > ol > li::before {
+  content: counter(wr-ol, decimal-leading-zero); position: absolute; left: 0; top: .5em;
+  font: 600 .6em/1 var(--ff-mono), ui-monospace, monospace; letter-spacing: .04em; color: var(--hue, var(--ink-muted));
+}
+
+/* Markdown blockquote (distinct from <PullQuote>) */
+.prose > blockquote { border-left: 2px solid var(--ink); padding-left: 1.25em; color: var(--ink-muted); font-style: italic; }
+.prose > blockquote p + p { margin-top: .8em; }
+
+.prose .wr-hr, .prose > hr { border: 0; height: 1px; background: var(--line-strong); margin-block: 2.5em; max-inline-size: 8rem; }
+
+/* Inline code */
+.prose :not(pre) > code {
+  font: 400 .78em/1 var(--ff-mono), ui-monospace, monospace; padding: .14em .38em;
+  background: var(--c-sand-50); border: 1px solid var(--c-sand-200); overflow-wrap: anywhere;
+}
+
+/* Code blocks: rehype-pretty-code with github-light (keepBackground false) on sand-50. */
+.prose > figure[data-rehype-pretty-code-figure] { grid-column: wide; margin-block: 2em; }
+.prose pre {
+  margin: 0; padding: 1.1rem 1.25rem; overflow: auto; tab-size: 2;
+  background: var(--c-sand-50); color: var(--c-ink); border: 1px solid var(--c-sand-200); border-top: 2px solid var(--c-ink);
+  font: 400 var(--fs-small)/1.65 var(--ff-mono), ui-monospace, monospace;
+}
+.prose pre code { display: grid; background: none; border: 0; padding: 0; font: inherit; }
+.prose [data-rehype-pretty-code-title] {
+  font: 500 var(--fs-micro)/1 var(--ff-mono), monospace; text-transform: uppercase; letter-spacing: var(--tr-label); color: var(--ink-muted); padding: .7rem 0;
+}
+.prose [data-highlighted-line] { background: var(--surface); box-shadow: inset 3px 0 var(--hue, var(--ink)); }
+
+/* Tables: mono, tabular, right-aligned numbers */
+.prose > .wr-table { grid-column: wide; margin-block: 2em; overflow-x: auto; overscroll-behavior-x: contain; border-top: 2px solid var(--ink); }
+.wr-table table { width: 100%; min-width: 36rem; border-collapse: collapse; }
+.wr-table th, .wr-table td {
+  padding: .75rem 1rem .75rem 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line);
+  font-family: var(--ff-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums slashed-zero;
+}
+.wr-table th { font-size: var(--fs-micro); font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-muted); white-space: nowrap; }
+.wr-table td { font-size: calc(var(--fs-small) * .94); line-height: 1.5; }
+.wr-table td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.wr-table th:last-child, .wr-table td:last-child { padding-right: 0; }
+.wr-table .wr-num, .wr-table [align="right"] { text-align: right; }
+.wr-table [align="center"] { text-align: center; }
+
+/* Figures */
+.prose > .wr-fig { margin-block: 2.5em; }
+.wr-fig-body { padding: var(--s-5); border: 1px solid var(--line); background: var(--surface); }
+.wr-fig-body > :first-child { margin-top: 0; }
+.wr-fig-cap {
+  margin-top: .9rem; font: 500 var(--fs-micro)/1.5 var(--ff-mono), ui-monospace, monospace;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted);
+}
+.wr-fig { counter-increment: wr-fig; }
+.wr-fig-cap::before { content: "FIG. " counter(wr-fig, decimal-leading-zero) " · "; color: var(--hue, var(--accent-ink)); }
+
+/* Pull quotes: wide, 2px ink top rule, Archivo */
+.prose > .wr-pull { margin-block: 2.75em; padding-top: 1.25rem; border-top: 2px solid var(--ink); counter-increment: wr-pull; }
+.wr-pull::before {
+  content: "PULL " counter(wr-pull, decimal-leading-zero); display: block; margin-bottom: 1rem;
+  font: 500 var(--fs-micro)/1 var(--ff-mono), ui-monospace, monospace; letter-spacing: var(--tr-label); color: var(--hue, var(--ink-muted));
+}
+.wr-pull blockquote { margin: 0; }
+.wr-pull blockquote p {
+  max-width: 22ch; font-family: var(--ff-display), system-ui, sans-serif; font-stretch: 112%; font-weight: 800;
+  font-size: var(--fs-h3); line-height: 1.04; letter-spacing: -.025em; color: var(--ink);
+}
+.wr-pull figcaption { margin-top: 1rem; }
+
+/* Callouts: a sand note pinned into the journal */
+.prose > .wr-callout { margin-block: 2em; padding: var(--s-5); background: var(--c-sand-100); border-top: 2px solid var(--c-ink); color: var(--c-ink); }
+.wr-callout-label { color: var(--c-ink); margin-bottom: .75rem; }
+.wr-callout-body > * + * { margin-top: .75em; }
+.wr-callout-body { font-size: .95em; }
+
+/* ───────────── Sidenotes (Tufte) ─────────────
+   The wrapper increments the counter; whichever marker is visible prints it. */
+.wr-sn-wrap { counter-increment: wr-sn; }
+.wr-sn-mark::after, .wr-sn-ref::after {
+  content: counter(wr-sn); font: 600 .6em/1 var(--ff-mono), ui-monospace, monospace; color: var(--hue, var(--accent-ink));
+  vertical-align: super;
+}
+.wr-sn-mark { display: none; }
+.wr-sn-ref {
+  display: inline-block; min-width: 24px; min-height: 24px; margin: -6px -4px -6px -2px; padding: 0 4px;
+  background: none; border: 0; color: inherit; line-height: 1; vertical-align: baseline; cursor: pointer;
+}
+.wr-sn-ref[aria-expanded="true"]::after { color: var(--ink); }
+.wr-sn::before { content: counter(wr-sn) ". "; font: 600 .8em/1 var(--ff-mono), ui-monospace, monospace; color: var(--hue, var(--accent-ink)); }
+.wr-sn { display: none; }
+.wr-sn[data-open] {
+  display: block; margin: .6em 0 .8em; padding: .7em 0 .7em 1em; border-left: 2px solid var(--hue, var(--line-strong));
+  font-size: .85em; line-height: 1.5; color: var(--ink-muted);
+}
+@media (min-width: 80rem) {
+  .wr-sn-ref { display: none; }
+  .wr-sn-mark { display: inline; }
+  .wr-sn, .wr-sn[data-open], .sidenote {
+    display: block; float: right; clear: right; width: 15rem; margin: .3em -17.5rem 1em 0; padding: 0; border: 0;
+    font-size: .8em; line-height: 1.45; color: var(--ink-muted);
+  }
+}
+
+/* ───────────── End matter (inside the reading grid) ───────────── */
+.prose > .wr-end { margin-top: var(--s-8); font-family: var(--ff-display), system-ui, sans-serif; font-size: var(--fs-ui); line-height: 1.45; }
+.prose > .wr-end + .wr-end { margin-top: var(--s-7); }
+.wr-end-title {
+  display: flex; flex-direction: column; gap: .85rem; padding-bottom: var(--s-4); border-bottom: 2px solid var(--ink);
+  font-weight: 800; font-size: var(--fs-h4); line-height: 1.05; letter-spacing: -.015em; color: var(--ink);
+  scroll-margin-top: calc(var(--nav-h) + var(--nav-inset) + var(--s-5));
+}
+.wr-end-n {
+  display: inline-flex; align-items: center; gap: .65rem; color: var(--hue, var(--ink-muted));
+}
+.wr-end-n::before { content: ""; inline-size: 6px; block-size: 14px; background: currentColor; }
+
+.wr-faq-item { border-bottom: 1px solid var(--line); }
+.wr-faq-item summary {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4);
+  min-height: 44px; padding-block: 1.1rem; cursor: pointer; list-style: none;
+  font-weight: 700; font-size: clamp(1.125rem, 1.05rem + .35vw, 1.375rem); line-height: 1.25; letter-spacing: -.01em; color: var(--ink);
+}
+.wr-faq-item summary::-webkit-details-marker { display: none; }
+.wr-faq-icon { position: relative; width: 16px; height: 16px; flex: none; margin-top: .3em; transition: transform var(--dur-ui) var(--ease-out); }
+.wr-faq-icon::before, .wr-faq-icon::after { content: ""; position: absolute; background: currentColor; }
+.wr-faq-icon::before { left: 0; right: 0; top: 7px; height: 2px; }
+.wr-faq-icon::after { top: 0; bottom: 0; left: 7px; width: 2px; }
+.wr-faq-item[open] .wr-faq-icon { transform: rotate(45deg); }
+.wr-faq-item p { padding-bottom: 1.25rem; max-width: 60ch; color: var(--ink-muted); font: 400 var(--fs-body)/1.55 var(--ff-serif), Georgia, serif; }
+
+.wr-refs { list-style: none; margin: 0; padding: 0; font: 400 var(--fs-small)/1.45 var(--ff-mono), ui-monospace, monospace; }
+.wr-refs li { display: grid; grid-template-columns: 3.25rem 1fr; padding-block: .85rem; border-bottom: 1px solid var(--line); }
+.wr-refs a { overflow-wrap: anywhere; }
+.wr-refs-n { color: var(--ink-muted); }
+.wr-refs-host { grid-column: 2; margin-top: .25rem; font-size: var(--fs-micro); color: var(--ink-muted); }
+
+.wr-cite { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); margin-top: var(--s-4); }
+.wr-cite-row { border: 1px solid var(--line-strong); background: var(--surface); }
+.wr-cite-head { display: flex; justify-content: space-between; align-items: center; padding: .25rem .25rem .25rem .9rem; border-bottom: 1px solid var(--line); }
+.wr-cite-head .t-label, .wr-cite-link .t-label { color: var(--ink-muted); }
+.wr-cite-text {
+  margin: 0; padding: .9rem; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+  font: 400 var(--fs-small)/1.6 var(--ff-mono), ui-monospace, monospace; background: var(--c-sand-50); color: var(--ink);
+}
+/* Hanging indent per line (set in CiteBlock): wrapped text continues under the field's value. */
+.wr-cite-line { --indent: var(--hang, 0ch); display: block; padding-inline-start: var(--indent); text-indent: calc(-1 * var(--indent)); }
+/* On a phone the value column would leave ~20 characters; wrap just past the field name instead. */
+@media (max-width: 39.999rem) { .wr-cite-line { --indent: min(var(--hang, 0ch), 6ch); } }
+.wr-cite-link { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.wr-cite-url { min-width: 0; overflow-wrap: anywhere; }
+.wr-copy {
+  display: inline-flex; align-items: center; min-height: 44px; padding-inline: 1rem; background: transparent; color: var(--ink);
+  border: 1.5px solid var(--line-strong); border-radius: 0;
+  font: 800 var(--fs-micro)/1 var(--ff-display), system-ui, sans-serif; font-stretch: 112%; letter-spacing: var(--tr-btn); text-transform: uppercase;
+  transition: border-color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
+}
+.wr-copy:hover { border-color: var(--ink); }
+.wr-copy:active { background: var(--ink); color: var(--bg); }
+.wr-toast { min-height: 1.2em; color: var(--ink-muted); opacity: 0; transition: opacity var(--dur-ui) var(--ease-out); }
+.wr-toast[data-show] { opacity: 1; }
+
+@media (forced-colors: active) {
+  .wr-progress, .wr-toc-tick { forced-color-adjust: none; background: Highlight; }
+  .prose > ul > li::before { forced-color-adjust: none; background: CanvasText; }
+}
+
+/* ───────────── Print: articles print like papers ───────────── */
+@media print {
+  @page { size: auto; margin: 18mm 16mm 20mm; }
+  html:has(.wr-article), html:has(.wr-article) body { background: #fff !important; color: #0e1d15 !important; }
+  html:has(.wr-article) body > header,
+  html:has(.wr-article) body > footer,
+  html:has(.wr-article) .skip-link,
+  .wr-progress, .wr-toc-slot, .wr-toc-m, .wr-draft, .wr-cover,
+  .wr-cta, .wr-pn, .wr-copy, .wr-toast, .wr-cite-link, .wr-author-links, .wr-author-mark, .wr-sn-ref, .wr-faq-icon, .wr-crumbs { display: none !important; }
+
+  .wr-head { padding: 0 0 6mm; }
+  .wr-title { font-size: 24pt !important; max-width: none; line-height: 1.05; }
+  .wr-dek { font-size: 13pt; max-width: none; color: #333 !important; margin-top: 3mm; }
+  .wr-meta { margin-top: 4mm; padding-top: 2mm; }
+
+  .wr-doc, .prose { display: block; padding: 0; border: 0; font-size: 10.5pt; line-height: 1.5; }
+  .prose > * + * { margin-top: .9em; }
+  .prose > h2 { font-size: 15pt; margin-top: 1.6em; }
+  .prose > h3 { font-size: 12pt; }
+  .prose > p, .prose li { text-align: justify; hyphens: auto; orphans: 3; widows: 3; }
+  .prose > h2, .prose > h3, .wr-end-title { break-after: avoid; }
+  .prose figure, .prose .wr-table, .prose pre, .wr-takeaways, .wr-callout, .wr-pull, .wr-faq-item, .wr-cite-row, .wr-refs li { break-inside: avoid; }
+  .prose > .wr-end { margin-top: 10mm; }
+  .wr-takeaways { margin-bottom: 8mm; background: none !important; }
+
+  /* Sidenotes print as indented notes in flow */
+  .wr-sn-mark { display: inline !important; }
+  .wr-sn, .sidenote { display: block !important; float: none !important; width: auto !important; margin: .4em 0 .6em 1.5em !important; padding-left: .6em !important; border-left: 1px solid #999 !important; font-size: 8.5pt !important; }
+
+  /* FAQ answers print even when collapsed */
+  .wr-faq-item::details-content { content-visibility: visible; display: block; }
+  .wr-faq-item summary { font-size: 11pt; padding-block: 2mm; }
+
+  .prose pre { background: #f6f4ee !important; border-color: #ccc !important; white-space: pre-wrap; overflow: visible; }
+  .prose > .wr-table { overflow: visible; }
+  .wr-table table { min-width: 0; }
+  .wr-cite-text { background: none !important; padding: 2mm 0; }
+  .wr-cite-row { border: 0; }
+  .wr-cite-head { border: 0; padding: 0; }
+
+  /* Internal links: print the absolute address (external ones are handled globally) */
+  .prose :where(p, li) a[href^="/"]::after { content: " (anuraggautam.com" attr(href) ")"; font-size: .8em; color: #555; overflow-wrap: anywhere; }
+  .prose a[href^="http"]::after { overflow-wrap: anywhere; }
+  .prose > h2 > a::after, .prose > h3 > a::after { content: none !important; }
+
+  .wr-foot { margin-top: 10mm; padding: 5mm 0 0; border-top: 1px solid #999; }
+  .wr-foot-grid { display: block; }
+  .wr-pull blockquote p { font-size: 16pt; }
+}

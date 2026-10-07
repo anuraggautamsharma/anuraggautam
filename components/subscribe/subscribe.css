@@ -1,0 +1,186 @@
+/* ═══════════ Field Notes sign-up (PLAN_V3 §4, §7): a field instrument, not a box ═══════════
+   1px ink rule under the input, a mono caption, a square button, 16px+ input text (no iOS zoom),
+   48px targets. Layout follows the component's own width (container query), so a row reads as a
+   band in a wide beat and stacks in a narrow column. */
+
+.sb {
+  --sb-rule: var(--ink);
+  --sb-fs: 1rem;
+  --sb-gap: var(--s-4);
+  container: sb / inline-size;
+  position: relative;
+  min-inline-size: 0;
+}
+.sb-in { display: grid; gap: var(--sb-stack, var(--s-5)); min-inline-size: 0; }
+
+/* ── Head: caption, heading, line ── */
+.sb-head { display: grid; gap: var(--s-3); align-content: start; min-inline-size: 0; }
+.sb-cap { display: flex; align-items: center; gap: .75rem; color: var(--ink); }
+.sb-cap::before { content: ""; flex: none; inline-size: 6px; block-size: 14px; background: currentColor; }
+.sb-h { font-weight: 800; font-size: var(--fs-h4); line-height: var(--lh-h4); letter-spacing: var(--tr-h4); text-wrap: balance; max-inline-size: 20ch; }
+.sb-line { font-size: var(--fs-ui); line-height: 1.45; color: var(--ink-muted); max-inline-size: 46ch; text-wrap: pretty; }
+.sb-head > .sb-cap + .sb-h { margin-block-start: var(--s-2); }
+
+.sb-body { display: grid; gap: var(--s-3); min-inline-size: 0; }
+
+/* ── The instrument: input(s) on a rule + a square button ── */
+.sb-form { display: grid; gap: var(--s-3); min-inline-size: 0; }
+.sb-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end;
+  column-gap: var(--sb-gap); row-gap: var(--s-4);
+}
+.sb-input {
+  appearance: none; -webkit-appearance: none;
+  inline-size: 100%; min-inline-size: 0; min-block-size: 52px; margin: 0;
+  padding: 12px 0 10px; border: 0; border-bottom: 1px solid var(--sb-rule); border-radius: 0;
+  background: transparent; color: var(--ink);
+  font: 450 max(1rem, var(--sb-fs))/1.25 var(--ff-display); letter-spacing: -.005em;
+  transition: border-color var(--dur-hover) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out);
+}
+.sb-input::placeholder { color: var(--ink-subtle); opacity: 1; }
+/* The rule thickens under the pointer and on focus; the focus ring is the site's own. */
+.sb-input:hover { box-shadow: 0 1px 0 0 var(--sb-rule); }
+.sb-input:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; box-shadow: 0 1px 0 0 var(--sb-rule); }
+.sb-input[aria-invalid="true"] { border-bottom-color: var(--danger); box-shadow: 0 1px 0 0 var(--danger); }
+.sb-input:-webkit-autofill { -webkit-text-fill-color: var(--ink); -webkit-box-shadow: 0 0 0 100px var(--bg) inset; caret-color: var(--ink); }
+
+.sb-select {
+  padding-inline-end: 28px; cursor: pointer; text-overflow: ellipsis;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E1D15' stroke-width='2' stroke-linecap='square'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 2px center / 16px 16px;
+}
+.sb-select:has(option[value=""]:checked) { color: var(--ink-subtle); }
+.sb-select option { color: var(--c-ink); background: var(--c-paper); }
+
+.sb-grid > .btn { align-self: end; }
+.sb-grid > .btn[disabled] { opacity: .7; cursor: progress; }
+
+/* Optional events opt-in: a square box, unticked by default. */
+.sb-check { display: inline-flex; align-items: center; gap: 12px; min-block-size: 44px; cursor: pointer; color: var(--ink); justify-self: start; }
+.sb-check input {
+  appearance: none; -webkit-appearance: none; flex: none; display: grid; place-content: center;
+  inline-size: 20px; block-size: 20px; margin: 0; border: 1.5px solid var(--line-strong); border-radius: 0; background: transparent; cursor: pointer;
+}
+.sb-check input::after { content: ""; inline-size: 10px; block-size: 10px; background: var(--ink); transform: scale(0); transition: transform var(--dur-hover) var(--ease-out); }
+.sb-check input:checked { border-color: var(--ink); }
+.sb-check input:checked::after { transform: none; }
+.sb-check input:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* Honeypot: off-screen, out of the tab order and the accessibility tree. */
+.sb-hp { position: absolute; inset-inline-start: -10000px; inline-size: 1px; block-size: 1px; overflow: hidden; }
+
+.sb-msg { color: var(--danger); font-weight: 600; }
+.sb-msg:empty { display: none; }
+
+.sb-micro { color: var(--ink-muted); }
+.sb-micro .link { white-space: nowrap; }
+
+/* ── Closed (email not configured yet): same footprint, no input, honest ── */
+.sb-closed-line {
+  display: flex; align-items: center; gap: 10px; min-block-size: 52px; margin: 0; padding: 12px 0 10px;
+  border-bottom: 1px dashed var(--sb-rule);
+  font-weight: 500; font-size: var(--fs-ui); line-height: 1.35; color: var(--ink); text-wrap: pretty;
+}
+.sb-closed-dot { flex: none; inline-size: 8px; block-size: 8px; border: 1.5px solid currentColor; border-radius: var(--r-pin); }
+.sb-rss > svg { inline-size: 16px; block-size: 16px; }
+@media (hover: hover) { .sb-rss:hover > svg { transform: none; } }
+
+/* ── Success: a route line climbs to a flag, then the line ── */
+.sb-done { display: grid; gap: var(--s-3); justify-items: start; min-block-size: 52px; }
+.sb-trail { inline-size: min(240px, 100%); block-size: auto; overflow: visible; margin-block-start: 14px; }
+.sb-trail path { fill: none; stroke-linecap: square; stroke-linejoin: miter; }
+.sb-trail-base { stroke: var(--sb-rule); stroke-width: 1; opacity: .35; }
+.sb-trail-route {
+  stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: sb-draw 600ms var(--ease-in-out) 80ms forwards;
+}
+.sb-trail-pole { stroke: var(--ink) !important; stroke-width: 1.5; }
+.sb-trail-cloth { fill: var(--accent) !important; stroke: none !important; }
+.sb-trail-flag { opacity: 0; transform-box: fill-box; transform-origin: 0 100%; animation: sb-flag 260ms var(--ease-out) 640ms forwards; }
+.sb-done-msg { font-weight: 700; font-size: var(--fs-ui); line-height: 1.4; color: var(--ink); animation: sb-rise 420ms var(--ease-arrive) 600ms both; }
+.sb-done-msg:focus { outline: none; }
+.sb-done-msg:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+@keyframes sb-draw { to { stroke-dashoffset: 0; } }
+@keyframes sb-flag { from { opacity: 0; transform: scaleY(.2); } to { opacity: 1; transform: none; } }
+@keyframes sb-rise { from { opacity: 0; transform: translateY(6px); } }
+
+/* ═══════════ Variants ═══════════ */
+
+/* row: a band (caption + line left, form right) once there's room; stacked in a column. */
+.sb[data-v="row"] { --sb-stack: var(--s-4); }
+@container sb (min-width: 52rem) {
+  .sb[data-v="row"] .sb-in { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--s-7); align-items: start; }
+  .sb[data-v="row"] .sb-head { padding-block-start: 6px; }
+}
+
+/* card: a sand panel with contours, for the end of a note, /writing and /watch. */
+.sb[data-v="card"] { --sb-stack: var(--s-6); border-top: 2px solid var(--ink); }
+.sb[data-v="card"] .sb-in { padding: var(--s-6) var(--s-5); }
+.sb[data-v="card"] .sb-h { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--tr-h3); max-inline-size: 16ch; }
+.sb[data-v="card"]::before { --topo-src: url(/textures/topo-b.svg); }
+@container sb (min-width: 34rem) { .sb[data-v="card"] .sb-in { padding: var(--s-7) var(--s-6); } }
+@container sb (min-width: 56rem) {
+  .sb[data-v="card"] .sb-in { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); column-gap: var(--s-8); align-items: end; }
+}
+
+/* night: ice on night, an ember dot that flickers like a camp stove. */
+.sb[data-v="night"] { --sb-rule: var(--c-glacier-300); --danger: var(--c-ember-300); }
+.sb[data-v="night"] .sb-cap { color: var(--c-glacier-200); }
+.sb[data-v="night"] .sb-cap::before {
+  inline-size: 6px; block-size: 6px; border-radius: var(--r-pin); background: var(--c-sunrise-400);
+  box-shadow: 0 0 6px 1px rgb(255 147 75 / .65); animation: sb-ember 3.6s linear infinite;
+}
+.sb[data-v="night"] .sb-h { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--tr-h3); max-inline-size: 14ch; }
+.sb[data-v="night"] .sb-input::placeholder { color: var(--c-granite-400); }
+.sb[data-v="night"] .sb-input:-webkit-autofill { -webkit-box-shadow: 0 0 0 100px var(--c-night) inset; }
+.sb .sb-btn-ice {
+  --btn-bg: transparent; --btn-fg: var(--c-glacier-200); --btn-bd: var(--c-glacier-300);
+  --btn-fill: var(--c-glacier-200); --btn-fill-fg: var(--c-night);
+}
+@keyframes sb-ember {
+  0%, 100% { opacity: 1; } 7% { opacity: .55; } 11% { opacity: .95; } 28% { opacity: .75; }
+  41% { opacity: 1; } 58% { opacity: .62; } 63% { opacity: .9; } 80% { opacity: .7; }
+}
+
+/* page: the large instrument (/subscribe, /community). Bigger type on the rule, a 64px button. */
+.sb[data-v="page"] { --sb-fs: var(--fs-h4); }
+.sb[data-v="page"] .sb-email { font-weight: 500; letter-spacing: -.015em; }
+.sb[data-v="page"] .sb-h { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--tr-h3); max-inline-size: 18ch; }
+.sb[data-v="page"] .sb-input { min-block-size: 64px; }
+.sb[data-v="page"] .sb-email { min-block-size: 72px; }
+.sb[data-v="page"] .sb-closed-line { min-block-size: 64px; font-size: var(--fs-body); }
+.sb[data-v="page"] .sb-grid > .btn, .sb[data-v="page"] .sb-rss { --btn-h: 64px; }
+.sb[data-v="page"] .sb-select { font-size: max(1rem, var(--fs-body)); }
+.sb[data-v="page"] .sb-building { font-size: max(1rem, var(--fs-body)); }
+
+/* With role / question fields: email full width, the answers side by side, the button last. */
+.sb-grid[data-extras] { grid-template-columns: minmax(0, 1fr); }
+@container sb (min-width: 34rem) {
+  .sb-grid[data-extras] { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+  .sb-grid[data-extras] > .sb-email { grid-column: 1 / -1; }
+  .sb-grid[data-extras] > .btn { grid-column: 1 / -1; justify-self: start; margin-block-start: var(--s-3); }
+  .sb-grid[data-extras] > .sb-select:last-of-type:nth-last-child(2) { grid-column: 1 / -1; }
+}
+
+/* Phones and narrow columns: stack, full-width button. */
+@container sb (max-width: 29.99rem) {
+  .sb-grid { grid-template-columns: minmax(0, 1fr); row-gap: var(--s-4); }
+  .sb-grid > .btn, .sb-rss { inline-size: 100%; }
+  .sb-micro .link { white-space: normal; }
+}
+
+/* ── Motion preferences: the ember holds still, the route is simply drawn ── */
+@media (prefers-reduced-motion: reduce) {
+  .sb[data-v="night"] .sb-cap::before { animation: none; }
+  .sb-trail-route { animation: none; stroke-dashoffset: 0; }
+  .sb-trail-flag { animation: none; opacity: 1; }
+  .sb-done-msg { animation: none; }
+}
+:root[data-motion="reduced"] .sb[data-v="night"] .sb-cap::before { animation: none; }
+:root[data-motion="reduced"] .sb-trail-route { animation: none; stroke-dashoffset: 0; }
+:root[data-motion="reduced"] .sb-trail-flag { animation: none; opacity: 1; }
+:root[data-motion="reduced"] .sb-done-msg { animation: none; }
+
+@media (forced-colors: active) {
+  .sb-input { border-bottom-color: CanvasText; }
+  .sb-cap::before, .sb-trail-cloth { background: CanvasText; fill: CanvasText !important; }
+}

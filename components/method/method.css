@@ -1,0 +1,133 @@
+/* /method: the Summit Route page. Tokens come from app/globals.css; radius 0 throughout. */
+
+/* ── At a glance ── */
+.m-glance { padding-block: var(--beat-top) var(--s-9); }
+.m-glance-title { max-inline-size: 16ch; }
+.m-glance-line { max-inline-size: 40ch; margin-top: var(--s-5); text-wrap: balance; color: var(--ink-muted); }
+.m-glance-map { max-inline-size: 1100px; margin: var(--s-7) auto 0; }
+.m-glance-list {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); gap: 0;
+  max-inline-size: 1100px; margin: var(--s-6) auto 0; padding: 0; list-style: none; border-top: 2px solid var(--ink);
+}
+.m-glance-link {
+  position: relative; display: flex; align-items: center; gap: 12px; min-block-size: 64px; padding: 14px 16px 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.m-glance-blaze { inline-size: 6px; block-size: 18px; background: var(--hue); flex: none; transition: transform var(--dur-ui) var(--ease-out); transform-origin: bottom; }
+.m-glance-n { color: var(--ink); }
+.m-glance-name { font-weight: 800; font-size: var(--fs-ui); letter-spacing: -.005em; }
+@media (hover: hover) {
+  .m-glance-link:hover .m-glance-blaze { transform: scaleY(1.6); }
+  .m-glance-link:hover .m-glance-name { text-decoration: underline 2px var(--link-line); text-underline-offset: .22em; }
+}
+@media (min-width: 64rem) { .m-glance-link { padding-inline-end: 24px; } .m-glance-list li + li .m-glance-link { padding-inline-start: 16px; border-inline-start: 1px solid var(--line); } }
+/* Phone: two per row; an odd last camp takes the full row instead of leaving a hole. */
+@media (max-width: 63.99rem) { .m-glance-list > li:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+
+/* ── Camps ── */
+.m-camp { padding-block: var(--beat-top) var(--s-9); scroll-margin-top: calc(var(--nav-h) + var(--nav-inset)); overflow: clip; }
+/* Consecutive camps are one series: the hairline sits in a tighter, even gap (no nav allowance
+   mid-page), so one camp's last line and the next numeral read as rhythm, not a void. */
+.m-camp + .m-camp { border-top: 1px solid var(--line); padding-top: var(--s-8); }
+.m-camp:has(+ .m-camp) { padding-bottom: var(--s-8); }
+.m-camp-grid { row-gap: var(--s-6); align-items: center; }
+.m-camp-plate, .m-camp-text { grid-column: 1 / -1; min-width: 0; }
+.m-camp-text { display: grid; gap: var(--s-4); justify-items: start; }
+
+.m-camp-num { color: var(--hue); line-height: .8; margin-bottom: calc(var(--s-2) * -1); }
+.m-camp-h { display: grid; gap: var(--s-3); }
+.m-camp-label {
+  display: inline-flex; align-items: center; gap: 10px; color: var(--hue);
+  font: 700 1.25rem/1.2 var(--ff-display); text-transform: none; letter-spacing: 0;
+}
+.m-camp-blaze { inline-size: 6px; block-size: 18px; background: currentColor; flex: none; }
+/* The 160px numeral and the rail pin carry the number on desktop; the label carries it below 64rem. */
+@media (max-width: 63.99rem) { .m-camp-num { display: none; } }
+@media (min-width: 64rem) { .m-camp-n { display: none; } }
+.m-camp-title { display: block; }
+.m-camp-detail { color: var(--ink); }
+
+.m-camp-leave { display: grid; gap: 10px; }
+.m-tags { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
+
+.m-clears { display: flex; flex-wrap: wrap; gap: 8px; }
+.m-clears > span:first-child { color: var(--success); }
+.m-strike { position: relative; text-decoration: none; color: var(--ink-muted); text-transform: none; letter-spacing: .02em; font-family: var(--ff-mono); }
+@media (max-width: 39.99rem) { .m-clears { display: grid; gap: 2px; justify-items: start; } }
+.m-strike::after {
+  content: ""; position: absolute; inset-inline: -2px; top: 50%; block-size: 1.5px; background: var(--c-ember-700);
+  transform-origin: left; transition: transform 600ms var(--ease-in-out) 300ms;
+}
+html[data-js] .reveal:not(.is-in) .m-strike::after { transform: scaleX(0); }
+html[data-revealed] .reveal .m-strike::after { transform: none; }
+
+@media (min-width: 64rem) {
+  .m-camp-plate { grid-column: 1 / span 6; }
+  .m-camp-text { grid-column: 8 / span 5; }
+  .m-camp[data-mirror] .m-camp-plate { grid-column: 7 / span 6; order: 2; }
+  .m-camp[data-mirror] .m-camp-text { grid-column: 1 / span 5; order: 1; }
+}
+
+/* Route line through the camps (decorative). Drawn by native scroll timelines where supported. */
+.m-rail { display: none; }
+@media (min-width: 64rem) {
+  .m-rail { display: block; position: absolute; inset-block: 0; inset-inline-start: calc(var(--margin) / 2 - 1px); inline-size: 2px; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgb(var(--scrim-rgb) / .35) 0 6px, transparent 6px 12px); }
+  .m-rail-fill { position: absolute; inset: 0; background: var(--accent); transform-origin: top; transform: scaleY(1); }
+  .m-rail-pin {
+    position: absolute; top: 50%; left: 50%; display: grid; place-items: center; inline-size: 28px; block-size: 28px; margin: -14px 0 0 -14px;
+    border-radius: var(--r-pin); background: var(--c-paper); border: 2px solid var(--c-ink); color: var(--c-ink);
+    font: 600 10px/1 var(--ff-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; isolation: isolate;
+  }
+  .m-rail-dot { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--c-sunrise-500); }
+  /* The line runs from the first camp's pin to the last. */
+  .m-camp#position .m-rail { inset-block-start: 50%; }
+  .m-camp#team .m-rail { inset-block-end: 50%; }
+  .m-camp#position .m-rail-pin { top: 0; }
+  .m-camp#team .m-rail-pin { top: 100%; }
+}
+@supports (animation-timeline: view()) {
+  @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+    html:not([data-motion="reduced"]) .m-rail-fill { animation: m-rail-draw linear both; animation-timeline: view(); animation-range: entry 40% exit 60%; }
+    html:not([data-motion="reduced"]) .m-rail-dot { animation: m-pin-reach linear both; animation-timeline: view(); animation-range: cover 46% cover 50%; }
+  }
+}
+@keyframes m-rail-draw { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes m-pin-reach { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* ── Four ways to climb ── */
+.m-offers { padding-bottom: var(--s-9); }
+.m-band { aspect-ratio: 4 / 3; display: grid; align-items: start; }
+@media (min-width: 40rem) { .m-band { aspect-ratio: 21 / 9; } }
+.m-band-inner { position: relative; z-index: 1; display: flex; justify-content: flex-end; padding-block: var(--s-6); }
+.m-band-title { max-inline-size: 11ch; text-align: right; color: var(--c-ink); }
+.m-offers-body { padding-top: var(--s-7); }
+/* Stacked on phones; a 2×2 grid from tablets up, two cards per row so each line keeps its measure. */
+.m-offer-grid { display: grid; gap: var(--s-6) var(--gutter); padding: 0; margin: 0; list-style: none; }
+@media (min-width: 40rem) { .m-offer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--s-7); } }
+@media (min-width: 64rem) { .m-offer-grid { column-gap: calc(var(--gutter) * 3); } }
+.m-offer { display: grid; align-content: start; gap: var(--s-3); padding-top: var(--s-4); border-top: 2px solid var(--ink); }
+.m-offer-len { display: flex; align-items: baseline; gap: 14px; color: var(--ink); }
+.m-offer-n { color: var(--ink-muted); }
+.m-offer-line { color: var(--ink-muted); font-size: var(--fs-ui); max-inline-size: 30ch; }
+.m-offer-note { margin-top: var(--s-6); color: var(--ink-muted); }
+
+/* ── FAQ ── */
+.m-faq { padding-block: var(--beat-top) var(--s-9); }
+.m-faq-grid { row-gap: var(--s-6); }
+.m-faq-title, .m-faq-list { grid-column: 1 / -1; }
+.m-faq-title { max-inline-size: none; }
+@media (min-width: 64rem) {
+  .m-faq-title { grid-column: 1 / span 5; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + 32px); }
+  .m-faq-list { grid-column: 7 / span 6; }
+}
+
+@media (forced-colors: active) {
+  .m-glance-blaze, .m-camp-blaze { background: CanvasText; }
+  .m-rail-pin { border-color: CanvasText; }
+}
+
+/* The camp's stack: official marks, brand colours, gaps double as clear space. */
+.m-camp-stack { margin-top: var(--s-5); }
+.m-stack { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; list-style: none; margin: var(--s-3) 0 0; padding: 0; }
+.m-stack img { display: block; }

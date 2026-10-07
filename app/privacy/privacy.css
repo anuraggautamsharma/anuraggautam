@@ -1,0 +1,14 @@
+/* /privacy: a plain paper ledger, three numbered paragraphs. */
+.pv { padding-block: var(--beat-top, calc(var(--nav-h) + var(--nav-inset) + var(--s-7))) var(--s-9); min-block-size: 70svh; }
+.pv-grid { display: grid; gap: var(--s-7) var(--gutter); }
+.pv-head { display: grid; gap: var(--s-5); align-content: start; }
+.pv-date { display: flex; align-items: center; gap: 12px; color: var(--ink); }
+.pv-list > li { padding-block: var(--s-5); }
+.pv-list > li > :first-child { color: var(--ink-muted); padding-block-start: .35em; }
+.pv-list .t-body { max-inline-size: 58ch; }
+@media (min-width: 64rem) {
+  .pv-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .pv-head { grid-column: 1 / span 4; }
+  .pv-list { grid-column: 6 / -1; margin-block-start: .6rem; }
+}
+.pv-date .blaze { background: currentColor; } /* orange is earned: the label's own colour */

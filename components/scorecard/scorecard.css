@@ -1,0 +1,186 @@
+/* ── /scorecard · the Summit Route Scorecard (a field instrument on paper) ───────────── */
+.sc { padding-block: var(--s-7) var(--s-9); scroll-margin-top: var(--nav-h); }
+
+.sc-panel {
+  position: relative; display: grid; align-content: start;
+  padding: var(--s-5) var(--s-4) var(--s-5);
+  background: var(--surface); border: 1px solid var(--line); border-top: 2px solid var(--ink);
+}
+@media (min-width: 40rem) { .sc-panel { padding: var(--s-6); } }
+
+/* ── Top bar: STATEMENT 03 / 10 ··· ▲ ALT 1,685 M ── */
+.sc-bar { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); }
+.sc-count { color: var(--ink); }
+.sc-count-n { font-weight: 700; }
+.sc-count-of { color: var(--ink-muted); }
+.sc-alt { display: inline-flex; align-items: center; gap: .45em; color: var(--ink); }
+.sc-alt::before { content: ""; inline-size: .7em; block-size: .6em; background: currentColor; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.sc-alt-k { color: var(--ink-muted); }
+
+/* ── Elevation profile (shared by the rail and the result) ── */
+.sc-prof { position: relative; margin-block-start: var(--s-5); aspect-ratio: 1000 / 300; }
+.sc-prof-svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; overflow: visible; }
+.sc-far { fill: var(--c-alpine-100); }
+.sc-ridge { fill: var(--c-alpine-700); }
+.sc-planned { fill: none; stroke: var(--c-paper); stroke-width: 2; stroke-dasharray: 2 7; stroke-linecap: square; opacity: .55; }
+.sc-walk { position: absolute; inset: -12px 0; clip-path: inset(0 calc(100% - var(--walk, 0%)) 0 0); transition: clip-path 640ms var(--ease-out); }
+.sc-walk .sc-prof-svg { inset: 12px 0; block-size: calc(100% - 24px); }
+.sc-casing { fill: none; stroke: var(--c-paper); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.sc-walked { fill: none; stroke: var(--c-sunrise-500); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.sc-pin { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -100%); display: grid; justify-items: center; }
+.sc-pin::after { content: ""; inline-size: 2px; block-size: 10px; background: var(--ink); }
+.sc-pin-head {
+  display: grid; place-items: center; inline-size: 26px; block-size: 26px; border-radius: 50%;
+  background: var(--c-paper); border: 2.5px solid var(--hue); color: var(--ink);
+  font-family: var(--ff-mono), ui-monospace, monospace; font-size: 10px; font-weight: 700;
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+.sc-pin[data-state="todo"] .sc-pin-head { border-color: var(--c-granite-400); color: var(--ink-muted); }
+.sc-pin[data-state="here"] .sc-pin-head { background: var(--hue); color: var(--c-paper); transform: scale(1.18); }
+.sc-pin[data-state="done"] .sc-pin-head,
+.sc-pin[data-state="clear"] .sc-pin-head { background: var(--hue); color: var(--c-paper); }
+.sc-pin[data-state="stalled"] .sc-pin-head { border-color: var(--c-ember-700); border-style: dashed; }
+.sc-pin-tag {
+  position: absolute; bottom: calc(100% + 6px); white-space: nowrap; padding: 3px 8px;
+  background: var(--c-paper); border: 1.5px solid var(--c-ember-700); color: var(--c-ember-700); font-weight: 700; letter-spacing: .08em;
+}
+
+/* "You are here": a sunrise dot that walks the route; on the result it marks the altitude reached. */
+.sc-you { position: absolute; left: var(--x); top: var(--y); transition: left 640ms var(--ease-out), top 640ms var(--ease-out); pointer-events: none; }
+.sc-you-dot {
+  position: absolute; inline-size: 14px; block-size: 14px; translate: -50% -50%; border-radius: 50%;
+  background: var(--c-sunrise-500); box-shadow: 0 0 0 3px var(--c-paper);
+}
+.sc-you-dot::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid var(--c-sunrise-500); animation: sc-ping 1.8s var(--ease-out) infinite; }
+@keyframes sc-ping { from { transform: scale(1); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
+.sc-you-dot[data-still]::after { animation: none; opacity: 0; }
+
+/* ── One statement per screen ── */
+.sc-step { margin-block-start: var(--s-6); animation: sc-in 420ms var(--ease-arrive) both; }
+@keyframes sc-in { from { opacity: 0; transform: translateY(10px); } }
+.sc-camp { display: inline-flex; align-items: center; gap: .75rem; color: var(--hue); font-weight: 700; }
+.sc-camp-blaze { inline-size: 6px; block-size: 16px; background: var(--hue); }
+.sc-q {
+  margin-block-start: var(--s-4); max-inline-size: 24ch; text-wrap: balance;
+  font-weight: 800; font-size: clamp(1.625rem, 1.2rem + 1.7vw, 2.75rem); line-height: 1.1; letter-spacing: -.02em;
+}
+.sc-q:focus { outline: none; }
+
+/* Segmented scale: three joined square buttons, 72px tall, two pips for the points. */
+.sc-scale { margin-block-start: var(--s-6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-inline-size: 46rem; }
+.sc-opt {
+  position: relative; display: grid; justify-items: center; align-content: center; gap: 10px;
+  min-block-size: 76px; padding: 12px 8px; margin-inline-start: -1.5px;
+  background: var(--c-paper); color: var(--ink); border: 1.5px solid var(--line-strong); border-radius: 0; cursor: pointer;
+  font: 700 clamp(1rem, .95rem + .25vw, 1.125rem)/1.15 var(--ff-display); text-align: center;
+  transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.sc-opt:first-child { margin-inline-start: 0; }
+.sc-opt:active { transform: translateY(1px); }
+@media (hover: hover) { .sc-opt:hover { background: var(--c-sand-100); z-index: 1; border-color: var(--ink); } }
+.sc-opt:focus-visible { z-index: 2; }
+.sc-opt[aria-pressed="true"] { background: var(--ink); color: var(--c-paper); border-color: var(--ink); z-index: 1; }
+.sc-opt[aria-pressed="true"] .sc-pips i[data-on] { background: var(--c-sunrise-500); border-color: var(--c-sunrise-500); }
+
+.sc-pips { display: inline-flex; gap: 4px; }
+.sc-pips i { inline-size: 10px; block-size: 10px; border: 1.5px solid currentColor; }
+.sc-pips i[data-on] { background: currentColor; }
+
+.sc-nav { margin-block-start: var(--s-5); display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); min-block-size: 48px; }
+.sc-back {
+  display: inline-flex; align-items: center; gap: .55em; min-block-size: 48px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--ink); font: 700 var(--fs-small)/1 var(--ff-display); font-stretch: 112%; letter-spacing: var(--tr-btn); text-transform: uppercase;
+}
+.sc-back:disabled { opacity: .35; cursor: default; }
+@media (hover: hover) { .sc-back:not(:disabled):hover { text-decoration: underline 2px var(--link-line); text-underline-offset: .3em; } }
+.sc-privacy { margin-block-start: var(--s-5); padding-block-start: var(--s-4); border-top: 1px solid var(--line); text-transform: none; letter-spacing: .02em; }
+
+/* Desktop: the profile spans the panel; the reading sits in a left column, the statement on the right. */
+@media (min-width: 64rem) {
+  .sc-panel[data-view="steps"] {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: var(--gutter);
+    grid-template-areas: "prof prof" "bar step" "bar nav" "priv priv";
+  }
+  [data-view="steps"] > .sc-prof { grid-area: prof; margin: 0 0 var(--s-6); aspect-ratio: 1000 / 170; }
+  [data-view="steps"] > .sc-bar { grid-area: bar; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: var(--s-4); }
+  [data-view="steps"] > .sc-step { grid-area: step; margin: 0; }
+  [data-view="steps"] > .sc-nav { grid-area: nav; max-inline-size: 46rem; }
+  [data-view="steps"] > .sc-privacy { grid-area: priv; }
+  .sc-count { display: grid; gap: var(--s-2); }
+  .sc-count-n { font: 900 clamp(4rem, 2rem + 4vw, 6.5rem)/.85 var(--ff-display); font-stretch: 112%; letter-spacing: -.03em; color: var(--ink); }
+  .sc-count-of { font-size: var(--fs-micro); }
+  .sc-opt { min-block-size: 88px; }
+  .sc-pin-head { inline-size: 32px; block-size: 32px; font-size: 11.5px; border-width: 3px; }
+  .sc-pin::after { block-size: 16px; }
+}
+
+/* ── Result ── */
+.sc-result > * { animation: sc-in 600ms var(--ease-arrive) both; animation-delay: calc(var(--n, 0) * 90ms); }
+.sc-result > :nth-child(2) { --n: 1; } .sc-result > :nth-child(3) { --n: 2; } .sc-result > :nth-child(4) { --n: 3; } .sc-result > :nth-child(5) { --n: 4; }
+
+.sc-res-top { display: grid; gap: var(--s-6); }
+.sc-res-k { color: var(--ink); }
+.sc-res-k:focus { outline: none; }
+.sc-res-num { margin-block-start: var(--s-3); display: flex; align-items: baseline; gap: .12em; font: 900 clamp(4rem, 2.2rem + 7vw, 8.5rem)/.85 var(--ff-display); font-stretch: 112%; letter-spacing: -.035em; }
+.sc-res-unit { font-size: .38em; letter-spacing: 0; color: var(--ink-muted); }
+.sc-res-of { margin-block-start: var(--s-3); }
+
+.sc-res-stall { display: grid; justify-items: start; gap: var(--s-3); padding: var(--s-5); background: var(--c-sand-100); border-top: 2px solid var(--ink); }
+.sc-res-stall > .sc-res-k { display: inline-flex; align-items: center; gap: .75rem; color: var(--c-ember-700); font-weight: 700; }
+.sc-res-stall > .sc-res-k::before { content: ""; inline-size: 6px; block-size: 16px; background: var(--c-ember-700); }
+.sc-res-name { max-inline-size: 22ch; text-wrap: balance; }
+.sc-res-hazard { font-family: var(--ff-serif), Georgia, serif; font-style: italic; font-size: var(--fs-lead); line-height: 1.35; color: var(--ink); }
+.sc-res-cta { margin-block-start: var(--s-4); display: grid; gap: var(--s-3); justify-items: start; }
+.sc-res-ctaline { color: var(--ink-muted); max-inline-size: 36ch; }
+
+.sc-res-map { margin-block-start: var(--s-7); }
+.sc-res-map > .sc-prof { margin: 0; aspect-ratio: 1000 / 340; }
+.sc-camps { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: grid; }
+.sc-campres {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: var(--s-3);
+  min-block-size: 52px; border-bottom: 1px solid var(--line);
+}
+.sc-campres:first-child { border-top: 1px solid var(--line); }
+.sc-campres-k { color: var(--hue); font-weight: 700; }
+.sc-campres-state { font-weight: 800; font-size: var(--fs-small); }
+.sc-campres[data-state="stalled"] .sc-campres-state { color: var(--c-ember-700); }
+.sc-campres[data-state="clear"] .sc-campres-state { color: var(--c-alpine-700); }
+.sc-campres .sc-pips { color: var(--hue); }
+.sc-campres .sc-pips i { inline-size: 9px; block-size: 9px; }
+
+.sc-tools { margin-block-start: var(--s-6); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4); }
+.sc-sub { margin-block-start: var(--s-6); padding-block-start: var(--s-6); border-top: 1px solid var(--line); }
+
+@media (min-width: 64rem) {
+  .sc-res-top { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); align-items: end; }
+  .sc-res-stall { padding: var(--s-6); }
+  .sc-res-cta { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: var(--s-5); }
+  .sc-res-map > .sc-prof { aspect-ratio: 1000 / 220; }
+  /* Five columns whose centres sit under the pins (10/30/50/70/90%). */
+  .sc-camps { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .sc-campres, .sc-campres:first-child {
+    grid-template-columns: none; justify-items: start; align-content: start; gap: 8px;
+    padding: var(--s-4); border: 1px solid var(--line); border-top: 3px solid var(--hue); background: var(--c-paper);
+  }
+  .sc-campres[data-stall] { border-color: var(--c-ember-700); border-top-color: var(--c-ember-700); }
+}
+
+@media (max-width: 40rem) {
+  .sc-res-cta, .sc-res-cta > .btn { inline-size: 100%; }
+  .sc-tools { flex-direction: column; align-items: stretch; }
+  .sc-tools > .btn { inline-size: 100%; }
+}
+
+/* Reduced motion (OS or the footer toggle): end states, no walking, no ping. */
+@media (prefers-reduced-motion: reduce) {
+  .sc-step, .sc-result > *, .sc-you-dot::after { animation: none; }
+  .sc-walk, .sc-you, .sc-pin-head { transition: none; }
+}
+:root[data-motion="reduced"] :is(.sc-step, .sc-result > *), :root[data-motion="reduced"] .sc-you-dot::after { animation: none; }
+:root[data-motion="reduced"] :is(.sc-walk, .sc-you, .sc-pin-head) { transition: none; }
+
+@media (forced-colors: active) {
+  .sc-opt[aria-pressed="true"] { outline: 3px solid Highlight; }
+  .sc-pin-head { border-color: CanvasText; }
+}

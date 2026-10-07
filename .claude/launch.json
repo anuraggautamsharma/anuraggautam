@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site-dev",
+      "runtimeExecutable": "/Users/anurag/.local/node/bin/node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "-p", "3000"],
+      "port": 3000
+    },
+    {
+      "name": "site-prod",
+      "runtimeExecutable": "/Users/anurag/.local/node/bin/node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "start", "-p", "3001"],
+      "port": 3001
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+/* ═══════════════════════ Global chrome: header, mobile menu, footer (SPEC_V2 §3) ═══════════════════════ */
+
+/* ── Header: a floating slab, inset 12px, 60px tall, square ── */
+.site-header {
+  /* paper mode is the default until HeaderState sets data-mode */
+  --hd-bg: rgb(247 242 232 / .86); --hd-fg: var(--c-ink); --hd-bd: var(--c-granite-200);
+  --hd-sh: var(--sh-1); --hd-blur: blur(16px) saturate(1.4); --hd-ts: none;
+  --focus: var(--c-glacier-700); --focus-halo: transparent;
+  position: fixed; inset: var(--nav-inset) var(--nav-inset) auto; z-index: var(--z-nav);
+  view-transition-name: chrome;
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+.site-header[data-hidden] { transform: translateY(calc(-100% - var(--nav-inset) - 24px)); }
+/* The bar's shadow reaches ~20px below it: drop it while hidden so no smear lingers at the top edge. */
+.site-header[data-hidden] .hd-bar { box-shadow: none; }
+
+/* Clear mode on a bright photo (404 chalk, /writing sky): a soft scrim behind the bar keeps paper text legible.
+   It sits under .hd-bar (z 1) and is modelled in scripts/check-photo-contrast.mjs (header strip, .42). */
+.site-header::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  inset: calc(-1 * var(--nav-inset)) calc(-1 * var(--nav-inset)) auto; block-size: 140px;
+  background: linear-gradient(to bottom, rgb(var(--hd-scrim-rgb, 16 20 32) / var(--hd-scrim-a, .42)), rgb(var(--hd-scrim-rgb, 16 20 32) / 0));
+  opacity: 0; transition: opacity var(--dur-ui) var(--ease-out);
+}
+.site-header[data-mode="clear"]::before,
+body:has(#main > [data-nav="photo"]:first-child, #main > :first-child > [data-nav="photo"]:first-child) .site-header:not([data-mode])::before { opacity: 1; }
+html[data-menu-open] .site-header::before { opacity: 0; }
+/* A photo with a bright top edge (lib/photos headerScrim: 'strong') asks for more. */
+body:has(#main > :first-child > picture[data-hd-scrim="strong"], #main > :first-child > :first-child > picture[data-hd-scrim="strong"]) .site-header { --hd-scrim-a: .62; }
+.site-header[data-mode="clear"] { --hd-bg: transparent; --hd-fg: var(--c-paper); --hd-bd: transparent; --hd-sh: none; --hd-blur: none; --hd-ts: var(--text-shadow-photo); --focus: var(--c-paper); --focus-halo: var(--c-ink); }
+.site-header[data-mode="photo"] { --hd-bg: rgb(14 29 21 / .64); --hd-fg: var(--c-paper); --hd-bd: rgb(247 242 232 / .14); --hd-sh: none; --hd-blur: blur(16px) saturate(1.3); --focus: var(--c-paper); --focus-halo: var(--c-ink); }
+.site-header[data-mode="deep"] { --hd-bg: rgb(4 83 49 / .9); --hd-fg: var(--c-paper); --hd-bd: rgb(247 242 232 / .12); --hd-sh: none; --hd-blur: blur(16px) saturate(1.2); --focus: var(--c-sunrise-300); }
+/* Deep mode takes the hue of the band under it (HeaderState sets data-under from its data-tone):
+   forest green by default (alpine, forest), deep blue over the glacier Fit band, night over the footer. */
+.site-header[data-mode="deep"][data-under="glacier"] { --hd-bg: rgb(0 73 115 / .9); }
+.site-header[data-mode="deep"][data-under="night"] { --hd-bg: rgb(6 20 14 / .9); }
+/* Before hydration: a page that opens on a photo beat (directly, or inside one wrapper) starts with the clear bar. */
+body:has(#main > [data-nav="photo"]:first-child, #main > :first-child > [data-nav="photo"]:first-child) .site-header:not([data-mode]) { --hd-bg: transparent; --hd-fg: var(--c-paper); --hd-bd: transparent; --hd-sh: none; --hd-blur: none; --hd-ts: var(--text-shadow-photo); --focus: var(--c-paper); --focus-halo: var(--c-ink); }
+/* Menu open: the bar sits on the forest sheet. */
+html[data-menu-open] .site-header { --hd-bg: transparent; --hd-fg: var(--c-paper); --hd-bd: transparent; --hd-sh: none; --hd-blur: none; --hd-ts: none; --focus: var(--c-sunrise-300); --focus-halo: transparent; }
+
+.hd-bar {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+  block-size: var(--nav-h); padding-inline: 12px 4px;
+  color: var(--hd-fg); background-color: var(--hd-bg);
+  border: 1px solid var(--hd-bd); box-shadow: var(--hd-sh);
+  -webkit-backdrop-filter: var(--hd-blur); backdrop-filter: var(--hd-blur);
+  text-shadow: var(--hd-ts);
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
+}
+@media (min-width: 64rem) { .hd-bar { gap: 28px; padding-inline: 20px 10px; } }
+
+.hd-brand { display: inline-flex; align-items: center; gap: 8px; min-block-size: 44px; margin-inline-end: auto; }
+@media (min-width: 64rem) { .hd-brand { gap: 10px; } }
+.hd-word {
+  font-family: var(--ff-mega, var(--ff-display)), sans-serif; font-weight: 800; font-stretch: 125%;
+  font-size: 12px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; line-height: 1;
+}
+@media (min-width: 64rem) { .hd-word { font-size: 15px; } }
+/* Phones: logo, CTA and menu share one 60px row from 375px up (measured with "Let’s talk"). */
+@media (max-width: 389px) { .hd-word { font-size: 11px; letter-spacing: .03em; } }
+
+.hd-nav { display: none; }
+@media (min-width: 64rem) { .hd-nav { display: block; } }
+.hd-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+.hd-link {
+  position: relative; display: inline-flex; align-items: center; min-block-size: 44px;
+  font-weight: 600; font-size: 15px; line-height: 1;
+}
+.hd-link::after {
+  content: ""; position: absolute; inset-inline: 0; bottom: 5px; block-size: 2px; background: var(--c-sunrise-500);
+  transform: scaleX(0); transform-origin: left; transition: transform var(--dur-ui) var(--ease-out);
+}
+.hd-link:hover::after { transform: scaleX(1); }
+.hd-link[aria-current="page"]::after { transform: none; }
+
+.hd-alt { display: none; min-inline-size: calc(13.5ch + 21px); text-align: end; /* "ALT 2,900 M" with .14em tracking, plus the 20px pad and 1px rule */ color: inherit; white-space: nowrap; padding-inline-start: 20px; border-inline-start: 1px solid currentColor; border-color: color-mix(in oklab, currentColor 28%, transparent); }
+@media (min-width: 80rem) { .hd-alt { display: block; } }
+.hd-alt-k { opacity: .7; }
+/* Before hydration the reading is still "—": keep the slot (so nothing shifts) but show nothing.
+   A page with no altitude anywhere (404, /credits) drops the slot, so the nav ends flush right. */
+html:not([data-alt]) .hd-alt { visibility: hidden; }
+body:not(:has(#main [data-alt])) .hd-alt { display: none; }
+
+.site-header .hd-cta { text-shadow: none; transition: opacity var(--dur-ui) var(--ease-out), visibility 0s; }
+/* Orange is earned: over a photo-first hero the page's own CTA leads, so the header's waits
+   until the bar leaves clear mode; it also steps back while the Summit, an article's closing
+   plate or the footer sign-off is on screen (HeaderState sets data-cta-off), and never shows
+   on /contact. */
+.site-header[data-mode="clear"] .hd-cta,
+.site-header[data-cta-off] .hd-cta,
+body:has(.wo-form) .site-header .hd-cta,
+body:has(#main > [data-nav="photo"]:first-child, #main > :first-child > [data-nav="photo"]:first-child) .site-header:not([data-mode]) .hd-cta {
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--dur-ui) var(--ease-out), visibility 0s linear var(--dur-ui);
+}
+html[data-menu-open] .site-header .hd-cta { visibility: hidden; }
+/* Desktop: the CTA has a fixed width, so while it is hidden the nav and the altimeter slide
+   right by exactly that slot (transform only, no reflow) and end flush with the bar's inner
+   edge, mirroring the wordmark's 20px inset on the left. No hole where the button was. */
+@media (min-width: 64rem) {
+  .site-header { --hd-cta-w: 12.25rem; --hd-cta-shift: calc(var(--hd-cta-w) + 28px - 10px); }
+  .site-header .hd-cta { inline-size: var(--hd-cta-w); }
+  .hd-nav, .hd-alt { transition: transform var(--dur-ui) var(--ease-out); }
+  .site-header[data-mode="clear"] :is(.hd-nav, .hd-alt),
+  .site-header[data-cta-off] :is(.hd-nav, .hd-alt),
+  body:has(.wo-form) .site-header :is(.hd-nav, .hd-alt),
+  body:has(#main > [data-nav="photo"]:first-child, #main > :first-child > [data-nav="photo"]:first-child) .site-header:not([data-mode]) :is(.hd-nav, .hd-alt) {
+    transform: translateX(var(--hd-cta-shift));
+  }
+}
+.hd-cta-short { display: inline; }
+.hd-cta-full { display: none; }
+.site-header .hd-cta > svg { display: none; }
+@media (min-width: 64rem) {
+  .hd-cta-short { display: none; }
+  .hd-cta-full { display: inline; }
+  .site-header .hd-cta > svg { display: block; }
+}
+@media (max-width: 63.99rem) { .site-header .hd-cta { --btn-px: 12px; } }
+/* Below 375px the row can't hold all three: the CTA stays one tap away as the menu's last item. */
+@media (max-width: 374px) { .site-header .hd-cta { display: none; } }
+
+/* Menu button: two 2px bars, 18px wide, 6px apart; they cross into an X when open */
+.hd-menu-btn {
+  position: relative; display: grid; place-items: center; inline-size: 44px; block-size: 44px; flex: none;
+  color: inherit; background: none; border: 0; padding: 0;
+}
+@media (min-width: 64rem) { .hd-menu-btn { display: none; } }
+.hd-menu-bars, .hd-menu-bars::before, .hd-menu-bars::after { display: block; inline-size: 18px; block-size: 2px; }
+.hd-menu-bars { position: relative; background: none; }
+.hd-menu-bars::before, .hd-menu-bars::after {
+  content: ""; position: absolute; inset-inline-start: 0; background: currentColor;
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+.hd-menu-bars::before { transform: translateY(-4px); }
+.hd-menu-bars::after { transform: translateY(4px); }
+.hd-menu-btn[aria-expanded="true"] .hd-menu-bars::before { transform: rotate(45deg); }
+.hd-menu-btn[aria-expanded="true"] .hd-menu-bars::after { transform: rotate(-45deg); }
+
+/* ── Mobile menu: full-screen forest sheet, wipes down from the top ── */
+.mm-sheet {
+  /* -1 inside .hd-bar's stacking context: under the logo, CTA and close button, over the page */
+  position: fixed; inset: 0; z-index: -1;
+  display: grid; overflow-y: auto; overscroll-behavior: contain;
+  padding-block: calc(var(--nav-h) + var(--nav-inset) * 2 + var(--s-6)) var(--s-6);
+  clip-path: inset(0 0 100% 0); visibility: hidden;
+  transition: clip-path var(--dur-panel) var(--ease-wipe), visibility 0s linear var(--dur-panel);
+}
+.mm-sheet[data-open] { clip-path: inset(0); visibility: visible; transition: clip-path var(--dur-panel) var(--ease-wipe), visibility 0s; }
+@media (min-width: 64rem) { .mm-sheet { display: none; } }
+.mm-inner { display: grid; align-content: space-between; gap: var(--s-7); }
+.mm-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.mm-link { display: flex; align-items: baseline; gap: 14px; min-block-size: 44px; padding-block: 6px; color: var(--c-paper); }
+.mm-num { color: var(--c-sunrise-300); flex: none; inline-size: 2.4em; }
+.mm-word {
+  font-family: var(--ff-wide, var(--ff-display)), sans-serif; font-weight: 800; font-stretch: 112%;
+  font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--tr-h2);
+  transform: translateY(24px); opacity: 0;
+  transition: transform var(--dur-panel) var(--ease-arrive), opacity var(--dur-panel) var(--ease-arrive);
+  transition-delay: calc(80ms + var(--i, 0) * 60ms);
+}
+.mm-sheet[data-open] .mm-word { transform: none; opacity: 1; }
+.mm-link[aria-current="page"] .mm-word { text-decoration: underline 3px var(--c-sunrise-500); text-underline-offset: .14em; }
+.mm-foot { display: flex; flex-wrap: wrap; gap: 8px 24px; color: var(--c-paper); }
+.mm-foot a { display: inline-flex; align-items: center; min-block-size: 44px; }
+
+/* ── Footer: night camp ── */
+.site-footer { position: relative; view-transition-name: chrome-foot; }
+.site-footer { --ft-ridge-h: 56px; }
+@media (min-width: 64rem) { .site-footer { --ft-ridge-h: 110px; } }
+.ft-ridge { position: absolute; inset-inline: 0; inline-size: 100%; top: calc(1px - var(--ft-ridge-h)); block-size: var(--ft-ridge-h); color: var(--c-night); pointer-events: none; }
+/* The ridge rises out of a closing photo (Summit, 404). After a paper beat (contact form,
+   Subscribe, an article's end matter, credits) it gets its own strip of page instead, so the
+   peaks never eat that beat's bottom padding. */
+body:has(#main > :nth-last-child(1 of :not(script, template, style)):not(.photo-stage)) .site-footer { margin-block-start: calc(var(--ft-ridge-h) - 1px); }
+.ft-body { padding-block: var(--s-8) 0; }
+.ft-signoff {
+  display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--s-5);
+  padding-block-end: var(--s-7); border-bottom: 1px solid var(--line);
+}
+.ft-signoff .t-h2 { color: var(--c-paper); }
+/* Pages that end on the Summit, the contact form or an article's closing plate already close with a CTA. */
+body:has(#summit, .wo-form, .wr-cta) .ft-signoff { display: none; }
+body:has(#summit, .wo-form, .wr-cta) .ft-camp { padding-block-start: 0; }
+/* A finished Scorecard ends on "Book a Recon": the hire sign-off would be a second orange ask. */
+body:has(.sc-result) .ft-signoff { display: none; }
+body:has(.sc-result) .ft-camp { padding-block-start: 0; }
+/* While email sign-up is closed, a page says "opens soon" once: when <main> already shows a
+   closed form, the footer drops its copy (and the whole row when no Campfire sign shares it). */
+body:has(#main .sb:not([data-ready])) .ft-camp:not([data-event]) { display: none; }
+body:has(#main .sb:not([data-ready])) .ft-camp[data-event] .ft-sub { display: none; }
+@media (min-width: 64rem) {
+  body:has(#main .sb:not([data-ready])) .ft-camp[data-event] .ft-event { grid-column: 1 / -1; justify-content: flex-start; }
+}
+
+/* Link area: contact block, then three link columns. One row on desktop, stacked below 64rem. */
+.ft-grid { display: grid; gap: var(--s-7) var(--gutter); padding-block: var(--s-7); }
+.ft-contact { display: grid; justify-items: start; align-content: start; }
+.ft-col-title { color: var(--ink-subtle); margin-block-end: var(--s-2); }
+.ft-email {
+  display: inline-flex; align-items: center; min-block-size: 44px; max-inline-size: 100%;
+  color: var(--c-paper); white-space: nowrap; overflow-wrap: normal;
+  /* currentColor at half strength, like every other text link on night (not the sky link-line). */
+  text-decoration: underline 2px color-mix(in srgb, currentColor 50%, transparent); text-underline-offset: .22em;
+  transition: text-decoration-thickness var(--dur-hover) var(--ease-out), text-decoration-color var(--dur-hover) var(--ease-out);
+}
+.ft-email:hover { text-decoration-color: currentColor; text-decoration-thickness: 3px; }
+.ft-entity { margin-block-start: var(--s-5); max-inline-size: 52ch; color: var(--ink-subtle); hyphens: none; }
+/* Phones: two columns; the long route list holds the left one while Field Notes and Community
+   stack on the right, then About. Desktop: contact in 4 columns, four link columns in 8. */
+.ft-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-6) var(--gutter); }
+.ft-col-route { grid-row: span 2; }
+@media (min-width: 64rem) {
+  .ft-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .ft-contact { grid-column: 1 / span 4; }
+  .ft-cols { grid-column: 5 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gutter); }
+  .ft-cols > .ft-col { grid-row: auto; }
+}
+
+/* The campfire row: Field Notes by email on the left; the next Campfire, only when a real one
+   is scheduled, on the right. Same 12 columns as the link grid below, so the edges line up. */
+.ft-camp {
+  display: grid; gap: var(--s-6) var(--gutter); align-items: center;
+  padding-block: var(--s-7); border-bottom: 1px solid var(--line);
+}
+.ft-event { display: flex; min-inline-size: 0; }
+@media (min-width: 64rem) {
+  .ft-camp { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .ft-sub { grid-column: 1 / span 7; }
+  .ft-event { grid-column: 9 / -1; justify-content: flex-end; }
+}
+.ft-col ul { list-style: none; margin: 0; padding: 0; }
+.ft-link {
+  display: inline-flex; align-items: center; min-block-size: 44px; max-inline-size: 100%; overflow-wrap: anywhere;
+  color: var(--c-granite-300); font-size: var(--fs-ui); font-weight: 500;
+  text-decoration: underline 1px transparent; text-underline-offset: .28em;
+  transition: color var(--dur-hover) var(--ease-out), text-decoration-color var(--dur-hover) var(--ease-out);
+}
+.ft-link:hover { color: var(--c-paper); text-decoration-color: color-mix(in srgb, currentColor 50%, transparent); text-decoration-thickness: 2px; }
+.ft-mega-wrap { overflow: clip; }
+.ft-mega { color: var(--c-granite-800); text-shadow: none; padding-block: .04em 0; margin-block-end: -.06em; }
+.ft-base {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px;
+  padding-block: var(--s-3); border-top: 1px solid var(--line); color: var(--c-granite-400);
+}
+.ft-base .ft-link { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.ft-base .ft-link:hover { color: var(--c-paper); }
+.ft-toggle {
+  display: inline-flex; align-items: center; gap: 6px; min-block-size: 44px; padding: 0;
+  background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit;
+}
+.ft-toggle[aria-disabled="true"] { cursor: default; }
+.ft-opt { opacity: .6; }
+.ft-opt[data-on] { opacity: 1; color: var(--c-paper); text-decoration: underline 2px var(--c-sunrise-500); text-underline-offset: .3em; }
+
+@media print { .site-header, .ft-ridge, .ft-mega-wrap, .ft-toggle { display: none !important; } }

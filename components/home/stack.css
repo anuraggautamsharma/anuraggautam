@@ -1,0 +1,17 @@
+/* ── The stack band (after the Route) ─────────────────────────────── */
+.sk { padding-block: var(--s-8); border-top: 1px solid var(--line); }
+.sk-grid { row-gap: var(--s-6); align-items: start; }
+.sk-head { grid-column: 1 / -1; }
+.sk-title { margin-top: var(--s-3); }
+.sk-camps { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-6) var(--s-5); list-style: none; margin: 0; padding: 0; }
+.sk-camp { min-width: 0; border-top: 1px solid var(--line); padding-top: var(--s-3); }
+.sk-camp-name { display: flex; align-items: center; gap: .5em; color: var(--ink); }
+.sk-blaze { inline-size: 6px; block-size: 14px; background: var(--hue, var(--accent)); flex: none; }
+/* Generous gaps double as the brands' clear space. */
+.sk-logos { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; list-style: none; margin: var(--s-4) 0 0; padding: 0; }
+.sk-logos img { display: block; max-inline-size: 100%; }
+@media (min-width: 40rem) { .sk-camps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 64rem) {
+  .sk-head { grid-column: 1 / span 4; }
+  .sk-camps { grid-column: 5 / -1; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}

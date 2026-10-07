@@ -1,0 +1,112 @@
+/* /about: the guide. Paper bands split by hairlines; stock photos in the hero, the trail and the summit; Anurag's own beside the bio and off the clock. */
+
+/* ── Bio + at a glance + the hilltop plate ──
+   Phone: lead → plate (3 of 4 columns) → body → facts.
+   ≥40rem: lead, body and facts on the left; the plate beside them, the facts bottom-aligned to its caption. */
+.a-bio { padding-block: var(--beat-top) var(--s-9); }
+.a-bio-grid { row-gap: var(--s-5); align-items: start; }
+.a-bio-lead, .a-bio-text, .a-bio-side { grid-column: 1 / -1; min-width: 0; }
+.a-bio-plate { grid-column: 1 / span 3; min-width: 0; margin-block: var(--s-2); }
+.a-bio-text { display: grid; gap: var(--s-4); align-content: start; }
+.a-bio-side { margin-top: var(--s-5); }
+.a-bio-first { font-size: var(--fs-lead); line-height: var(--lh-lead); font-weight: 600; letter-spacing: -.005em; max-inline-size: 32ch; text-wrap: balance; }
+.a-bio-text .t-body { max-inline-size: 62ch; }
+@media (min-width: 40rem) {
+  .a-bio-grid { grid-template-rows: auto auto 1fr; row-gap: var(--s-4); }
+  .a-bio-lead { grid-column: 1 / span 5; grid-row: 1; }
+  .a-bio-text { grid-column: 1 / span 5; grid-row: 2; }
+  .a-bio-side { grid-column: 1 / span 5; grid-row: 3; align-self: end; margin-top: var(--s-7); }
+  .a-bio-plate { grid-column: 6 / span 3; grid-row: 1 / span 3; margin: 0; }
+}
+@media (min-width: 64rem) {
+  .a-bio-lead, .a-bio-text, .a-bio-side { grid-column: 1 / span 6; }
+  .a-bio-plate { grid-column: 8 / span 5; }
+}
+/* A caption row without an index number: the caption is the only cell. */
+.a-cap-plain { grid-template-columns: minmax(0, 1fr); }
+.a-cap-plain > span { font-size: var(--fs-small); font-weight: 500; line-height: 1.35; }
+
+.a-glance { display: grid; gap: var(--s-4); }
+.a-glance-title { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+.a-glance-title::before { content: ""; inline-size: 6px; block-size: 18px; background: currentColor; flex: none; }
+/* The keys are words, not numbers, so the marker column is wider than the 3rem default. */
+.a-glance-list > li { grid-template-columns: 8.5rem minmax(0, 1fr); }
+.a-glance-k { text-transform: uppercase; color: var(--ink-muted); }
+.a-glance-v { font-weight: 600; color: var(--ink); }
+
+/* ── Trail log: a rope through the steps; the ventures carry a plate ── */
+.a-trail, .a-qa { border-top: 1px solid var(--line); }
+.a-trail { padding-block: var(--beat-top) var(--s-9); }
+/* Mid-page joins on the same paper need no nav allowance: an even s-8 either side of the hairline. */
+.a-trail:has(+ :is(.a-qa, .a-field)), .a-field:has(+ .a-qa) { padding-bottom: var(--s-8); }
+.a-trail + :is(.a-qa, .a-field), .a-field + .a-qa { padding-top: var(--s-8); }
+.a-trail-grid { row-gap: var(--s-7); }
+.a-trail-title, .a-rope { grid-column: 1 / -1; }
+.a-trail-title { max-inline-size: 10ch; }
+@media (min-width: 64rem) {
+  .a-trail-title { grid-column: 1 / span 5; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + 32px); }
+  .a-rope { grid-column: 7 / span 6; }
+}
+.a-rope { --knot-x: 11px; position: relative; display: grid; gap: var(--s-7); margin: 0; padding: 0 0 0 40px; list-style: none; }
+/* The rope: 2px ink, from the first knot to the last. */
+.a-rope::before { content: ""; position: absolute; inset-block: 10px 10px; inset-inline-start: var(--knot-x); inline-size: 2px; background: var(--ink); }
+/* Each step: head (code + title), then body. A venture adds a plate.
+   Phone: head → plate → body, so the knot stays level with the code row.
+   ≥40rem: text left, plate right; the text column is the wider one so titles don't stack. */
+.a-step { position: relative; display: grid; gap: 8px; grid-template-areas: "head" "body"; align-content: start; }
+.a-step[data-photo] { grid-template-areas: "head" "plate" "body"; }
+.a-step-head { grid-area: head; display: grid; gap: 8px; min-width: 0; }
+.a-step-plate { grid-area: plate; min-width: 0; margin-block: var(--s-2); }
+.a-step-body { grid-area: body; }
+.a-step-title { text-wrap: pretty; }
+.a-knot { position: absolute; inset-inline-start: -34px; top: 3px; inline-size: 12px; block-size: 12px; border-radius: var(--r-pin); background: var(--ink); box-shadow: 0 0 0 3px var(--bg); }
+/* The current step is the active pin: the one sunrise knot. */
+.a-step:last-child .a-knot { inline-size: 16px; block-size: 16px; inset-inline-start: -36px; top: 1px; background: var(--c-sunrise-500); box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--c-sunrise-500); }
+.a-step-meta { display: flex; flex-wrap: wrap; gap: 12px; color: var(--ink); }
+.a-step-years { padding: 2px 6px; background: var(--ink); color: var(--bg); }
+.a-step-body { max-inline-size: 56ch; color: var(--ink-muted); font-size: var(--fs-ui); }
+@media (min-width: 40rem) {
+  .a-step[data-photo] {
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); grid-template-rows: auto 1fr;
+    grid-template-areas: "head plate" "body plate"; column-gap: var(--gutter); align-items: start;
+  }
+  .a-step[data-photo] .a-step-plate { margin-block: 4px 0; }
+}
+
+/* ── Off the clock: Anurag's own plates. Heading left, a calm three-up right; a snap strip on phones. ── */
+.a-field { padding-block: var(--beat-top) var(--s-9); border-top: 1px solid var(--line); }
+.a-field-cols { row-gap: var(--s-6); }
+.a-field-head, .a-field-grid { grid-column: 1 / -1; min-width: 0; }
+.a-field-head { display: grid; gap: var(--s-4); align-content: start; }
+.a-field-title { max-inline-size: 10ch; }
+.a-field-sub { max-inline-size: 24ch; }
+.a-field-grid {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 68%; gap: var(--gutter);
+  margin: 0 calc(-1 * var(--margin)); padding: 0 var(--margin); list-style: none;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margin);
+  scrollbar-width: none;
+}
+.a-field-grid::-webkit-scrollbar { display: none; }
+.a-field-item { scroll-snap-align: start; min-width: 0; }
+@media (min-width: 40rem) {
+  .a-field-grid { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; padding: 0; overflow: visible; }
+}
+@media (min-width: 64rem) {
+  .a-field-head { grid-column: 1 / span 4; }
+  .a-field-grid { grid-column: 5 / span 8; }
+}
+
+/* ── Q&A ── */
+.a-qa { padding-block: var(--beat-top) var(--s-9); }
+.a-qa-grid { row-gap: var(--s-6); }
+.a-qa-title, .a-qa-list { grid-column: 1 / -1; }
+.a-qa-title { max-inline-size: 10ch; }
+@media (min-width: 64rem) {
+  .a-qa-title { grid-column: 1 / span 5; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + 32px); }
+  .a-qa-list { grid-column: 7 / span 6; }
+}
+
+@media (forced-colors: active) {
+  .a-knot, .a-glance-title::before { background: CanvasText; }
+  .a-rope::before { background: CanvasText; }
+}

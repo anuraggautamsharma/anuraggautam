@@ -1,0 +1,413 @@
+/* ═══════════════════ The route map + Beat 03 (prefix rm-, route-, wc-, rr-) ═══════════════════
+   Unlayered, so these override the design system's layered components.
+   Three modes, all decided by CSS from the first paint (no hydration flip, no CLS):
+   · static  (default: no JS, reduced motion, the motion toggle, print): flat map, all cards.
+   · scroll  (html[data-js], full motion, screen): a sticky stage the route draws across.
+   · gl      (scroll mode + .route-stage[data-gl]): the WebGL map under the same pins.
+   Only transform, opacity, clip-path and stroke-dashoffset animate. */
+
+/* ── The map plane: poster + pins, placed from a frame (map units) ────────────────────── */
+.rm-plane {
+  --fx: var(--fsx); --fy: var(--fsy); --fw: var(--fsw); --fh: var(--fsh);
+  --su: 1.15; /* map units per screen px: keeps route strokes near their px widths */
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: var(--fw) / var(--fh);
+  overflow: clip;
+  /* Flat map: all four edges dissolve into paper (about 9% each side), like the 3D scene's land. */
+  --feather-x: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  --feather-y: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+  -webkit-mask-image: var(--feather-x), var(--feather-y);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--feather-x), var(--feather-y);
+  mask-composite: intersect;
+}
+@media (max-width: 63.99rem) { .rm-plane { --su: 1.7; } }
+@media (max-width: 39.99rem) { .rm-plane { --su: 3; } }
+
+.rm-svg {
+  position: absolute;
+  left: calc((var(--vx) - var(--fx)) / var(--fw) * 100%);
+  top: calc((var(--vy) - var(--fy)) / var(--fh) * 100%);
+  inline-size: calc(var(--vw) / var(--fw) * 100%);
+  block-size: calc(var(--vh) / var(--fh) * 100%);
+  max-inline-size: none;
+  overflow: visible;
+  pointer-events: none;
+}
+.rm-shade { fill: var(--c-ink); fill-opacity: .2; }
+.rm-c { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.rm-c-minor { stroke: var(--c-ink); stroke-opacity: .16; stroke-width: .6px; }
+.rm-c-major { stroke: var(--c-ink); stroke-opacity: .38; stroke-width: 1.2px; }
+.rm-c-snow { stroke: var(--c-glacier-700); stroke-opacity: .24; stroke-width: .6px; }
+.rm-c-snow-major { stroke: var(--c-glacier-700); stroke-opacity: .5; stroke-width: 1.2px; }
+
+.rm-route use { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.rm-planned {
+  stroke: var(--c-paper); stroke-opacity: .78; stroke-width: calc(2 * var(--su));
+  stroke-dasharray: calc(var(--dash) * var(--su)) calc(var(--dash) * var(--su));
+  display: none; /* the static map shows the route walked in full */
+}
+.rm-casing { stroke: var(--route-casing); stroke-opacity: .9; stroke-width: calc(7 * var(--su)); }
+.rm-core { stroke: var(--route-core); stroke-width: calc(3.5 * var(--su)); }
+.rm-start { /* the trailhead: the same sunrise dot as the route head, at ~10px on screen */
+  fill: var(--route-core); stroke: var(--c-paper); stroke-width: 2px; paint-order: stroke;
+  transform: scale(var(--su));
+}
+
+/* Pins: the <li> sits on the camp (its bottom-centre is the ground point); the 44px anchor
+   carries the 28px design-system .pin on a short stake. Positions are frame-relative %.
+   One style on every map (and in the 3D scene): at rest paper with a 1.5px ink ring and an ink
+   mono numeral; active sunrise; done alpine. */
+.rm-pins { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; pointer-events: none; }
+.rm-pin {
+  --ph: 62px;
+  position: absolute;
+  left: calc((var(--mx) - var(--fx)) / var(--fw) * 100%);
+  top: calc((var(--my) - var(--fy)) / var(--fh) * 100%);
+  inline-size: 44px; block-size: var(--ph);
+  margin: calc(-1 * var(--ph)) 0 0 -22px;
+  transform-origin: 50% 100%;
+}
+.rm-pin::before { /* stake */
+  content: ""; position: absolute; left: calc(50% - .75px); bottom: 2px;
+  inline-size: 1.5px; block-size: calc(var(--ph) - 38px); background: var(--c-ink);
+}
+.rm-pin::after { /* footprint */
+  content: ""; position: absolute; left: calc(50% - 5px); bottom: 0;
+  inline-size: 10px; block-size: 4px; border-radius: 50%; background: rgb(var(--scrim-rgb) / .38);
+}
+.rm-pin-a {
+  position: absolute; inset: 0 0 auto 0; block-size: 44px;
+  display: grid; place-items: center; border-radius: 50%;
+  pointer-events: auto; -webkit-tap-highlight-color: transparent;
+}
+.rm-pin-a:focus-visible { outline-offset: 0; }
+.rm-pin .pin { border-width: 1.5px; box-shadow: 0 2px 0 rgb(var(--scrim-rgb) / .18); }
+@media (max-width: 39.99rem) {
+  .rm-static .rm-pin { --ph: 52px; }
+}
+@media (hover: hover) {
+  .rm-pin-a:hover .pin { transform: translateY(-2px); }
+  .rm-pin-a:hover .pin[data-state="active"] { transform: translateY(-2px) scale(1.15); }
+}
+
+/* Route head: a sunrise dot with two pulse rings at the tip of the drawn route. */
+.rm-head {
+  position: absolute;
+  left: calc((var(--mx) - var(--fx)) / var(--fw) * 100%);
+  top: calc((var(--my) - var(--fy)) / var(--fh) * 100%);
+  inline-size: 10px; block-size: 10px; margin: -5px 0 0 -5px;
+  border-radius: 50%; background: var(--route-core); box-shadow: 0 0 0 2px var(--c-paper);
+  display: none; pointer-events: none;
+}
+.rm-head::before, .rm-head::after {
+  content: ""; position: absolute; inset: -2px; border-radius: 50%;
+  border: 2px solid var(--route-core); animation: pin-ring 2400ms var(--ease-out) infinite;
+}
+.rm-head::after { animation-delay: 1200ms; }
+
+/* RouteMapStatic: a standalone illustration (e.g. /method "at a glance"). The poster's low
+   ground is the darkest band and it runs to the frame's foot, so the flat map dissolves over a
+   longer, eased fade (wider at the bottom) instead of ending on a dark slab. */
+.rm-static { margin: 0; }
+.rm-static .rm-plane {
+  --feather-x: linear-gradient(to right, transparent, rgb(0 0 0 / .45) 6%, #000 14%, #000 86%, rgb(0 0 0 / .45) 94%, transparent);
+  --feather-y: linear-gradient(to bottom, transparent, rgb(0 0 0 / .45) 5%, #000 12%, #000 72%, rgb(0 0 0 / .55) 84%, rgb(0 0 0 / .18) 93%, transparent);
+}
+/* Phones: the map is only ~360px wide, so the sides keep a short fade and the land stays legible. */
+@media (max-width: 39.99rem) {
+  .rm-static .rm-plane { --feather-x: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); }
+}
+
+/* ── Beat 03 · static layout (no JS, reduced motion) ───────────────────────────────── */
+.route { padding-block: var(--s-9) 0; }
+.route-head { position: relative; z-index: 3; }
+.route-head-in { display: grid; justify-items: start; }
+.route-head .chapter > span { white-space: nowrap; }
+.route-title { margin-top: var(--s-4); max-inline-size: 15ch; }
+.route-line { margin-top: var(--s-5); max-inline-size: 40ch; text-wrap: balance; }
+.route-stage { position: relative; }
+.route-gl, .route-rail, .route-status-live { display: none; }
+.route-view { max-inline-size: calc(1100px + 2 * var(--margin)); margin: var(--s-7) auto 0; padding-inline: var(--margin); }
+.route-cards {
+  display: grid; gap: var(--gutter);
+  inline-size: 100%; max-inline-size: var(--page-max); margin: var(--s-7) auto 0; padding: 0 var(--margin);
+  list-style: none;
+}
+@media (min-width: 40rem) { .route-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 80rem) {
+  .route-cards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .route-card { grid-column: span 2; }
+  .route-card:nth-child(4) { grid-column: 2 / span 2; }
+}
+.route-card { scroll-margin-top: calc(var(--nav-h) + var(--nav-inset) + 16px); }
+.route > .route-track:last-child { padding-block-end: var(--s-9); }
+
+/* ── Waypoint card ───────────────────────────────────────────────────────────────── */
+.wc { display: grid; grid-template-rows: auto 1fr; block-size: 100%; background: var(--surface); box-shadow: var(--sh-2); }
+.wc-photo { gap: 0; background: var(--photo-dominant, var(--surface-2)); } /* never a white slot while the plate wipes or decodes */
+.wc-photo .plate-img > img { transition: transform var(--dur-photo) var(--ease-settle); }
+.wc-body { display: grid; align-content: start; gap: var(--s-3); padding: 20px 24px 24px; }
+/* The plain-word anchor ("Camp 03 · Pipeline") in the camp hue, then the metaphor title. */
+.wc-label {
+  display: flex; align-items: center; gap: 10px;
+  font: 700 1.25rem/1.2 var(--ff-display); letter-spacing: 0; text-transform: none; color: var(--hue, var(--ink));
+}
+.wc-blaze { inline-size: 6px; block-size: 20px; flex: none; background: var(--hue, var(--accent)); }
+.wc-title { max-inline-size: 16ch; }
+.wc-items { display: grid; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; font-size: var(--fs-small); font-weight: 600; line-height: 1.3; }
+.wc-items li { display: flex; align-items: baseline; gap: 10px; }
+.wc-items li::before { content: ""; flex: none; inline-size: 6px; block-size: 6px; background: var(--hue, var(--ink)); transform: translateY(-1px); }
+.wc-clears {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin-top: 4px;
+  padding-top: 12px; border-top: 1px solid var(--line);
+  font: 500 var(--fs-micro) / 1.4 var(--ff-mono), ui-monospace, monospace; color: var(--ink-muted);
+}
+.wc-clears-k { letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--success); }
+.wc-haz { position: relative; text-decoration: none; letter-spacing: .02em; white-space: nowrap; }
+.wc-haz::after { /* the struck line: drawn on arrival in the scroll stage, already drawn here */
+  content: ""; position: absolute; left: -2px; right: -2px; top: 52%;
+  block-size: 1.5px; background: var(--c-ember-700); transform-origin: 0 50%;
+}
+.wc-cta { margin-top: var(--s-4); } /* clear of the struck hazard line above it */
+
+/* ══════════════════════════ Scroll mode (JS + full motion) ══════════════════════════ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-js]:not([data-motion="reduced"]) .route { padding-block: 0; }
+  html[data-js]:not([data-motion="reduced"]) .route-track { position: relative; block-size: 380svh; }
+  html[data-js]:not([data-motion="reduced"]) .route > .route-track:last-child { padding-block-end: 0; }
+  html[data-js]:not([data-motion="reduced"]) .route-stage {
+    position: sticky; top: 0; block-size: 100svh; overflow: clip; container-type: size;
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-view { max-inline-size: none; margin: 0; padding: 0; }
+  /* Layers: the poster rasters once; the route layer, the head and the rail head repaint or move per frame. */
+  html[data-js]:not([data-motion="reduced"]) .route :is(.rm-map, .rm-route, .rm-head) { will-change: transform; }
+  html[data-js]:not([data-motion="reduced"]) .rr-head { will-change: transform; }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-planned { display: inline; }
+  html[data-js]:not([data-motion="reduced"]) .route :is(.rm-casing, .rm-core) {
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: calc((1 - var(--u, 0)) * 1px);
+  }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-head { display: block; }
+  /* The stage feathers its own map layers (below), not the plane: a mask here would flatten the
+     mobile tilt and clip the pins the 3D scene moves. */
+  html[data-js]:not([data-motion="reduced"]) .route .rm-plane { -webkit-mask-image: none; mask-image: none; }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-pin-a[data-drop] { animation: rm-drop 450ms var(--ease-drop) both; }
+
+  /* One card at a time; the active one rises in, the photo wipes up, the hazard is struck. */
+  html[data-js]:not([data-motion="reduced"]) .route-cards { position: absolute; z-index: 3; margin: 0; padding: 0; display: block; inline-size: auto; max-inline-size: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-card {
+    position: absolute; inset: auto 0 0 0;
+    opacity: 0; transform: translate3d(0, 20px, 0); pointer-events: none;
+    transition: opacity 260ms var(--ease-out), transform 450ms var(--ease-out);
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-card[data-state="done"] { transform: translate3d(0, -14px, 0); }
+  html[data-js]:not([data-motion="reduced"]) .route-card[data-state="active"] {
+    opacity: 1; transform: none; pointer-events: auto;
+    transition: opacity 420ms var(--ease-out) 140ms, transform 600ms var(--ease-arrive) 140ms;
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-card .plate-img { clip-path: inset(100% 0 0 0); transition: clip-path 300ms var(--ease-out); }
+  html[data-js]:not([data-motion="reduced"]) .route-card .plate-img > img { transform: scale(1.12); }
+  html[data-js]:not([data-motion="reduced"]) .route-card[data-state="active"] .plate-img { clip-path: inset(0); transition: clip-path 600ms var(--ease-wipe) 80ms; }
+  html[data-js]:not([data-motion="reduced"]) .route-card[data-state="active"] .plate-img > img { transform: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-haz::after { transform: scaleX(0); transition: transform 200ms var(--ease-out); }
+  html[data-js]:not([data-motion="reduced"]) .route-card:is([data-state="active"], [data-state="done"]) .wc-haz::after {
+    transform: scaleX(1); transition: transform 600ms var(--ease-in-out) 520ms;
+  }
+
+  /* "Clears:" and the hazard always on their own rows; the strike spans only the hazard. */
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-clears { display: grid; gap: 2px; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-haz { justify-self: start; }
+
+  /* The intro (label, H2, line) hands off to Camp 01's card as the climb starts (RouteStage sets data-started). */
+  html[data-js]:not([data-motion="reduced"]) .route-head { transition: opacity 300ms var(--ease-out), transform 450ms var(--ease-out); }
+  html[data-js]:not([data-motion="reduced"]) .route[data-started] .route-head {
+    opacity: 0; transform: translate3d(0, -16px, 0);
+  }
+
+  html[data-js]:not([data-motion="reduced"]) .route-status-live { display: block; }
+}
+@keyframes rm-drop {
+  0% { transform: translateY(-18px); }
+  100% { transform: none; }
+}
+
+/* ── Scroll mode · phones and tablets: tilted map up top, card below ─────────────────── */
+@media screen and (prefers-reduced-motion: no-preference) and (max-width: 63.99rem) {
+  html[data-js]:not([data-motion="reduced"]) .route-head { padding-block: var(--s-9) var(--s-6); }
+  /* The map holds the top of the stage; its near edge fades out behind the card. */
+  html[data-js]:not([data-motion="reduced"]) .route-view {
+    position: absolute; inset: 0 0 auto 0; block-size: 62svh;
+    perspective: 900px; overflow: clip;
+    /* The near edge dissolves into the paper above the card instead of a hard cut. (A mask here,
+       on the perspective parent, keeps the plane's own 3D context intact.) */
+    -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent);
+    mask-image: linear-gradient(to bottom, #000 82%, transparent);
+  }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-plane {
+    --fx: var(--fmx); --fy: var(--fmy); --fw: var(--fmw); --fh: var(--fmh);
+    --su: 1.55;
+    position: absolute; top: 50%; left: 0;
+    overflow: visible; transform-style: preserve-3d;
+    /* scale3d, not scale(): a 2D scale leaves z at 1, so the pins standing up out of the plane
+       came out squashed to about .85 of their height (24px, not 28). */
+    transform: translateY(-50%) rotateX(48deg) scale3d(1.35, 1.35, 1.35) translateY(var(--tilt-y, 9%));
+  }
+  /* Far terrain dissolves into paper, like distance fog. (On the poster, not the plane:
+     a mask on the plane would flatten the 3D context the pins stand up in.) */
+  html[data-js]:not([data-motion="reduced"]) .route .rm-map {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 82%, transparent 100%);
+  }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-pins { transform-style: preserve-3d; }
+  /* Stand up out of the tilt, and undo the plane's ×1.35 so pins read 28px like everywhere else
+     (measured at 390: about 31px at the near camps, 26px at the far summit, 28–29px on average). */
+  html[data-js]:not([data-motion="reduced"]) .route .rm-pin { transform: rotateX(-48deg) scale(.74); }
+  /* Before the climb starts, Camp 01 previews instead of a blank paper frame. */
+  html[data-js]:not([data-motion="reduced"]) .route-cards:not(:has(> [data-state="active"])) > .route-card:first-child { opacity: 1; transform: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-cards { inset: auto 16px 16px 16px; }
+  html[data-js]:not([data-motion="reduced"]) .route-card { max-block-size: calc(46svh - 24px); }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc { block-size: auto; max-block-size: calc(46svh - 24px); overflow: clip; box-shadow: var(--sh-1); }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-photo { display: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-body { gap: 10px; padding: 16px 16px 16px; border-top: 4px solid var(--hue, var(--accent)); }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-label .wc-blaze { display: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-title { font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem); }
+}
+@media screen and (prefers-reduced-motion: no-preference) and (max-width: 63.99rem) and (max-height: 700px) {
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-items { display: none; }
+}
+@media screen and (prefers-reduced-motion: no-preference) and (min-width: 40rem) and (max-width: 63.99rem) {
+  html[data-js]:not([data-motion="reduced"]) .route-view { block-size: 68svh; }
+  html[data-js]:not([data-motion="reduced"]) .route-cards { inset: auto auto 24px var(--margin); inline-size: min(30rem, calc(100% - 2 * var(--margin))); }
+}
+
+/* ── Scroll mode · desktop: the map fills the stage ─────────────────────────────────── */
+@media screen and (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
+  html[data-js]:not([data-motion="reduced"]) .route {
+    --card-w: clamp(340px, 28vw, 400px);
+    /* The free region right of the card, below the nav, left of the rail. */
+    --free-l: calc(var(--margin) + var(--card-w) + 40px);
+    --free-r: 108px;
+    --free-t: calc(var(--nav-h) + var(--nav-inset) + 12px);
+    --free-b: 40px;
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-track { block-size: 400svh; }
+  /* The intro rides the top of the stage (sticky, zero height so the track starts under it)
+     until Camp 01 arrives, then fades up and out instead of being cut at the top edge. */
+  html[data-js]:not([data-motion="reduced"]) .route-head {
+    position: sticky; top: 0; z-index: 3; block-size: 0; overflow: visible; pointer-events: none;
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-head-in { position: relative; padding-block-start: var(--beat-top); }
+  html[data-js]:not([data-motion="reduced"]) .route-head-in::before { /* paper veil, so the heading never sits on dark ground */
+    content: ""; position: absolute; z-index: -1; inset: 0 auto -20% 0; inline-size: min(64rem, 70%);
+    background: radial-gradient(closest-side at 40% 50%, rgb(var(--veil-rgb) / .94), rgb(var(--veil-rgb) / .82) 50%, rgb(var(--veil-rgb) / 0));
+    pointer-events: none;
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-title { max-inline-size: 13ch; }
+  /* The lead keeps to the H2's measure (cols 1–5), clear of the map's feathered left edge. */
+  html[data-js]:not([data-motion="reduced"]) .route-line { max-inline-size: 26ch; }
+  html[data-js]:not([data-motion="reduced"]) .route-view { position: absolute; inset: 0; z-index: 1; }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-plane {
+    --fx: var(--fdx); --fy: var(--fdy); --fw: var(--fdw); --fh: var(--fdh);
+    --fr-w: calc(100cqw - var(--free-l) - var(--free-r));
+    --fr-h: calc(100cqh - var(--free-t) - var(--free-b));
+    --k: min(1.3px, calc(var(--fr-w) / var(--rw)), calc(var(--fr-h) / var(--rh)));
+    position: absolute; overflow: visible; aspect-ratio: auto;
+    inline-size: calc(var(--k) * var(--fw));
+    block-size: calc(var(--k) * var(--fh));
+    left: calc(var(--free-l) + var(--fr-w) / 2 - var(--k) * (var(--rx) - var(--fx)));
+    top: calc(var(--free-t) + var(--fr-h) / 2 - var(--k) * (var(--ry) - var(--fy)));
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-cards { left: var(--margin); bottom: 40px; inline-size: var(--card-w); }
+  /* One card height for all five camps, so the card's top edge never jumps between them: the
+     cards share one grid cell, so the stack is as tall as the tallest camp and every card fills it. */
+  html[data-js]:not([data-motion="reduced"]) .route-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+  html[data-js]:not([data-motion="reduced"]) .route-card,
+  html[data-js]:not([data-motion="reduced"]) .route-card:nth-child(4) { position: relative; inset: auto; grid-area: 1 / 1; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc { block-size: 100%; overflow: clip; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-body { align-content: start; padding: 18px 22px 22px; }
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-title { font-size: clamp(2rem, 2.6vw, 2.5rem); }
+  /* The map layers feather their bottom edge like the other three, so the stage never ends on a
+     hard cut: the WebGL canvas by a mask; in SVG mode a paper fade over the poster (whose own box
+     runs past the stage), kept under the cards and the rail. */
+  html[data-js]:not([data-motion="reduced"]) .route-gl {
+    -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent);
+    mask-image: linear-gradient(to bottom, #000 82%, transparent);
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-stage:not([data-gl]) .route-view::after {
+    content: ""; position: absolute; inset: auto 0 0 0; block-size: 18%; pointer-events: none;
+    background: linear-gradient(to bottom, rgb(var(--veil-rgb) / 0), var(--bg));
+  }
+  html[data-js]:not([data-motion="reduced"]) .route .rm-map {
+    -webkit-mask-image: var(--feather-x), var(--feather-y);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--feather-x), var(--feather-y);
+    mask-composite: intersect;
+  }
+
+  /* Rail: elevation profile, five camp ticks, previous / next. */
+  html[data-js]:not([data-motion="reduced"]) .route-rail {
+    position: absolute; z-index: 3; right: 24px; top: 50%;
+    display: grid; grid-template-rows: 44px minmax(0, 1fr) 44px; justify-items: center; gap: 10px;
+    inline-size: 44px; block-size: max(40svh, 280px); transform: translateY(-50%);
+  }
+  html[data-js]:not([data-motion="reduced"]) .route-gl { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+}
+@media screen and (prefers-reduced-motion: no-preference) and (min-width: 64rem) and (max-height: 820px) {
+  html[data-js]:not([data-motion="reduced"]) .route-card .plate-img { aspect-ratio: 21 / 9; }
+}
+@media screen and (prefers-reduced-motion: no-preference) and (min-width: 64rem) and (max-height: 640px) {
+  html[data-js]:not([data-motion="reduced"]) .route-card .wc-photo, html[data-js]:not([data-motion="reduced"]) .route-card .wc-items { display: none; }
+}
+
+.rr-btn {
+  display: grid; place-items: center; inline-size: 44px; block-size: 44px; padding: 0;
+  border: 1.5px solid var(--line-strong); border-radius: 0; background: rgb(var(--veil-rgb) / .9); color: var(--ink);
+  transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out);
+}
+.rr-btn svg { transform: rotate(-90deg); }
+.rr-btn[data-route-next] svg { transform: rotate(90deg); }
+.rr-btn[aria-disabled="true"] { opacity: .4; cursor: default; }
+@media (hover: hover) { .rr-btn:not([aria-disabled="true"]):hover { background: var(--ink); color: var(--bg); border-color: var(--ink); } }
+.rr-track { position: relative; inline-size: 100%; block-size: 100%; }
+.rr-svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; overflow: visible; }
+.rr-base { fill: none; stroke: var(--c-granite-300); stroke-width: 1.5px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.rr-axis { stroke: var(--c-granite-200); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.rr-fill { position: absolute; inset: 0; clip-path: inset(0 0 calc((1 - var(--u, 0)) * 100%) 0); }
+.rr-line { fill: none; stroke: var(--route-core); stroke-width: 2px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.rr-tick {
+  position: absolute; left: 4px; top: calc(var(--t) * 100%);
+  inline-size: 12px; block-size: 2px; margin-top: -1px; background: var(--c-ink);
+  transition: background-color var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+.rr-tick[data-state="active"] { background: var(--route-core); transform: scaleX(1.5); transform-origin: 0 50%; }
+.rr-tick[data-state="done"] { background: var(--c-alpine-700); }
+.rr-head { position: absolute; left: 0; top: 0; inline-size: 100%; block-size: 100%; transform: translateY(calc(var(--u, 0) * 100%)); pointer-events: none; }
+.rr-head::before {
+  content: ""; position: absolute; left: 5px; top: -5px; inline-size: 10px; block-size: 10px;
+  border-radius: 50%; background: var(--route-core); box-shadow: 0 0 0 2px var(--c-paper);
+}
+
+/* ── WebGL mode: the canvas fades in under the pins, the poster fades out ───────────── */
+.route-gl canvas { display: block; inline-size: 100%; block-size: 100%; opacity: 0; transition: opacity 400ms var(--ease-out); }
+.route-stage[data-gl] .route-gl canvas { opacity: 1; }
+.route-stage .rm-svg { transition: opacity 400ms var(--ease-out); }
+.route-stage[data-gl] .rm-svg { opacity: 0; }
+.route-stage[data-gl="live"] .rm-svg { visibility: hidden; } /* faded out: drop its layers too */
+.route-stage[data-gl="enter"] :is(.rm-pin, .rm-head) { transition: transform 450ms var(--ease-out); }
+.route-stage[data-gl] .rm-pin { will-change: transform; }
+.route-stage[data-gl] .rm-pin[data-off] { visibility: hidden; }
+
+@media (forced-colors: active) {
+  .rm-pin::before, .rr-tick, .wc-haz::after { background: CanvasText; }
+  .wc-blaze, .wc-items li::before { background: CanvasText; }
+  .rr-btn { border-color: ButtonText; }
+}
+@media print {
+  .route-gl, .route-rail, .rm-head { display: none !important; }
+}
+
+/* The camp's stack: official marks in one wrapping row, gaps double as clear space. */
+.wc-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; list-style: none; margin: var(--s-4) 0 0; padding: var(--s-3) 0 0; border-top: 1px solid var(--line); }
+.wc-tools img { display: block; }

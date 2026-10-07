@@ -1,0 +1,150 @@
+/* /writing/** page chrome: index, topic hubs, article header and footer. Light only.
+   Long-form typography lives in prose.css; cards and tiles in note-card.css. Every class
+   is wr- prefixed. Design-system classes (.t-*, .chip, .btn, .link, .blaze) do the rest. */
+
+.wr-root {
+  --wr-top: var(--beat-top, calc(var(--nav-h) + var(--nav-inset) + var(--s-7)));
+  min-height: 100svh;
+}
+
+/* ───────────── Index + hub ───────────── */
+.wr-index { padding-block: var(--s-7) var(--s-9); }
+.wr-index-hub { padding-top: var(--s-6); }
+.wr-index-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4) var(--s-6);
+  padding-bottom: var(--s-5); margin-bottom: var(--s-7); border-bottom: 1px solid var(--line);
+}
+.wr-index-count { display: inline-flex; align-items: center; gap: .75rem; color: var(--ink); }
+.wr-index-count .blaze { block-size: 14px; background: currentColor; }
+
+.wr-register { display: grid; gap: var(--s-8); }
+
+/* Lead note as a horizontal feature: contour tile in cols 1–7 (16:9), text in cols 8–12,
+   vertically centred. Scoped to the register so the homepage keeps its own lead layout. */
+.wr-register > .wr-note[data-size="lg"] .wr-tile { aspect-ratio: 16 / 9; }
+.wr-register > .wr-note[data-size="lg"] .wr-note-body { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); align-items: start; }
+.wr-register > .wr-note[data-size="lg"] .wr-note-dek { justify-self: start; max-inline-size: 40ch; font-size: var(--fs-body); line-height: 1.5; }
+@media (min-width: 64rem) {
+  .wr-register > .wr-note[data-size="lg"] {
+    grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: 0; align-items: center;
+  }
+  .wr-register > .wr-note[data-size="lg"] .wr-tile { grid-column: 1 / 8; }
+  .wr-register > .wr-note[data-size="lg"] .wr-note-body { grid-column: 8 / 13; }
+}
+.wr-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-7) var(--gutter); }
+.wr-grid > li { min-width: 0; }
+@media (min-width: 40rem) { .wr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 80rem) { .wr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.wr-empty { padding-block: var(--s-8); color: var(--ink); }
+
+/* Topic chips */
+.wr-topics ul { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.wr-chip { gap: .75rem; }
+.wr-chip-n { font: 500 var(--fs-micro)/1 var(--ff-mono), ui-monospace, monospace; letter-spacing: .06em; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+@media (hover: hover) { .wr-chip:hover { border-color: var(--ink); } }
+/* Selected state (ink fill + sunrise blaze) is the global .chip[aria-current] recipe. */
+.wr-chip[aria-current] .wr-chip-n { color: inherit; }
+
+/* Hub header: plain paper, no photo. */
+.wr-hub { padding-block: var(--wr-top) var(--s-7); }
+.wr-hub-title { margin-top: var(--s-5); color: var(--ink); }
+.wr-hub-intro { margin-top: var(--s-5); }
+.wr-hub-camp { margin-top: var(--s-7); }
+.wr-hub .wr-crumbs-blaze { background: var(--hub-hue, currentColor); }
+
+/* Subscribe: a paper band under a hairline; the chapter label, then the Field Notes card. */
+.wr-sub { padding-block: var(--s-8) var(--s-9); border-top: 1px solid var(--line); }
+.wr-sub-inner { display: grid; gap: var(--s-5); }
+.wr-sub-kicker { color: var(--ink); }
+
+/* Article end: the card sits between the context CTA and previous/next. */
+.wr-foot-sub { margin-block-start: var(--s-8); }
+
+/* Read | Watch chips sit with the topic chips in the index bar. */
+.wr-index-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); }
+
+/* ───────────── Breadcrumbs (article + hub) ───────────── */
+.wr-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .65rem; list-style: none; margin: 0; padding: 0; }
+.wr-crumbs li { display: inline-flex; align-items: center; gap: .65rem; color: var(--ink-muted); }
+.wr-crumbs li + li::before { content: "/"; color: var(--ink-subtle); }
+.wr-crumbs a {
+  color: var(--ink); padding-block: 14px; margin-block: -14px; /* 44px target, no layout cost */
+  text-decoration: underline 2px transparent; text-underline-offset: .3em;
+  transition: text-decoration-color var(--dur-hover) var(--ease-out);
+}
+.wr-crumbs a:hover { text-decoration-color: var(--link-line); }
+.wr-crumbs-blaze { display: inline-block; inline-size: 6px; block-size: 14px; flex: none; background: var(--hue, currentColor); }
+
+/* ───────────── Article header ───────────── */
+.wr-draft { position: relative; z-index: 1; margin-top: calc(var(--nav-h) + var(--nav-inset) * 2); padding: .75rem var(--margin); background: var(--c-amber-300); color: var(--c-ink); }
+.wr-draft + .wr-head { padding-top: var(--s-7); }
+
+.wr-head { padding-top: var(--wr-top); }
+.wr-title { margin-top: var(--s-5); max-inline-size: 18ch; color: var(--ink); }
+.wr-title[data-long] { font-size: calc(var(--fs-h1) * .8); }
+.wr-dek {
+  margin-top: var(--s-5); max-inline-size: 40ch;
+  font: italic 400 var(--fs-lead)/1.35 var(--ff-serif-italic, var(--ff-serif)), Georgia, serif; color: var(--ink-muted);
+}
+.wr-meta {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem var(--s-5);
+  margin-top: var(--s-6); padding-top: var(--s-4); border-top: 1px solid var(--line); max-inline-size: 60rem;
+}
+.wr-byline { font-weight: 600; font-size: var(--fs-small); color: var(--ink); }
+.wr-meta-line { color: var(--ink-muted); }
+.wr-cover { margin-top: var(--s-7); }
+
+/* ───────────── Article footer ───────────── */
+.wr-foot { margin-top: var(--s-9); padding-block: var(--s-8) var(--s-9); border-top: 2px solid var(--ink); }
+.wr-foot-grid { display: grid; gap: var(--s-7) var(--gutter); }
+@media (min-width: 64rem) { .wr-foot-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: start; } }
+
+/* Author box: a square sand plate, zoomed to head and shoulders, beside the byline. */
+.wr-author {
+  display: grid; grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-areas: "mark head" "mark bio" "mark links";
+  grid-template-rows: auto auto 1fr; gap: 0 var(--s-5); align-items: start;
+}
+.wr-author-mark {
+  grid-area: mark; position: relative; overflow: clip;
+  inline-size: 100%; aspect-ratio: 1;
+  background: var(--c-sand-200); /* the portrait's own panel, shown while it decodes */
+}
+.wr-author-img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; transform: scale(1.6); transform-origin: 52% 20%; }
+.wr-author-head { grid-area: head; min-width: 0; }
+.wr-author-name { margin-top: .5rem; color: var(--ink); }
+.wr-author-bio { grid-area: bio; margin-top: .75rem; max-inline-size: 54ch; font-size: var(--fs-ui); line-height: 1.5; color: var(--ink-muted); }
+.wr-author-links { grid-area: links; display: flex; flex-wrap: wrap; gap: .25rem var(--s-5); margin-top: var(--s-3); }
+@media (max-width: 39.999rem) {
+  .wr-author { grid-template-columns: 72px minmax(0, 1fr); grid-template-areas: "mark head" "bio bio" "links links"; grid-template-rows: auto; gap: 0 var(--s-4); }
+  .wr-author-head { align-self: center; }
+  .wr-author-name { margin-top: .25rem; }
+  .wr-author-bio { margin-top: var(--s-4); }
+}
+
+.wr-cta { display: grid; gap: var(--s-4); padding: var(--s-6); border-top: 2px solid var(--ink); }
+.wr-cta-label { display: inline-flex; align-items: center; gap: .75rem; color: var(--ink); }
+.wr-cta-blaze { inline-size: 6px; block-size: 18px; flex: none; background: var(--cta-hue, currentColor); }
+.wr-cta-line { color: var(--ink); max-inline-size: 22ch; }
+.wr-cta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin-top: var(--s-2); }
+
+.wr-pn { display: grid; gap: 0 var(--gutter); margin-top: var(--s-8); }
+@media (min-width: 40rem) { .wr-pn { grid-template-columns: 1fr 1fr; } }
+.wr-pn-card { display: flex; flex-direction: column; gap: 12px; padding-block: var(--s-5); border-top: 2px solid var(--ink); color: var(--ink); }
+.wr-pn-next { text-align: right; align-items: flex-end; }
+.wr-pn-label { display: inline-flex; align-items: center; gap: .6em; }
+.wr-pn-title {
+  max-inline-size: 28ch; font-weight: 700; font-size: var(--fs-h4); line-height: var(--lh-h4); letter-spacing: var(--tr-h4);
+  text-decoration: underline 2px transparent; text-underline-offset: .18em; transition: text-decoration-color var(--dur-hover) var(--ease-out);
+}
+.wr-pn-card:hover .wr-pn-title { text-decoration-color: var(--link-line); }
+.wr-pn-meta { display: inline-flex; align-items: center; gap: .6rem; }
+.wr-pn-blaze { inline-size: 6px; block-size: 14px; flex: none; background: var(--pn-hue, currentColor); }
+.wr-pn-empty { display: none; }
+@media (min-width: 40rem) { .wr-pn-empty { display: block; } }
+@media (max-width: 39.999rem) { .wr-pn-next { text-align: left; align-items: flex-start; } }
+
+@media (forced-colors: active) {
+  .wr-cta-blaze, .wr-pn-blaze, .wr-crumbs-blaze { forced-color-adjust: none; background: CanvasText; }
+}

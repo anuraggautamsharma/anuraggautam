@@ -1,0 +1,8 @@
+/* Above-the-fold entrance for inner-page heroes: pure CSS from the first paint, never
+   gated on hydration. --i staggers kicker (0), title (1), line (2), actions (3). */
+.page-hero .load-lines .mask > span { animation: ph-line-in 800ms var(--ease-arrive) both; animation-delay: 120ms; }
+.page-hero .load-rise { animation: ph-rise-in 700ms var(--ease-arrive) both; animation-delay: calc(60ms + var(--i, 0) * 110ms); }
+@keyframes ph-line-in { from { transform: translateY(105%); } }
+@keyframes ph-rise-in { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) { .page-hero .load-lines .mask > span, .page-hero .load-rise { animation: none; } }
+:root[data-motion="reduced"] .page-hero .load-lines .mask > span, :root[data-motion="reduced"] .page-hero .load-rise { animation: none; }

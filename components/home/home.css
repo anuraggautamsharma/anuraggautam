@@ -1,0 +1,582 @@
+/* ═══════════════════ Homepage beats 01, 02, 04–07 ═══════════════════
+   Unlayered, so these override the design system's layered base/components.
+   Motion rule: every hidden or moving state is gated on full motion
+   (no OS reduce, no html[data-motion="reduced"]); JS-gated hidden states also drop
+   out under html[data-revealed] (the head script's 2.5s failsafe). Only transform,
+   opacity and clip-path animate. */
+
+:root {
+  /* The Ridge's own height (globals .ridge): a beat that sits under a rising ridge adds it to
+     its bottom padding, so the horizon never crowds the last block. */
+  --ridge-h: clamp(40px, 7vw, 110px);
+  --home-top-m: calc(var(--nav-h) + var(--nav-inset) + 32px);
+  --home-top: var(--beat-top, calc(var(--nav-h) + var(--nav-inset) + var(--s-7)));
+}
+
+/* ── 01 · Basecamp ───────────────────────────────────────────────── */
+.bc {
+  min-height: max(100svh, 640px);
+  display: flex;
+  flex-direction: column;
+}
+.bc-inner {
+  position: relative;
+  z-index: 1;
+  padding-top: var(--home-top-m);
+  padding-bottom: var(--s-7);
+}
+.bc-text { grid-column: 1 / -1; display: grid; justify-items: start; }
+.bc .chapter { color: var(--ink); }
+.bc-title { margin-top: var(--s-4); max-inline-size: 14ch; }
+.bc-line {
+  margin-top: var(--s-5);
+  max-inline-size: 40ch;
+  text-wrap: balance;
+  color: rgb(var(--veil-rgb) / .92);
+}
+.bc-ctas {
+  margin-top: var(--s-7);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  inline-size: 100%;
+}
+.bc-ctas .btn { --btn-h: 52px; inline-size: 100%; }
+@media (max-width: 359.98px) {
+  .bc-ctas > :nth-child(2) { display: none; }
+}
+/* Phones: the headline stays in the sky; the CTAs sit on the dark foreground, below the
+   Matterhorn's summit. The column fills the hero and the buttons take the bottom edge. */
+@media (max-width: 39.99rem) {
+  .bc-inner { flex: 1 0 auto; display: flex; flex-direction: column; padding-bottom: 28px; }
+  .bc-text { flex: 1 0 auto; display: flex; flex-direction: column; align-items: flex-start; }
+  .bc-ctas { margin-top: auto; padding-top: var(--s-6); }
+}
+@media (min-width: 40rem) {
+  .bc-ctas { flex-direction: row; flex-wrap: wrap; inline-size: auto; }
+  .bc-ctas .btn { --btn-h: 64px; inline-size: auto; }
+}
+@media (min-width: 64rem) {
+  .bc-inner { padding-top: var(--home-top); }
+  .bc-text { grid-column: 1 / span 10; }
+  /* Short laptop screens: shrink the H1 with the viewport height so the block ends
+     high in the sky and the Matterhorn (x 50–66%, y 58–80%) stays clear. The measure is
+     set in em so the break is the same at every width: “You built / something / the world
+     hasn’t / seen yet.” (“the world” is one no-break pair; its line is 7.93em). Greedy
+     wrap, not balance, so the short last line ends well left of the peak. */
+  .bc-title { font-size: min(var(--fs-h1), 11.5svh); max-inline-size: 8.3em; text-wrap: wrap; }
+}
+
+/* Scroll cue: label above a 1px line whose fill runs top → bottom. Phones: none (the CTAs
+   own the bottom edge). Desktop: the right edge, clear of the CTAs. */
+.bc-cue {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 32px;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  color: var(--c-paper);
+  font: 500 var(--fs-micro) / 1.2 var(--ff-mono), ui-monospace, monospace;
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  text-shadow: var(--text-shadow-photo);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.bc-cue-line {
+  position: relative;
+  inline-size: 1px;
+  block-size: 40px;
+  overflow: clip;
+  background: rgb(var(--veil-rgb) / .3);
+}
+.bc-cue-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--c-paper);
+}
+@media (max-width: 39.99rem) {
+  .bc-cue { display: none; }
+}
+@media (min-width: 64rem) {
+  .bc-cue { left: auto; right: var(--margin); translate: none; justify-items: end; }
+}
+@media (max-height: 700px) {
+  .bc-cue { display: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"]) .bc-cue-line::after {
+    animation: bc-cue 1800ms var(--ease-in-out) infinite;
+    animation-play-state: paused;
+  }
+  :root:not([data-motion="reduced"]) .bc[data-inview] .bc-cue-line::after { animation-play-state: running; }
+}
+@keyframes bc-cue {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+
+/* ── 02 · Terrain ────────────────────────────────────────────────── */
+.tr { min-height: 110svh; }
+@media (min-width: 64rem) {
+  .tr { min-height: 100svh; }
+}
+/* Terrain drifts 0 → 6% (the shared .photo-drift is −4% → 4%). Scaled 1.08 from the bottom
+   edge so the downward travel never opens a gap at the top. Halved on phones. The shared
+   reduced-motion rules (!important) still switch it off. */
+.tr .tr-photo { transform-origin: 50% 100%; }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"]) .tr .tr-photo.photo-drift { animation-name: tr-drift; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 40rem) {
+  :root:not([data-motion="reduced"]) .tr .tr-photo.photo-drift { animation-name: tr-drift-sm; }
+}
+@keyframes tr-drift {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to { transform: translate3d(0, 6%, 0) scale(1.08); }
+}
+@keyframes tr-drift-sm {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to { transform: translate3d(0, 3%, 0) scale(1.08); }
+}
+
+.tr-inner {
+  position: relative;
+  z-index: 2;
+  padding-top: var(--home-top-m);
+}
+.tr-text { grid-column: 1 / -1; }
+.tr .chapter { color: var(--ink); }
+.tr-title { margin-top: var(--s-4); }
+.tr-line {
+  margin-top: var(--s-5);
+  max-inline-size: 40ch;
+  text-wrap: balance;
+  color: rgb(var(--veil-rgb) / .92);
+}
+@media (min-width: 64rem) {
+  .tr-inner { padding-top: var(--home-top); }
+  .tr-text { grid-column: 1 / span 6; }
+  /* One step below the hero H1 (min(fs-h1, 11.5svh)). */
+  .tr-title { font-size: min(var(--fs-h1), 9.5svh); }
+}
+
+/* Fog: two soft paper clouds, no assets. Above the photo and scrim, under the text. */
+.tr-fog {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: clip;
+  pointer-events: none;
+}
+.fog-a, .fog-b {
+  position: absolute;
+  inline-size: 70vw;
+  aspect-ratio: 2 / 1;
+  background: radial-gradient(closest-side, rgb(var(--veil-rgb) / .35), rgb(var(--veil-rgb) / 0));
+  filter: blur(40px);
+}
+.fog-a { left: 34%; top: 40%; }
+.fog-b { left: -12%; top: 64%; }
+
+/* Hazard plates: mobile = a left-aligned stack at the bottom. */
+.tr-hazards {
+  position: absolute;
+  z-index: 2;
+  inset-inline: var(--margin);
+  bottom: 40px;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tr-sign {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgb(var(--veil-rgb) / .92);
+  color: var(--c-ink);
+  text-shadow: none;
+}
+.tr-sign::before {
+  content: "";
+  flex: none;
+  inline-size: 6px;
+  block-size: 14px;
+  /* Ink, not ember: danger red is for errors and the struck hazard line only (rule 5). */
+  background: currentColor;
+}
+@media (max-width: 24rem) {
+  .tr-sign { letter-spacing: .06em; padding-inline: 10px; }
+}
+@media (min-width: 64rem) {
+  .tr-hazards { inset: 0; display: block; }
+  .tr-hazards > li {
+    position: absolute;
+    /* Clamp so the longest plate never runs off the right edge at 1024px. */
+    left: min(var(--x), calc(100% - var(--margin) - 21rem));
+    top: var(--y);
+  }
+  .tr-sign { white-space: nowrap; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"]) .tr-hazards > .reveal { --rise: 12px; }
+  :root:not([data-motion="reduced"]) .fog-a { animation: fog-drift 48s ease-in-out infinite alternate; }
+  :root:not([data-motion="reduced"]) .fog-b { animation: fog-drift 61s ease-in-out infinite alternate-reverse; }
+  :root:not([data-motion="reduced"]) .tr-sign { animation: tr-sway var(--sway, 11s) ease-in-out infinite alternate; }
+  :root:not([data-motion="reduced"]) .tr:not([data-inview]) :is(.fog-a, .fog-b, .tr-sign) { animation-play-state: paused; }
+}
+@keyframes fog-drift {
+  from { transform: translate3d(-6vw, 0, 0); }
+  to { transform: translate3d(6vw, 0, 0); }
+}
+@keyframes tr-sway {
+  from { transform: translate3d(-4px, 0, 0); }
+  to { transform: translate3d(4px, 0, 0); }
+}
+
+/* ── 03b · Photo band ────────────────────────────────────────────── */
+.gd-band { position: relative; aspect-ratio: 4 / 3; }
+@media (min-width: 64rem) {
+  .gd-band { aspect-ratio: 21 / 9; }
+}
+/* The band uses the shared .photo-drift as is: view() drift −4% → 4%, halved on phones. */
+
+/* ── 04 · Guide ──────────────────────────────────────────────────── */
+/* The forest Track record rises over this beat on a ridge: s-9 stays clear above its peaks. */
+.gd { padding-top: var(--beat-top, var(--s-9)); padding-bottom: calc(var(--s-9) + var(--ridge-h)); }
+.gd-grid { row-gap: var(--s-7); }
+/* Phones and tablets: a centred panel about 82vw wide above the text, never a full screen. */
+.gd-plate { grid-column: 1 / -1; position: relative; z-index: 2; justify-self: center; inline-size: min(82vw, 26rem); }
+.gd-text { grid-column: 1 / -1; display: grid; justify-items: start; }
+.gd-title { margin-top: var(--s-4); }
+.gd-line { margin-top: var(--s-5); max-inline-size: 40ch; }
+/* Each sentence starts its own line (“I don’t hand you a deck and leave. / I climb with
+   your team.”), so the lead never breaks mid-thought after “and”. */
+.gd-sent { display: block; text-wrap: balance; }
+.gd-badges { margin-top: var(--s-7); inline-size: 100%; }
+.gd-cta { margin-top: var(--s-7); }
+@media (max-width: 63.99rem) {
+  .gd-badges .t-h4 { font-size: 1.125rem; line-height: 1.25; }
+}
+@media (min-width: 64rem) {
+  .gd-grid { align-items: center; }
+  .gd-plate {
+    grid-column: 1 / span 5;
+    justify-self: stretch;
+    inline-size: 100%;
+    align-self: center;
+  }
+  .gd-text { grid-column: 7 / span 6; align-self: center; padding-block: 0; }
+}
+
+/* Portrait: the studio cutout standing on a flat sand panel (sand-200 reads against the
+   sand-100 section; sand-100 would vanish). Square, no shadow. The cutout is bottom-aligned,
+   so the crossed arms run off the panel's lower edge, and its head breaks the top edge by
+   --gd-break. The figure stays unclipped once revealed (the wipe opens past the top). */
+.gd-fig { --gd-break: 5%; position: relative; aspect-ratio: 4 / 5; margin: 0; margin-top: var(--gd-break); }
+.gd-panel { position: absolute; inset: 0; background: var(--c-sand-200); }
+.gd-panel::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: var(--c-ink); opacity: .09;
+  mask: url(/textures/topo-b.svg) center / cover no-repeat; -webkit-mask: url(/textures/topo-b.svg) center / cover no-repeat; }
+/* 712×979: at 98% of the panel's width its top sits ~5% above the panel (head ≈ 3% into the file). */
+.gd-cutout {
+  position: absolute; left: 1%; bottom: 0; inline-size: 98%; block-size: auto;
+  transform-origin: 50% 100%;
+}
+/* globals.css is layered, so the shared .wipe states are restated here in full. */
+.gd-fig.wipe { clip-path: inset(calc(-1 * var(--gd-break) - 4%) 0 0 0); }
+html[data-js] .gd-fig.wipe:not(.is-in) { clip-path: inset(100% 0 0 0); }
+html[data-revealed] .gd-fig.wipe:not(.is-in) { clip-path: inset(calc(-1 * var(--gd-break) - 4%) 0 0 0); }
+
+/* ── 05 · Track record (Expeditions) ─────────────────────────────── */
+/* The forest rises over the sand Guide on the Ridge (first child, absolutely placed). */
+.ex {
+  position: relative;
+  --ex-panel: max(32vw, 24rem);
+  --ex-gap: 32px;
+  /* Two whole cards fill the stage beside the panel: card 1 starts at panel + gap, card 2
+     ends at 100vw − margin. The track then travels exactly two cards + two gaps, so at
+     p = 1 cards 3–4 rest where 1–2 began. ≈ 425px at 1440. */
+  --ex-card: calc((100vw - var(--ex-panel) - var(--margin) - 2 * var(--ex-gap)) / 2);
+  padding-top: var(--beat-top, var(--s-8));
+  padding-bottom: var(--s-9);
+}
+.ex-panel { padding-inline: var(--margin); display: flex; flex-direction: column; align-items: flex-start; }
+.ex-title { margin-top: var(--s-4); }
+.ex-line { margin-top: var(--s-5); max-inline-size: 40ch; text-wrap: balance; }
+.ex-count {
+  display: none;
+  align-items: center;
+  gap: 16px;
+  margin-top: var(--s-4);
+  color: var(--ink);
+}
+.ex-bar {
+  position: relative;
+  flex: none;
+  inline-size: 160px;
+  block-size: 2px;
+  overflow: clip;
+  background: rgb(var(--veil-rgb) / .28);
+}
+.ex-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--c-sunrise-500);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* Mobile and tablet: a native snap row. Touch scrolls it; nothing is hijacked. */
+.ex-viewport {
+  margin-top: var(--s-6);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--margin);
+  scrollbar-width: none;
+}
+.ex-viewport::-webkit-scrollbar { display: none; }
+.ex-track {
+  display: flex;
+  gap: 12px;
+  inline-size: max-content;
+  margin: 0;
+  padding: 0 var(--margin);
+  list-style: none;
+}
+.ex-card {
+  flex: none;
+  inline-size: 82vw;
+  aspect-ratio: 4 / 5;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: var(--c-paper);
+}
+@media (min-width: 40rem) {
+  .ex-card { inline-size: min(82vw, 26rem); }
+}
+.ex-signs {
+  position: absolute;
+  z-index: 1;
+  top: 24px;
+  right: 20px;
+  margin: 0;
+}
+.ex-body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 20px;
+}
+.ex-body .t-label { color: var(--c-paper); }
+/* One baseline for all four names: the meta row is one line even when empty, and the
+   line below is always two. */
+.ex-meta { min-block-size: 1lh; }
+.ex-name { margin-top: 4px; }
+.ex-text {
+  margin-top: 4px;
+  max-inline-size: 40ch;
+  min-block-size: 2lh;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: clip;
+  color: rgb(var(--veil-rgb) / .92);
+}
+
+@media (max-width: 63.99rem) {
+  .ex-count { display: flex; }
+  .ex-signs { left: 20px; right: auto; top: 20px; }
+  .ex-signs .sign { min-block-size: 58px; padding-block: 10px; --tip: 18px; }
+  .ex-signs .sign .t-num { font-size: var(--fs-h4); }
+}
+
+/* Desktop without full motion (or without JS): a 2×2 grid. */
+@media (min-width: 64rem) {
+  .ex-panel { max-inline-size: var(--page-max); margin-inline: auto; }
+  .ex-viewport { margin-top: var(--s-7); overflow: visible; scroll-snap-type: none; }
+  .ex-track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
+    inline-size: auto;
+    max-inline-size: var(--page-max);
+    margin-inline: auto;
+  }
+  .ex-card { inline-size: auto; aspect-ratio: 5 / 4; }
+  .ex-body { padding: 28px; }
+}
+
+/* Desktop with JS and full motion: the pinned horizontal trail. Height = 100svh plus the
+   track's travel (two cards + two gaps); CSS estimates it, ExpeditionTrack writes the
+   measured --ex-extra, so the pinned scroll equals the horizontal travel. */
+@media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+  html[data-js]:not([data-motion="reduced"]) .ex {
+    height: calc(100svh + var(--ex-extra, calc(2 * var(--ex-card) + 2 * var(--ex-gap))));
+    padding-block: 0;
+  }
+  html[data-js]:not([data-motion="reduced"]) .ex-stage {
+    position: sticky;
+    top: 0;
+    block-size: 100svh;
+    overflow: clip;
+  }
+  html[data-js]:not([data-motion="reduced"]) .ex-panel {
+    position: absolute;
+    z-index: 2;
+    inset-block: 0;
+    left: 0;
+    inline-size: var(--ex-panel);
+    max-inline-size: none;
+    margin: 0;
+    justify-content: center;
+    padding: calc(var(--nav-h) + var(--nav-inset)) var(--gutter) 0 var(--margin);
+    background: var(--bg);
+  }
+  html[data-js]:not([data-motion="reduced"]) .ex-count { display: flex; margin-top: var(--s-7); }
+  html[data-js]:not([data-motion="reduced"]) .ex-viewport {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding-top: calc(var(--nav-h) + var(--nav-inset));
+    display: flex;
+    align-items: center;
+    overflow: visible;
+    /* Cards leave on card 1's resting edge (panel + gap), not on the panel's edge: the
+       gutter beside the panel stays clear forest at every p, with no sliver of the card
+       before. */
+    clip-path: inset(0 0 0 calc(var(--ex-panel) + var(--ex-gap)));
+  }
+  html[data-js]:not([data-motion="reduced"]) .ex-track {
+    position: relative;
+    display: flex;
+    gap: var(--ex-gap);
+    inline-size: max-content;
+    max-inline-size: none;
+    margin: 0;
+    padding: 0 var(--margin) 0 calc(var(--ex-panel) + var(--ex-gap));
+    will-change: transform;
+  }
+  html[data-js]:not([data-motion="reduced"]) .ex-card {
+    inline-size: var(--ex-card);
+    block-size: min(64svh, 560px);
+    aspect-ratio: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ex-bar-fill { transition: none; }
+}
+
+/* ── 07 · Fit ────────────────────────────────────────────────────── */
+/* Deep glacier band, rising over the paper Field Notes on a Ridge (first child). */
+.fb {
+  position: relative;
+  padding-top: var(--beat-top, var(--s-9));
+  padding-bottom: var(--s-9);
+}
+.fb-chapter, .fb-head, .fb-body { grid-column: 1 / -1; }
+.fb-chapter { margin-bottom: var(--s-4); }
+.fb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: var(--s-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.fb-body { margin-top: var(--s-7); }
+.fb-check { color: var(--ink); margin-top: .3em; }
+.fb-yes .t-h4 { color: var(--ink); }
+.fb-no { margin-top: var(--s-5); color: var(--ink-muted); }
+/* The down-sell: one quiet line under the ✗, text then a link-go, wrapping as a unit on phones. */
+.fb-down {
+  display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .5em;
+  margin-top: var(--s-3); color: var(--ink);
+}
+.fb-no + .fb-down { margin-top: var(--s-2); }
+.fb-down-link { min-block-size: 44px; }
+@media (min-width: 64rem) {
+  .fb-head { grid-column: 1 / span 6; }
+  .fb-body { grid-column: 8 / span 5; margin-top: 0; align-self: start; }
+}
+
+/* ── 06 · From the trail ─────────────────────────────────────────── */
+/* Head left, line + link right on one baseline. Below: the forest-path plate holds the left
+   columns (64rem+) while the main column runs right: lead item, two more, the Field Notes row,
+   and a Campfire sign only when one is real. */
+.fn {
+  padding-top: var(--beat-top, var(--s-9));
+  /* The glacier Fit rises over this beat on a ridge: keep s-9 of paper clear above its peaks,
+     so the deep-blue lead tile never reads as part of the band below. */
+  padding-bottom: calc(var(--s-9) + var(--ridge-h));
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1100px;
+}
+.fn-head { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; }
+.fn-title { margin-top: var(--s-4); }
+.fn-aside { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; margin-top: var(--s-5); }
+.fn-line { max-inline-size: 40ch; text-wrap: balance; }
+.fn-cta { margin-top: var(--s-4); }
+.fn-plate { display: none; }
+.fn-main { grid-column: 1 / -1; display: grid; align-content: start; gap: var(--s-7); margin-top: var(--s-7); min-inline-size: 0; }
+.fn-cards { display: grid; gap: var(--s-7) var(--gutter); }
+/* The lead note: never clamp its dek, never push it to the far edge. */
+.fn .wr-note[data-size="lg"] .wr-note-dek {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  justify-self: start;
+  max-inline-size: 46ch;
+}
+.fn-event { display: flex; }
+@media (min-width: 40rem) {
+  .fn-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fn-lead { grid-column: 1 / -1; }
+}
+@media (min-width: 64rem) {
+  .fn-grid { grid-template-rows: auto 1fr; }
+  .fn-head { grid-column: 1 / span 6; }
+  .fn-aside { grid-column: 8 / span 5; align-self: end; margin-top: 0; }
+  /* The plate stretches to the main column's height (its own floor and ceiling keep a sane
+     portrait), and rides the scroll when the column outgrows it. */
+  .fn-plate { display: block; grid-column: 1 / span 4; grid-row: 2; margin-top: var(--s-8); }
+  .fn-plate .plate {
+    display: block; position: sticky; top: calc(var(--nav-h) + var(--nav-inset) + var(--s-6));
+    block-size: clamp(26rem, 100%, 40rem);
+  }
+  .fn-plate .plate-img { aspect-ratio: auto; block-size: 100%; }
+  .fn-main { grid-column: 6 / -1; grid-row: 2; margin-top: var(--s-8); gap: var(--s-7); }
+}
+
+/* ── Forced colours: plates and chips keep a visible edge, fog and scrims drop. ── */
+@media (forced-colors: active) {
+  .tr-sign { border: 2px solid CanvasText; }
+  .tr-fog { display: none; }
+}
+
+/* Above-the-fold entrance: pure CSS from the first paint, so the hero never waits on
+   hydration. Words rise through their masks fast (520ms, 30ms apart) so the H1 settles
+   early and never becomes a late LCP; line and CTAs follow. The photo is never hidden. */
+.bc .load-lines .mask > span { animation: bc-line-in 520ms var(--ease-arrive) both; animation-delay: calc(40ms + var(--i, 0) * 30ms); }
+.bc .load-rise { animation: bc-rise-in 600ms var(--ease-arrive) both; }
+.bc .bc-line.load-rise { animation-delay: 260ms; }
+.bc .bc-ctas.load-rise { animation-delay: 340ms; }
+@keyframes bc-line-in { from { transform: translateY(105%); } }
+@keyframes bc-rise-in { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) { .bc .load-lines .mask > span, .bc .load-rise { animation: none; } }
+:root[data-motion="reduced"] .bc .load-lines .mask > span, :root[data-motion="reduced"] .bc .load-rise { animation: none; }

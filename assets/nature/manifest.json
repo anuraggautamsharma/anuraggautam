@@ -1,0 +1,515 @@
+{
+  "generated": "2026-10-06",
+  "contactSheet": "docs/photo-contact-sheet.jpg",
+  "notes": "All images are CC0 1.0 and verified on each Wikimedia Commons file page. Most are classic Unsplash CC0 uploads mirrored on Commons; waypoint-systems is a USDA Forest Service Alaska Region aerial and waypoint-price is by Bernard Spragg (Flickr), both CC0. Processed with sharp: auto-orient, max 2400px on the long edge, metadata stripped, mozjpeg q70-82.",
+  "photos": [
+    {
+      "id": "basecamp-hero",
+      "file": "assets/nature/basecamp-hero.jpg",
+      "width": 2400,
+      "height": 1350,
+      "slot": "Beat 1 BASECAMP: full-bleed home hero",
+      "description": "Matterhorn and the Zermatt glaciers under a vivid pink, coral and violet sky, painted at dusk but it reads as dawn. Epic, bold and calm. Sky streaks lead the eye toward the peak.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Sunset_over_Matterhorn_%28Unsplash%29.jpg",
+      "creator": "Sam Ferrara",
+      "title": "Sunset over Matterhorn (Unsplash)",
+      "dominantColors": [
+        "#7f587e",
+        "#45365c",
+        "#9d8faf",
+        "#151129"
+      ],
+      "textSafeArea": "The top 55% is open, streaked pink and violet sky, safe for a big white headline (add a dark scrim for AA). Keep CTAs above the ridgeline. The peak sits right of centre."
+    },
+    {
+      "id": "terrain-fog",
+      "file": "assets/nature/terrain-fog.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Beat 2 THE TERRAIN: fog over a ridge",
+      "description": "A dark ridge plunges into a golden, back-lit sea of clouds, with teal shadows. It feels uncharted and mysterious, and warm.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Golden_mountain_%28Unsplash%29.jpg",
+      "creator": "Anton Repponen",
+      "title": "Golden mountain (Unsplash)",
+      "dominantColors": [
+        "#4b6760",
+        "#c89c62",
+        "#948260",
+        "#153233"
+      ],
+      "textSafeArea": "The top band of teal clouds and the lower-right cloud mass are both calm. Use white text with a light scrim, or place text in the top-left third."
+    },
+    {
+      "id": "route-valley",
+      "file": "assets/nature/route-valley.jpg",
+      "width": 2400,
+      "height": 1596,
+      "slot": "Beat 3 THE ROUTE: background behind the 3D topo route",
+      "description": "A footpath winds through golden-green Patagonian steppe toward the snow-capped Torres del Paine spires (Chile). It is literally a route drawn across terrain.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Parque_Nacional_Torres_del_Paine%2C_Chile_%28Unsplash_hFBwVNkEnWg%29.jpg",
+      "creator": "Guillermo Riquelme",
+      "title": "Parque Nacional Torres del Paine, Chile (Unsplash hFBwVNkEnWg)",
+      "dominantColors": [
+        "#b69651",
+        "#8c753d",
+        "#ecebee",
+        "#5a5040"
+      ],
+      "textSafeArea": "The upper-right sky is bright white cloud, safe for dark text. The lower half is busy with grass texture, so overlay a tinted panel there."
+    },
+    {
+      "id": "waypoint-position",
+      "file": "assets/nature/waypoint-position.jpg",
+      "width": 2400,
+      "height": 1349,
+      "slot": "Waypoint 1 POSITION: overlook / viewpoint",
+      "description": "A lone hiker stands on a granite overlook above the deep-blue Lysefjord (Norway), under a vivid blue sky full of cumulus. It reads as 'see the whole landscape'. The figure is tiny, seen from behind and not identifiable.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Lysefjorden%2C_Norway_%28Unsplash_nyghAPuJQC8%29.jpg",
+      "creator": "Carl Cerstrand",
+      "title": "Lysefjorden, Norway (Unsplash nyghAPuJQC8)",
+      "dominantColors": [
+        "#97c0d5",
+        "#136ea9",
+        "#0e1417",
+        "#223c4a"
+      ],
+      "textSafeArea": "The top 40% is blue sky with white clouds, safe for dark text on a white card, or white text with a shadow. The figure is in the upper-left, so avoid covering it."
+    },
+    {
+      "id": "waypoint-price",
+      "file": "assets/nature/waypoint-price.jpg",
+      "width": 2400,
+      "height": 1585,
+      "slot": "Waypoint 2 PRICE: balanced cairn",
+      "description": "A stone cairn on a golden, sun-raked hillside at golden hour, with a long shadow and deep-blue sky. Balance and judgement.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:The_Stone_Cairn._%2815820921483%29.jpg",
+      "creator": "Bernard Spragg",
+      "title": "The Stone Cairn. (15820921483)",
+      "dominantColors": [
+        "#40230f",
+        "#8b99b0",
+        "#0c0c0b",
+        "#6d4018"
+      ],
+      "textSafeArea": "The right half (an empty golden slope) and the top sky band are calm. The cairn sits left of centre."
+    },
+    {
+      "id": "waypoint-market",
+      "file": "assets/nature/waypoint-market.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Waypoint 3 MARKET: vast open plain",
+      "description": "A wildflower superbloom: bands of vivid yellow wildflowers stretch across a vast green plain to banded hills. Scale and open opportunity.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Painted_Hills_%28Unsplash%29.jpg",
+      "creator": "Tim Mossholder",
+      "title": "Painted Hills (Unsplash)",
+      "dominantColors": [
+        "#625732",
+        "#3c351d",
+        "#b6d0db",
+        "#8e825d"
+      ],
+      "textSafeArea": "The top 18% is pale cyan sky, safe for dark text. The plain in the lower half is also calm enough for a tinted card."
+    },
+    {
+      "id": "waypoint-systems",
+      "file": "assets/nature/waypoint-systems.jpg",
+      "width": 2400,
+      "height": 1602,
+      "slot": "Waypoint 4 SYSTEMS: glacier / river network from above",
+      "description": "An aerial view of a branching Alaskan glacier system: ice tongues, moraines and meltwater lakes under blue sky. A network that flows. The aircraft frame was cropped from the bottom.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Glacier_Bay_National_Park_Aerial_Survey_La_Perouse_Glacier-Alaska.jpg",
+      "creator": "Forest Service Alaska Region, USDA",
+      "title": "Glacier Bay National Park Aerial Survey La Perouse Glacier-Alaska",
+      "dominantColors": [
+        "#646c73",
+        "#7998be",
+        "#3a71b9",
+        "#24394b"
+      ],
+      "textSafeArea": "The top 22% is blue sky and cloud, good for white text with a shadow. The lower-left grey moraine is calm."
+    },
+    {
+      "id": "waypoint-team",
+      "file": "assets/nature/waypoint-team.jpg",
+      "width": 2400,
+      "height": 1603,
+      "slot": "Waypoint 5 TEAM: people on the trail together",
+      "description": "Two hikers, seen from behind, descend a rugged golden ridge into hazy blue Himalayan-style valleys. A team on the climb, with no faces visible.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Adventurous_Mountain_Hikes_%28Unsplash%29.jpg",
+      "creator": "Galen Crout",
+      "title": "Adventurous Mountain Hikes (Unsplash)",
+      "dominantColors": [
+        "#2d2f2d",
+        "#846d4a",
+        "#adc4c5",
+        "#edf3f1"
+      ],
+      "textSafeArea": "The top 35% is soft hazy sky, very safe for dark or white text. The figures are on the left and centre-right."
+    },
+    {
+      "id": "guide-trail",
+      "file": "assets/nature/guide-trail.jpg",
+      "width": 2400,
+      "height": 1350,
+      "slot": "Beat 4 THE GUIDE: background behind Anurag's photo and story",
+      "description": "A wide alpine valley seen from a high forested ridge: snow-streaked peaks, a braided river below, bright cumulus sky. Explorer's-eye view.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Green_valley_in_the_white_mountains_%28Unsplash%29.jpg",
+      "creator": "Scott Webb",
+      "title": "Green valley in the white mountains (Unsplash)",
+      "dominantColors": [
+        "#171f1b",
+        "#d6dde4",
+        "#36474a",
+        "#5480a3"
+      ],
+      "textSafeArea": "The top 45% is bright blue sky with white cumulus, so put dark text on a white card or use a scrim. The forest in the lower-right is dark, good for white text."
+    },
+    {
+      "id": "expedition-canyon",
+      "file": "assets/nature/expedition-canyon.jpg",
+      "width": 2400,
+      "height": 1597,
+      "slot": "Beat 5 EXPEDITIONS: card 1, desert canyon",
+      "description": "Bryce Canyon hoodoos: saturated coral, terracotta and cream rock spires with green pines. Hot, bold colour.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Bryce_Canyon_National_Park%2C_United_States_%28Unsplash_ESus7wfHOas%29.jpg",
+      "creator": "Luca Bravo",
+      "title": "Bryce Canyon National Park, United States (Unsplash ESus7wfHOas)",
+      "dominantColors": [
+        "#c87b5f",
+        "#a46048",
+        "#7c4332",
+        "#d3a494"
+      ],
+      "textSafeArea": "The frame is busy edge to edge. Use a bottom gradient scrim, or a solid label chip for the card text."
+    },
+    {
+      "id": "expedition-ice-cave",
+      "file": "assets/nature/expedition-ice-cave.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Beat 5 EXPEDITIONS: card 2, glacier / ice",
+      "description": "Inside a Mendenhall Glacier ice cave (Alaska): electric glacier-blue scalloped ice, very saturated and dramatic.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Mendenhall_Glacier%2C_Juneau%2C_United_States_%28Unsplash%29.jpg",
+      "creator": "Steve Halama",
+      "title": "Mendenhall Glacier, Juneau, United States (Unsplash)",
+      "dominantColors": [
+        "#0a739c",
+        "#040c0d",
+        "#14abd2",
+        "#07252b"
+      ],
+      "textSafeArea": "The dark lower-left corner suits white text. Otherwise use a bottom gradient scrim."
+    },
+    {
+      "id": "expedition-aurora",
+      "file": "assets/nature/expedition-aurora.jpg",
+      "width": 2400,
+      "height": 1601,
+      "slot": "Beat 5 EXPEDITIONS: card 3, aurora",
+      "description": "Green and magenta aurora over an autumn-orange forest line, mirrored in a still lake. Vivid, otherworldly.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Colorful_aurora_borealis_%28Unsplash%29.jpg",
+      "creator": "Alan Labisch",
+      "title": "Colorful aurora borealis (Unsplash)",
+      "dominantColors": [
+        "#8eb0a5",
+        "#503870",
+        "#59847f",
+        "#472513"
+      ],
+      "textSafeArea": "The upper-left sky (a soft green-violet gradient) is calm, good for white text."
+    },
+    {
+      "id": "expedition-alpine-lake",
+      "file": "assets/nature/expedition-alpine-lake.jpg",
+      "width": 2400,
+      "height": 1643,
+      "slot": "Beat 5 EXPEDITIONS: card 4, alpine lake",
+      "description": "Fitz Roy's granite spires and glacier above a turquoise alpine lake under a deep-blue sky (Patagonia). Rugged and pristine.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Fitz_Roy_%28Unsplash%29.jpg",
+      "creator": "Arto Marttinen",
+      "title": "Fitz Roy (Unsplash)",
+      "dominantColors": [
+        "#045891",
+        "#0d2b39",
+        "#768988",
+        "#4e6061"
+      ],
+      "textSafeArea": "The top-right is clean deep-blue sky, ideal for white text."
+    },
+    {
+      "id": "notes-forest-path",
+      "file": "assets/nature/notes-forest-path.jpg",
+      "width": 2400,
+      "height": 1607,
+      "slot": "Beat 6 FROM THE TRAIL: aside plate; v3 /subscribe hero and the /start \"learn\" door",
+      "description": "A winding path through a sunlit pine forest in early autumn: bronze undergrowth, tall trunks, soft blue sky. A quiet thinking walk.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Twisting_path_in_an_autumn_forest_%28Unsplash%29.jpg",
+      "creator": "Josephine Wentholt",
+      "title": "Twisting path in an autumn forest (Unsplash)",
+      "dominantColors": [
+        "#4a422a",
+        "#292416",
+        "#65654d",
+        "#899692"
+      ],
+      "textSafeArea": "The centre-top sky gap between the trunks is bright. Text works best on a cream or white panel over the left or right third.",
+      "photoIds": [
+        "notes-forest-path"
+      ]
+    },
+    {
+      "id": "summit-golden",
+      "file": "assets/nature/summit-golden.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Beat 7 SUMMIT: CTA background",
+      "description": "Sunrise from Roy's Peak (New Zealand): a golden, snow-dusted ridge leads up to a blazing sun over the lake and cloud. Triumphant arrival.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Sunrise_at_Roy%27s_Peak_%28Unsplash%29.jpg",
+      "creator": "Jingwei Ke",
+      "title": "Sunrise at Roy's Peak (Unsplash)",
+      "dominantColors": [
+        "#eae7ef",
+        "#4a322f",
+        "#ae7455",
+        "#d6b0a8"
+      ],
+      "textSafeArea": "The upper-left sky (pale lavender) and the right side around the sun are bright, so use dark text or a dark-glass CTA card on the left. The ridge runs diagonally from the bottom-left."
+    },
+    {
+      "id": "hero-gtm",
+      "file": "assets/nature/hero-gtm.jpg",
+      "width": 2400,
+      "height": 1561,
+      "slot": "Inner hero: /gtm (route and map feel)",
+      "description": "The Sassolungo massif in the Dolomites: a white snow and meltwater line winds down from the peaks like a route on a map.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Passo_Sella%2C_Dolomites_%28Unsplash%29.jpg",
+      "creator": "Raul Taciu",
+      "title": "Passo Sella, Dolomites (Unsplash)",
+      "dominantColors": [
+        "#c3ccd8",
+        "#282728",
+        "#5a514e",
+        "#857469"
+      ],
+      "textSafeArea": "The top 30% is flat pale grey-blue sky, very safe for dark text."
+    },
+    {
+      "id": "hero-about",
+      "file": "assets/nature/hero-about.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Inner hero: /about (wanderer vibe, landscape only)",
+      "description": "Torres del Paine: the Cuernos peaks wreathed in cloud above a turquoise lake and golden steppe. Classic far-off expedition country.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Torres_del_Paine_National_Park%2C_Chile_%28Unsplash%29.jpg",
+      "creator": "Olga Stalska",
+      "title": "Torres del Paine National Park, Chile (Unsplash)",
+      "dominantColors": [
+        "#899ba4",
+        "#79795e",
+        "#2f5e7e",
+        "#c9c9d0"
+      ],
+      "textSafeArea": "The upper-left cloud bank is bright and calm, good for dark text or white text on a scrim."
+    },
+    {
+      "id": "hero-contact",
+      "file": "assets/nature/hero-contact.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Inner hero: /contact (camp at dusk)",
+      "description": "A glowing lime-green tent on a snowy summit at night, with valley city lights far below. Basecamp: let's talk.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Green_tent_on_a_snow_covered_mountain_%28Unsplash%29.jpg",
+      "creator": "Sam X",
+      "title": "Green tent on a snow covered mountain (Unsplash)",
+      "dominantColors": [
+        "#433f3a",
+        "#101420",
+        "#2a2724",
+        "#686933"
+      ],
+      "textSafeArea": "The top 35% is a near-black night sky, ideal for white text and form chrome."
+    },
+    {
+      "id": "hero-writing",
+      "file": "assets/nature/hero-writing.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Inner hero: /writing (calm lake)",
+      "description": "The Wanaka tree standing alone in a mirror-still lake at twilight, under a violet-to-pink sky. Calm and reflective.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Wanaka%2C_New_Zealand_%28Unsplash_KonWFWUaAuk%29.jpg",
+      "creator": "Ken Cheung",
+      "title": "Wanaka, New Zealand (Unsplash KonWFWUaAuk)",
+      "dominantColors": [
+        "#927ccd",
+        "#76699c",
+        "#c79bef",
+        "#5f61bf"
+      ],
+      "textSafeArea": "The top 40% sky and the bottom 35% water are both smooth gradients, very safe for white text."
+    },
+    {
+      "id": "hero-404",
+      "file": "assets/nature/hero-404.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "Inner hero: 404 (edge of the cliff)",
+      "description": "Looking straight down chalk-white sea cliffs into a vast, wind-textured cobalt sea. The trail ends here.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:White_Cliffs_of_Dover%2C_United_Kingdom_%28Unsplash_R3C-jKN7vIU%29.jpg",
+      "creator": "Callum Wale",
+      "title": "White Cliffs of Dover, United Kingdom (Unsplash R3C-jKN7vIU)",
+      "dominantColors": [
+        "#146082",
+        "#2577a6",
+        "#2f2f24",
+        "#676654"
+      ],
+      "textSafeArea": "The right two-thirds is open blue sea, ideal for white text."
+    },
+    {
+      "id": "spare-hero-matterhorn",
+      "file": "assets/nature/spare-hero-matterhorn.jpg",
+      "width": 2400,
+      "height": 1600,
+      "slot": "v3 /start hero (PhotoId start-matterhorn). Never on the same page as basecamp-hero",
+      "description": "A closer Matterhorn with a cloud banner under a pink and orange sunset sky. Same shoot as basecamp-hero, so don't use both on one page.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Matterhorn_sunset_2016_%28Unsplash%29.jpg",
+      "creator": "Sam Ferrara",
+      "title": "Matterhorn sunset 2016 (Unsplash)",
+      "dominantColors": [
+        "#6c607f",
+        "#f6b49c",
+        "#b27b7f",
+        "#3d3952"
+      ],
+      "textSafeArea": "The top 40% is streaked pink sky, safe for white text.",
+      "photoIds": [
+        "start-matterhorn"
+      ]
+    },
+    {
+      "id": "spare-terrain-blue",
+      "file": "assets/nature/spare-terrain-blue.jpg",
+      "width": 2400,
+      "height": 1350,
+      "slot": "Spare: alternative TERRAIN / section divider",
+      "description": "Endless layered blue mountain ridges fading into haze. Pure glacier-blue tones, minimal and mysterious.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Blue_mountain_folds_%28Unsplash%29.jpg",
+      "creator": "Paul Gilmore",
+      "title": "Blue mountain folds (Unsplash)",
+      "dominantColors": [
+        "#0175a2",
+        "#0d87b3",
+        "#01618b",
+        "#489cc2"
+      ],
+      "textSafeArea": "The entire frame is calm. The top 30% is the lightest, good for dark or white text."
+    },
+    {
+      "id": "spare-market-panorama",
+      "file": "assets/nature/spare-market-panorama.jpg",
+      "width": 2400,
+      "height": 789,
+      "slot": "v3 /scorecard hero (PhotoId scorecard-panorama)",
+      "description": "A Landmannalaugar (Iceland) panorama: banded rhyolite mountains above a flat green plain, blue sky with streaky cloud. 3:1 banner.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Meadow_in_the_Icelandic_mountains_%28Unsplash%29.jpg",
+      "creator": "Quinn Nietfeld",
+      "title": "Meadow in the Icelandic mountains (Unsplash)",
+      "dominantColors": [
+        "#5d5b1f",
+        "#796d40",
+        "#8bb3de",
+        "#a48c63"
+      ],
+      "textSafeArea": "The top-right sky and the bottom green meadow are calm.",
+      "photoIds": [
+        "scorecard-panorama"
+      ]
+    },
+    {
+      "id": "spare-expedition-coast",
+      "file": "assets/nature/spare-expedition-coast.jpg",
+      "width": 2400,
+      "height": 1800,
+      "slot": "Spare: expeditions card, coastal cliffs",
+      "description": "The Na Pali coast (Kauai): jungle-green ridges drop to a turquoise surf line, with big white clouds.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:NaPali_Coast_%28Unsplash%29.jpg",
+      "creator": "Josh Austin",
+      "title": "NaPali Coast (Unsplash)",
+      "dominantColors": [
+        "#2a3637",
+        "#3d5e79",
+        "#5a87a6",
+        "#9eb1c4"
+      ],
+      "textSafeArea": "The upper-right cloud and sky is bright, so use dark text, or a scrim for white."
+    },
+    {
+      "id": "spare-price-cairn-tall",
+      "file": "assets/nature/spare-price-cairn-tall.jpg",
+      "width": 1600,
+      "height": 2400,
+      "slot": "Spare: PRICE portrait / mobile crop",
+      "description": "A tall, balanced stone stack on desert granite boulders under a mackerel-cloud blue sky (Joshua Tree style). Portrait 2:3.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Pebble_Stack_%28Unsplash%29.jpg",
+      "creator": "Nick Tong",
+      "title": "Pebble Stack (Unsplash)",
+      "dominantColors": [
+        "#a8c5e0",
+        "#7ca8d3",
+        "#b19d7a",
+        "#7c6b52"
+      ],
+      "textSafeArea": "The top 55% is blue sky with small clouds, safe for dark text on a card, or white text with a shadow."
+    },
+    {
+      "id": "spare-terrain-golden",
+      "file": "assets/nature/spare-terrain-golden.jpg",
+      "width": 2400,
+      "height": 1413,
+      "slot": "v3 /community hero (PhotoId community-golden; also guide-ridge) and the /start \"room\" door",
+      "description": "Silhouetted mountain ridges in layers of orange haze with god-rays (bottom fence band cropped out). It has visible film grain, so use it at ≤1600px or under an overlay.",
+      "license": "CC0 1.0 (Public Domain Dedication)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Sunset_in_the_mountains_%28Unsplash%29.jpg",
+      "creator": "Sergey Pesterev",
+      "title": "Sunset in the mountains (Unsplash)",
+      "dominantColors": [
+        "#d17012",
+        "#f3911d",
+        "#a15011",
+        "#5c3116"
+      ],
+      "textSafeArea": "The top 35% is a smooth orange sky, very safe for white or dark text.",
+      "photoIds": [
+        "guide-ridge",
+        "community-golden"
+      ]
+    }
+  ],
+  "v3": "2026-10-07: three spares promoted (see photoIds). Text zones and scrims live in lib/photos.ts and pass scripts/check-photo-contrast.mjs."
+}

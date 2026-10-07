@@ -1,0 +1,31 @@
+/* /credits: a plain paper ledger. */
+.cr { padding-block: var(--beat-top, calc(var(--nav-h) + var(--nav-inset) + var(--s-7))) var(--s-9); }
+.cr-head { display: grid; gap: var(--s-4); padding-bottom: var(--s-7); }
+.cr-head .t-h1 { max-inline-size: 14ch; }
+
+.cr-table-wrap { inline-size: 100%; }
+.cr-table { inline-size: 100%; border-collapse: collapse; font-size: var(--fs-small); line-height: 1.4; }
+.cr-table thead th { padding: 0 12px 12px 0; text-align: left; font-weight: 500; border-bottom: 2px solid var(--ink); }
+.cr-table td, .cr-table tbody th { padding: 12px 16px 12px 0; vertical-align: middle; text-align: left; border-bottom: 1px solid var(--line); }
+/* Long Commons titles wrap inside their column instead of running into the creator. */
+.cr-title { font-weight: 700; text-wrap: pretty; overflow-wrap: anywhere; }
+@media (min-width: 48rem) {
+  .cr-table { table-layout: auto; }
+  .cr-title { inline-size: 32%; padding-inline-end: var(--s-6); }
+  .cr-table td:nth-child(3) { padding-inline-end: var(--s-6); }
+}
+.cr-thumb { inline-size: 96px; }
+.cr-thumb img { inline-size: 96px; block-size: 64px; object-fit: cover; background: var(--surface-2); }
+.cr-lic { white-space: nowrap; color: var(--ink); }
+.cr-src { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.cr-src svg { flex: none; }
+
+/* Under 48rem each row becomes a small card: thumb left, facts stacked right. */
+@media (max-width: 47.99rem) {
+  .cr-table thead { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+  .cr-table, .cr-table tbody { display: block; }
+  .cr-table tr { display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; padding-block: 16px; border-bottom: 1px solid var(--line); }
+  .cr-table td, .cr-table tbody th { display: block; padding: 0; border: 0; grid-column: 2; }
+  .cr-table .cr-thumb { grid-column: 1; grid-row: 1 / span 4; }
+  .cr-src { white-space: normal; }
+}

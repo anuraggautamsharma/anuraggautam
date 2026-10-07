@@ -1,0 +1,42 @@
+/* /subscribe: the instrument on paper, the facts beside it, the latest notes on sand. */
+.sp-main { padding-block: var(--s-8) var(--s-9); }
+.sp-grid { display: grid; gap: var(--s-8) var(--gutter); }
+.sp-form { display: grid; gap: var(--s-6); align-content: start; min-inline-size: 0; }
+.sp-proof {
+  display: flex; align-items: flex-start; gap: 14px; max-inline-size: 44ch;
+  padding-block-start: var(--s-5); border-top: 1px solid var(--line);
+  font-weight: 600; font-size: var(--fs-ui); line-height: 1.45; color: var(--ink); text-wrap: pretty;
+}
+.sp-proof .blaze { flex: none; margin-block-start: .15em; }
+
+.sp-facts { display: grid; gap: var(--s-7); align-content: start; }
+.sp-fact { display: grid; gap: var(--s-4); }
+.sp-fact-h { color: var(--ink); }
+.sp-list > li { font-weight: 500; font-size: var(--fs-ui); line-height: 1.45; padding-block: var(--s-3); }
+.sp-list > li > :first-child { color: var(--ink-muted); }
+.sp-list svg { color: var(--c-alpine-700); transform: translateY(2px); }
+
+@media (min-width: 64rem) {
+  .sp-main { padding-block-start: var(--s-9); }
+  .sp-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .sp-form { grid-column: 1 / span 7; }
+  .sp-facts { grid-column: 9 / -1; }
+}
+
+.sp-latest { padding-block: var(--s-8) var(--s-9); }
+.sp-latest-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--s-4) var(--gutter); margin-block-end: var(--s-7); }
+.sp-latest-head .t-h2 { max-inline-size: 14ch; }
+.sp-notes { display: grid; gap: var(--s-7) var(--gutter); }
+@media (min-width: 48rem) {
+  .sp-notes[data-count="2"], .sp-notes[data-count="3"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64rem) {
+  .sp-notes[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* One note: 8 of 12 columns, so the lone card doesn't become a second full-bleed hero. */
+  .sp-notes[data-count="1"] { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .sp-notes[data-count="1"] > * { grid-column: 1 / span 8; }
+}
+
+/* /subscribe/confirm: the one button sits in the hero's action slot. */
+@media (max-width: 40rem) { .cf-form, .cf-form > .btn { inline-size: 100%; } }
+.sp-proof .blaze { background: currentColor; } /* orange is earned: the button carries it */
