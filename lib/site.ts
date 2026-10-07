@@ -14,7 +14,7 @@ export const site = {
   city: null as string | null,
   status: 'OPEN FOR GTM ENGAGEMENTS',
   prices: null as null | { teardown: string; build: string; advisory: string },
-  calLink: null as string | null, // Cal.com event for "fit" leads
+  calLink: 'anuraggautam/intro' as string | null, // Cal.com event for "fit" leads (cal.com/anuraggautam/intro)
   updated: '2026-10-06',
   rev: '2026.10',
 }

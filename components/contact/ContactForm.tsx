@@ -464,10 +464,13 @@ function ChipRadios({
   )
 }
 
-function calSrc(calLink: string) {
+/** The Cal.com embed URL. `notes` pre-fills the booking's notes with the brief, so the booking
+ *  itself carries the answers even when the brief email could not be sent. */
+function calSrc(calLink: string, notes?: string) {
   const u = new URL(/^https?:\/\//.test(calLink) ? calLink : `https://cal.com/${calLink.replace(/^\//, '')}`)
   u.searchParams.set('embed', 'true')
   u.searchParams.set('theme', 'light')
+  if (notes) u.searchParams.set('notes', notes.slice(0, 1500))
   return u.href
 }
 
@@ -495,7 +498,11 @@ function Result({
 }) {
   const route: Route = state.route
 
-  if (state.status === 'unsent') {
+  // A qualified engagement always gets the calendar, sent or not: the booking carries the brief.
+  const canBook = state.type === 'engagement' && route === 'fit' && Boolean(calLink)
+  const notes = state.status === 'unsent' ? state.summary : undefined
+
+  if (state.status === 'unsent' && !canBook) {
     return (
       <section className="wo-result" data-state="unsent" aria-labelledby="wo-result" role="alert">
         <p className="t-label wo-stamp">Not sent</p>
@@ -551,10 +558,10 @@ function Result({
         <GoLink href="/method">The Summit Route</GoLink>
       ) : showCal && calLink ? (
         <>
-          <iframe className="wo-cal" src={calSrc(calLink)} title="Pick a time for the fit call" loading="lazy" />
+          <iframe className="wo-cal" src={calSrc(calLink, notes)} title="Pick a time for the fit call" loading="lazy" />
           <p className="t-small">
             Calendar not loading?{' '}
-            <a href={calSrc(calLink)} className="link">
+            <a href={calSrc(calLink, notes)} className="link">
               Open it on Cal.com
             </a>
             .
