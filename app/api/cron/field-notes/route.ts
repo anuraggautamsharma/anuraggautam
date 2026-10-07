@@ -1,28 +1,15 @@
-import { timingSafeEqual } from 'node:crypto'
 import { Resend } from 'resend'
 import { newsletter } from '@/lib/site'
 import { newsletterEnv } from '@/lib/newsletter'
 import { fieldNoteEmail } from '@/lib/email/templates'
 import { publishedPosts } from '@/components/writing/posts'
+import { authorised, daysBetween, todayIST } from '@/lib/cron'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const MAX_AGE_DAYS = 14
 const PREFIX = 'field-note:'
-
-/** Today in IST (the cron fires at 09:00 IST), as YYYY-MM-DD, to compare with frontmatter dates. */
-const todayIST = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date())
-
-const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000)
-
-function authorised(req: Request): boolean {
-  const secret = process.env.CRON_SECRET?.trim()
-  if (!secret) return false
-  const got = Buffer.from(req.headers.get('authorization') ?? '')
-  const want = Buffer.from(`Bearer ${secret}`)
-  return got.length === want.length && timingSafeEqual(got, want)
-}
 
 /**
  * Auto-send for new notes (PLAN_V3 §4), daily from vercel.json at 03:30 UTC.
