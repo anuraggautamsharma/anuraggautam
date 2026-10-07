@@ -34,6 +34,30 @@ const BIOME = {
   snowShade: '#B4C8D6',
 } as const
 
+/**
+ * The backdrop: paper, warmed by a sunrise glow that rises behind the summit at the end of the
+ * climb. Screen space, shared by the sky and the land's misty edges, so they always agree.
+ */
+const BACKDROP = /* glsl */ `
+uniform vec3 uPaper;
+uniform vec4 uBg; // glow centre x, y (device px from bottom-left), radius px, intensity 0–1
+vec3 backdrop() {
+  vec2 d = (gl_FragCoord.xy - uBg.xy) / uBg.z;
+  float r2 = dot(d * vec2(0.8, 1.15), d * vec2(0.8, 1.15));
+  vec3 c = mix(uPaper, ${vec3('#F6DCC6')}, exp(-r2 * 0.55) * uBg.w * 0.75);
+  return mix(c, ${vec3('#FAD0A2')}, exp(-r2 * 2.2) * uBg.w * 0.55);
+}
+`
+
+export const skyVertex = /* glsl */ `
+void main() { gl_Position = vec4(position.xy, 0.0, 1.0); }
+`
+
+export const skyFragment = /* glsl */ `
+${BACKDROP}
+void main() { gl_FragColor = vec4(backdrop(), 1.0); }
+`
+
 const NOISE = /* glsl */ `
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float vnoise(vec2 p) {
@@ -106,7 +130,7 @@ void main() {
 
 export const terrainFragment = /* glsl */ `
 uniform float uTime;
-uniform vec3 uPaper;
+${BACKDROP}
 uniform vec3 uInk;
 uniform vec3 uIce;
 uniform vec3 uGlow;
@@ -191,11 +215,12 @@ void main() {
 
   // Mist pools in the valleys and drifts.
   float mist = (1.0 - smoothstep(0.0, 0.14, vT)) * vMist;
-  lit = mix(lit, uPaper, mist * 0.32);
+  vec3 bg = backdrop();
+  lit = mix(lit, bg, mist * 0.32);
 
   // Distance haze, then the shore into paper.
-  lit = mix(lit, mix(uPaper, vec3(0.86, 0.9, 0.93), 0.25), vFog * 0.9);
-  gl_FragColor = vec4(mix(lit, uPaper, vEdge), 1.0);
+  lit = mix(lit, mix(bg, vec3(0.86, 0.9, 0.93), 0.25), vFog * 0.9);
+  gl_FragColor = vec4(mix(lit, bg, vEdge), 1.0);
 }
 `
 

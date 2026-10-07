@@ -81,7 +81,8 @@ export class CameraRig {
       const k = 1 - Math.exp(-2.6 * dt)
       this.pos.lerp(this.wantPos, k)
       this.target.lerp(this.wantTarget, k)
-      moving = this.pos.distanceToSquared(this.wantPos) > 1e-8 || this.target.distanceToSquared(this.wantTarget) > 1e-8
+      // Still travelling (not just the slow idle drift): keeps the scene at full frame rate.
+      moving = this.pos.distanceToSquared(this.wantPos) > 1e-3 || this.target.distanceToSquared(this.wantTarget) > 1e-3
     }
     camera.position.copy(this.pos)
     camera.lookAt(this.target)

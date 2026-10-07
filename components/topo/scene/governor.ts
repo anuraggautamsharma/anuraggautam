@@ -1,8 +1,27 @@
-/** Pixel budget: ≤ 1.25× and ≤ 2.2 MP for the full canvas (the lit landscape costs more than the old map), never below 1× on 1× screens. */
-export function dprCap() {
+let weakGpu = false
+
+/**
+ * Integrated and mobile-class GPUs (Intel UHD / Iris, Mali, Adreno, PowerVR, software) get a
+ * smaller pixel budget from the first frame. Call once the context exists.
+ */
+export function noteGpu(gl: WebGL2RenderingContext) {
+  const info = gl.getExtension('WEBGL_debug_renderer_info')
+  const name = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER))
+  weakGpu = /intel|uhd|iris|hd graphics|mali|adreno|powervr|swiftshader|llvmpipe/i.test(name)
+  return weakGpu
+}
+
+export const isWeakGpu = () => weakGpu
+
+/**
+ * Pixel budget for the canvas: ≤ 1.25× and ≤ 2.2 MP, or ≤ 1× and ≤ 1.3 MP on a weak GPU (the
+ * misty landscape upscales gracefully). `scale` is the governor's step down.
+ */
+export function dprCap(scale = 1) {
   const d = window.devicePixelRatio || 1
   const px = Math.max(1, window.innerWidth * window.innerHeight)
-  return Math.max(Math.min(d, 1), Math.min(d, 1.25, Math.sqrt(2.2e6 / px)))
+  const [max, budget] = weakGpu ? [1, 1.3e6] : [1.25, 2.2e6]
+  return Math.max(0.5, Math.min(d, max, Math.sqrt(budget / px)) * scale)
 }
 
 const WARMUP_MS = 1500
@@ -72,7 +91,7 @@ export class GpuTimer {
 
 /**
  * Adaptive quality, sampled on rendered frames only: when the average interval over 60
- * consecutive frames passes 22 ms, step down (1: DPR → 1, 2: coarser terrain, 3: retreat).
+ * consecutive full-rate frames passes 22 ms, step down (1: 80 % pixels, 2: 64 %, 3: retreat).
  * Two guards against blaming the map for a slow page: the bar rises to 1.5× the fastest
  * interval in the window (a display or battery saver capping rAF at 30 Hz), and where a GPU
  * timer exists the map's own draw must cost ≥ 6 ms. Gaps (idle, hidden tab) and the first
@@ -90,9 +109,14 @@ export class Governor {
 
   constructor(private readonly onStep: (level: number) => void) {}
 
+  /** The next sample follows a gap (an ambient frame, not a scroll frame): don't time it. */
+  pause() {
+    this.last = 0
+  }
+
   /** `gpuMs`: the map's latest GPU time, or −1 when unmeasured. */
   sample(now: number, gpuMs = -1) {
-    const dt = now - this.last
+    const dt = this.last ? now - this.last : 0
     this.last = now
     if (!this.since) this.since = now
     if (now - this.since < WARMUP_MS || dt <= 0 || dt > 100) return

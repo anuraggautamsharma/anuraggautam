@@ -3,22 +3,26 @@
 
 import { useEffect, useRef } from 'react'
 import { _roots, advance, createRoot, extend, useFrame, type ReconcilerRoot, type RootState } from '@react-three/fiber'
-import { type BufferGeometry, type Material, Mesh, NoToneMapping, type Object3D, type PerspectiveCamera, SRGBColorSpace, type Texture, Vector3, type Vector4 } from 'three'
+import { type BufferGeometry, type Material, Mesh, NoToneMapping, type PerspectiveCamera, SRGBColorSpace, type Texture, Vector3, type Vector4 } from 'three'
 import { damp, motion, setEngine, subscribe, wake } from '@/components/motion/loop'
 import { CAMP_ORDER, CAMP_XZ } from '@/lib/terrain'
-import { CAMPS, ROI, TRAILHEAD_MAP } from './route'
+import { CAMPS, ROI, TRAILHEAD_MAP, smoothstep } from './route'
 import { routeState } from './topo-state'
 import { CameraRig, FOV } from './scene/camera'
-import { GpuTimer, Governor, dprCap } from './scene/governor'
+import { GpuTimer, Governor, dprCap, isWeakGpu, noteGpu } from './scene/governor'
 import { createRibbon, routeAt } from './scene/ribbon'
 import { COLORS } from './scene/shaders'
-import { type TerrainBuild, buildTerrain, createTerrainMaterial } from './scene/terrain'
+import { type TerrainBuild, buildTerrain, createBackdrop, createSky, createTerrainMaterial } from './scene/terrain'
 
 // Lean root: only the one element the JSX uses is registered (no <Canvas>, no full namespace).
 extend({ Mesh })
 
-/** Terrain segments per governor level: 256² (≈66k vertices), then 160². */
-const SEGMENTS = [256, 160] as const
+/** Terrain segments: 256² (≈66k vertices). The map is fill-bound, so steps trade pixels, not vertices. */
+const SEGMENTS = 256
+/** Governor steps scale the pixel ratio: full, then 80 %, then 64 % (then the SVG map). */
+const DPR_STEPS = [1, 0.8, 0.64] as const
+/** Ambient frame interval (mist, clouds, drift) while nothing is being scrolled or pointed at. */
+const AMBIENT_MS = { strong: 33, weak: 50 } as const
 /** Distance haze, as multiples of the camera distance: starts just past the target, paper by 2.6×. */
 const FOG = { near: 0.95, far: 2.6 } as const
 /** How long pins and the route head glide from the poster to the 3D map. */
@@ -58,13 +62,14 @@ type Host = {
  * projects the five camps and the route head and moves the DOM pins onto them.
  */
 class Controller {
-  readonly terrainMaterial = createTerrainMaterial()
+  private readonly backdrop = createBackdrop()
+  readonly sky = createSky(this.backdrop)
+  readonly terrainMaterial = createTerrainMaterial(this.backdrop)
+  private glowAt = 0
   readonly ribbon: ReturnType<typeof createRibbon>
   terrainGeometry: BufferGeometry
   /** Height on the built grid (what the triangles show): pins, the ribbon and the head sit on it. */
   private readonly ground: TerrainBuild['sample']
-  /** A coarser terrain waiting to be swapped in on the next frame (governor step 2). */
-  private pendingGeometry: BufferGeometry | null = null
   private readonly rig = new CameraRig()
   private readonly gov: Governor
   private readonly glow = [0, 0, 0, 0, 0]
@@ -136,6 +141,8 @@ class Controller {
     this.terrainMaterial.dispose()
     this.ribbon.geometry.dispose()
     this.ribbon.material.dispose()
+    this.sky.geometry.dispose()
+    this.sky.material.dispose()
     const dom = routeState.dom
     if (dom) {
       for (const pin of dom.pins) {
@@ -159,53 +166,49 @@ class Controller {
       if (this.dead) return
       this.measure()
       this.host.setSize(this.w, this.h)
-      this.host.setDpr(this.gov.level >= 1 ? 1 : dprCap())
+      this.host.setDpr(dprCap(DPR_STEPS[Math.min(this.gov.level, DPR_STEPS.length - 1)]))
       wake()
     }, 150)
   }
 
-  /** Governor steps: 1 → DPR 1, 2 → coarser terrain, 3 → back to the SVG map for good. */
+  /** Governor steps: 1 → 80 % pixels, 2 → 64 %, 3 → back to the SVG map for good. No rebuilds, no hitches. */
   private step(level: number) {
-    if (level === 1) {
-      this.host.setDpr(1)
+    if (level < DPR_STEPS.length) {
+      this.host.setDpr(dprCap(DPR_STEPS[level]))
       this.sizeDirty = true
-    } else if (level === 2) {
-      // Rebuild coarser over the next frames (shadows are not free), then swap.
-      const build = buildTerrain(SEGMENTS[1])
-      const queue = [...build.steps]
-      const un = subscribe(() => {
-        if (this.dead) {
-          un()
-          build.geometry.dispose()
-          return
-        }
-        queue.shift()?.()
-        if (!queue.length) {
-          un()
-          this.pendingGeometry = build.geometry
-        }
-      })
     } else {
       this.host.retreat(true)
     }
   }
 
+  /** Full rate while the climb, the camera or the pointer is moving; a calm ambient rate otherwise. */
+  private activeUntil = 0
+  private lastRender = 0
+
   shouldRender = () => {
     if (this.dead || !this.visible || document.visibilityState !== 'visible') return false
-    // The land is alive (drifting cloud shadows, mist, the lantern): render every frame while on screen.
-    return true
+    const now = performance.now()
+    if (routeState.rev !== this.lastRev || this.moving || now - motion.lastInput < 400) this.activeUntil = now + 500
+    if (now < this.activeUntil || this.frames < 2 || this.sizeDirty) return true
+    return now - this.lastRender >= (isWeakGpu() ? AMBIENT_MS.weak : AMBIENT_MS.strong) - 4
   }
 
   frame = (state: RootState, delta: number) => {
     if (this.dead) return
     const camera = state.camera as PerspectiveCamera
     const dt = this.frames ? Math.min(Math.max(delta, 0), 1 / 20) : 0
-    this.gov.sample(performance.now(), this.host.timer.poll())
+    const now = performance.now()
+    // Only full-rate frames are timed: ambient frames are slow on purpose.
+    if (now < this.activeUntil) this.gov.sample(now, this.host.timer.poll())
+    else {
+      this.gov.pause()
+      this.host.timer.poll()
+    }
+    this.lastRender = now
     if (this.sizeDirty) {
       this.frameView(camera)
       this.sizeDirty = false
     }
-    if (this.pendingGeometry) this.swapTerrain(state.scene, this.pendingGeometry)
     this.lastRev = routeState.rev
     this.time += dt
     // Pointer parallax: only a fine pointer over the stage leans the view.
@@ -247,23 +250,22 @@ class Controller {
     const ringU = tu.uRing.value as Vector3
     ringU.set(at?.x ?? 0, at?.z ?? 0, at ? this.ring : 0)
 
+    // Sunrise behind the summit: rises over the last camp and stays through the outro.
+    const want = smoothstep(0.62, 0.92, routeState.uS)
+    this.glowAt = dt ? damp(this.glowAt, want, 2, dt) : want
+    const bg = this.backdrop.uBg.value
+    if (this.glowAt > 0.002) {
+      const dpr = state.gl.getPixelRatio()
+      this.v.copy(this.anchors[this.anchors.length - 1]).project(camera)
+      bg.set(((this.v.x + 1) / 2) * this.w * dpr, ((this.v.y + 1) / 2) * this.h * dpr + this.h * dpr * 0.16, this.h * dpr * 0.42, this.glowAt)
+    } else bg.w = 0
+
     this.host.timer.begin()
     state.gl.render(state.scene, camera)
     this.host.timer.end()
     this.frames++
     this.placeDom(camera)
     if (this.frames === 1) this.host.live()
-  }
-
-  private swapTerrain(scene: Object3D, next: BufferGeometry) {
-    const old = this.terrainGeometry
-    scene.traverse((o) => {
-      const mesh = o as Mesh
-      if (mesh.isMesh && mesh.geometry === old) mesh.geometry = next
-    })
-    this.terrainGeometry = next
-    this.pendingGeometry = null
-    old.dispose()
   }
 
   /** Aspect, plus a view offset that puts the look-at point where the poster centres its route. */
@@ -323,15 +325,17 @@ class Controller {
 
 type MeshesProps = {
   frame: Controller['frame']
+  sky: { geometry: BufferGeometry; material: Material }
   terrain: { geometry: BufferGeometry; material: Material }
   ribbon: { geometry: BufferGeometry; material: Material }
 }
 
-function Meshes({ frame, terrain, ribbon }: MeshesProps) {
+function Meshes({ frame, sky, terrain, ribbon }: MeshesProps) {
   // Priority 1 hands rendering to the controller (it renders, then places the DOM pins).
   useFrame(frame, 1)
   return (
     <>
+      <mesh geometry={sky.geometry} material={sky.material} renderOrder={-1} frustumCulled={false} />
       <mesh geometry={terrain.geometry} material={terrain.material} frustumCulled={false} />
       <mesh geometry={ribbon.geometry} material={ribbon.material} renderOrder={1} frustumCulled={false} />
     </>
@@ -389,12 +393,14 @@ export default function TopoScene(props: TopoSceneProps) {
       const store = _roots.get(canvas)?.store
       if (!store) throw new Error('R3F root missing after configure')
       const { gl, scene, camera } = store.getState()
+      // Weak GPUs start on a smaller pixel budget (known only now that the context exists).
+      if (noteGpu(gl.getContext() as WebGL2RenderingContext)) store.getState().setDpr(dprCap())
       gl.toneMapping = NoToneMapping
       gl.outputColorSpace = SRGBColorSpace
       gl.setClearColor(COLORS.paper, 1)
 
       // Heights in four chunks plus the index, one per frame, so no long task forms.
-      const build = buildTerrain(SEGMENTS[0])
+      const build = buildTerrain(SEGMENTS)
       for (const step of build.steps) {
         await nextFrame()
         if (cancelled) {
@@ -421,6 +427,7 @@ export default function TopoScene(props: TopoSceneProps) {
       root.render(
         <Meshes
           frame={ctl.frame}
+          sky={ctl.sky}
           terrain={{ geometry: ctl.terrainGeometry, material: ctl.terrainMaterial }}
           ribbon={ctl.ribbon}
         />,

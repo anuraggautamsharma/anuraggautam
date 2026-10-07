@@ -12,7 +12,7 @@ import {
   Vector4,
 } from 'three'
 import { TERRAIN } from '@/lib/terrain'
-import { COLORS, srgb, terrainFragment, terrainVertex } from './shaders'
+import { COLORS, skyFragment, skyVertex, srgb, terrainFragment, terrainVertex } from './shaders'
 import { RELIEF, SUN, gridSampler, occlusionAt, shadowAt, surfaceY } from './surface'
 
 const v3 = (hex: string) => new Vector3(...srgb(hex))
@@ -79,15 +79,35 @@ function noiseTexture() {
   return tex
 }
 
+/** Shared by the sky and the land: the paper and the sunrise glow behind the summit. */
+export function createBackdrop() {
+  return { uPaper: { value: v3(COLORS.paper) }, uBg: { value: new Vector4(0, 0, 1, 0) } }
+}
+
+/** A full-screen triangle drawn first, behind everything: the backdrop. */
+export function createSky(backdrop: ReturnType<typeof createBackdrop>) {
+  const geometry = new BufferGeometry()
+  geometry.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3))
+  const material = new ShaderMaterial({
+    vertexShader: skyVertex,
+    fragmentShader: skyFragment,
+    uniforms: { ...backdrop },
+    depthTest: false,
+    depthWrite: false,
+    toneMapped: false,
+  })
+  return { geometry, material }
+}
+
 /** One material for every terrain build: biomes, baked light, contours, camp glow, mist, fog. */
-export function createTerrainMaterial() {
+export function createTerrainMaterial(backdrop: ReturnType<typeof createBackdrop>) {
   return new ShaderMaterial({
     vertexShader: terrainVertex,
     fragmentShader: terrainFragment,
     uniforms: {
       uH: { value: RELIEF },
       uTime: { value: 0 },
-      uPaper: { value: v3(COLORS.paper) },
+      ...backdrop,
       uInk: { value: v3(COLORS.ink) },
       uIce: { value: v3(COLORS.ice) },
       uGlow: { value: v3(COLORS.glow) },
