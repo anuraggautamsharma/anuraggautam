@@ -1,6 +1,5 @@
 import 'server-only'
 import { SITE_URL, campById, newsletter, offers, pages, person, summitRoute } from '@/lib/site'
-import { ALT_MAX, ALT_MIN } from '@/lib/scorecard'
 import { upcomingEvents, EVENT_KIND_LABEL } from '@/lib/events'
 import { newsletterReady } from '@/lib/newsletter'
 import { publishedWatchPages, watchMarkdownPath } from '@/lib/videos'
@@ -29,7 +28,6 @@ export function llmsCorePages() {
     '## Core pages',
     `- [About ${person.name}](${SITE_URL}/about): canonical bio, timeline, facts`,
     `- [The Summit Route: GTM consulting method](${SITE_URL}/method): the five camps, engagement formats (${offers.map((o) => o.name).join(', ')}), FAQ`,
-    `- [Summit Route Scorecard](${SITE_URL}/scorecard): a free 10-statement self-assessment of a company's go-to-market`,
     `- [Field Notes](${SITE_URL}/writing): essays and papers on taking complex technology to market`,
     `- [The Rope Team](${SITE_URL}/community): a community for founders and GTM leads taking hard tech to market (founding stage)`,
     `- [Start here](${SITE_URL}/start): three ways in, by what the reader needs today`,
@@ -40,11 +38,10 @@ export function llmsCorePages() {
 const isoDay = (iso: string) => iso.slice(0, 10)
 
 /**
- * The v3 sections (PLAN_V3 §8): Field Notes by email, the Scorecard, the community and its
+ * The v3 sections (PLAN_V3 §8): Field Notes by email, the community and its
  * current status, and video transcripts. Status lines say only what is true today.
  */
 export function llmsSections() {
-  const sc = pages.scorecard
   const cm = pages.community
   const events = upcomingEvents()
   const videos = publishedWatchPages()
@@ -58,13 +55,6 @@ export function llmsSections() {
     open
       ? '- Status: open.'
       : `- Status: email sign-up is not open yet. Every note is in the RSS feed: ${SITE_URL}/rss.xml`,
-    '',
-    `## ${sc.kicker}`,
-    `- [${sc.kicker}](${SITE_URL}/scorecard): ${sc.questions.length} statements, two per camp of the Summit Route, each answered ${sc.scale.map((s, i) => `${s} (${i})`).join(', ')}.`,
-    `- The total (0–${sc.questions.length * 2}) maps to an altitude from ${ALT_MIN.toLocaleString('en-US')} M to ${ALT_MAX.toLocaleString('en-US')} M. Each camp reads ${sc.states.stalled} (0–1), ${sc.states.climbing} (2–3) or ${sc.states.clear} (4). The lowest-scoring camp (ties go to the earlier camp) is the company's stall.`,
-    '- Answers stay in the page URL; nothing is sent to a server.',
-    '- Statements:',
-    ...sc.questions.map((q, i) => `  ${i + 1}. (${campById(q.camp).name}) ${q.q}`),
     '',
     `## Community: ${cm.kicker}`,
     `- [${cm.kicker}](${SITE_URL}/community): ${cm.line}`,

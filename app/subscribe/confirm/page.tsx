@@ -82,8 +82,8 @@ export default async function ConfirmPage({
     return (
       <>
         <PageHero photo="notes-forest-path" kicker={kicker} title={c.done} line={c.doneLine} height="tall" align="bottom-left" alt={alt}>
-          <ButtonLink href="/scorecard" variant="photo" size="lg">
-            {newsletter.email.scorecardCta}
+          <ButtonLink href="/writing" variant="photo" size="lg">
+            {newsletter.email.notesCta}
           </ButtonLink>
         </PageHero>
         {fallback.length ? (

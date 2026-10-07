@@ -30,7 +30,7 @@ function buttonFor(variant: SubscribeVariant, source: SubscribeSource, intent: S
 /**
  * Field Notes sign-up: the one component every placement uses (PLAN_V3 §4).
  *
- * - `row`: a mono caption, one line and the form in a band (home, /start, /scorecard).
+ * - `row`: a mono caption, one line and the form in a band (home, /start).
  * - `card`: a sand panel with a heading, for the end of articles, /writing and /watch.
  * - `night`: ice on night with an ember dot, for the footer.
  * - `page`: the big instrument for /subscribe and the /community waitlists (`intent`).

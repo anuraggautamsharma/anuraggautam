@@ -25,7 +25,6 @@ const SOURCES = [
   'subscribe',
   'start',
   'community',
-  'scorecard',
   'contact',
   'watch',
 ] as const satisfies readonly SubscribeSource[]

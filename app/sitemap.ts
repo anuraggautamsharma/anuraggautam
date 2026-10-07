@@ -30,7 +30,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/method`, lastModified: site.updated },
     { url: `${SITE_URL}/about`, lastModified: site.updated },
     { url: `${SITE_URL}/contact`, lastModified: site.updated },
-    { url: `${SITE_URL}/scorecard`, lastModified: site.updated },
     { url: `${SITE_URL}/community`, lastModified: site.updated },
     { url: `${SITE_URL}/start`, lastModified: site.updated },
     { url: `${SITE_URL}/subscribe`, lastModified: newest },

@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
     // Browsers and crawlers still ask for /favicon.ico; the generated 32px app/icon answers it.
     return [
       { source: '/gtm', destination: '/method', permanent: true },
+      // The Scorecard was retired: consulting starts with a conversation.
+      { source: '/scorecard', destination: '/contact', permanent: true },
       { source: '/favicon.ico', destination: '/icon/32', permanent: false },
     ]
   },

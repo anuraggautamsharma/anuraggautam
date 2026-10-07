@@ -109,7 +109,7 @@ export function alreadyEmail({ base = SITE_URL }: { base?: string } = {}): Email
   return { subject: e.alreadySubject, html: shell(body, { preview: e.alreadyLine }), text }
 }
 
-/** After confirming: the best notes, the Scorecard, and the one question. */
+/** After confirming: the best notes, a link to all of them, and the one question. */
 export function welcomeEmail({
   notes,
   base = SITE_URL,
@@ -121,7 +121,7 @@ export function welcomeEmail({
 }): Email {
   const c = newsletter.confirm
   const e = newsletter.email
-  const scorecard = abs('/scorecard', base)
+  const notesUrl = abs('/writing', base)
   const list = notes.length
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;border-top:2px solid ${C.ink}">${notes
         .map(
@@ -136,7 +136,7 @@ export function welcomeEmail({
     h1(c.done),
     notes.length ? p(c.doneLine) : '',
     list,
-    button(scorecard, e.scorecardCta),
+    button(notesUrl, e.notesCta),
     rule,
     p(e.welcomeAsk),
     p(`– ${LINES.signoff}`),
@@ -145,7 +145,7 @@ export function welcomeEmail({
     c.done,
     '',
     ...(notes.length ? [c.doneLine, '', ...notes.map((n, i) => `${i + 1}. ${n.title}\n   ${abs(n.path, base)}`), ''] : []),
-    `${e.scorecardCta}: ${scorecard}`,
+    `${e.notesCta}: ${notesUrl}`,
     '',
     e.welcomeAsk,
     '',

@@ -184,9 +184,6 @@ body:has(#main > :nth-last-child(1 of :not(script, template, style)):not(.photo-
 /* Pages that end on the Summit, the contact form or an article's closing plate already close with a CTA. */
 body:has(#summit, .wo-form, .wr-cta) .ft-signoff { display: none; }
 body:has(#summit, .wo-form, .wr-cta) .ft-camp { padding-block-start: 0; }
-/* A finished Scorecard ends on "Book a Recon": the hire sign-off would be a second orange ask. */
-body:has(.sc-result) .ft-signoff { display: none; }
-body:has(.sc-result) .ft-camp { padding-block-start: 0; }
 /* While email sign-up is closed, a page says "opens soon" once: when <main> already shows a
    closed form, the footer drops its copy (and the whole row when no Campfire sign shares it). */
 body:has(#main .sb:not([data-ready])) .ft-camp:not([data-event]) { display: none; }

@@ -3,7 +3,7 @@ import type { StaticImageData } from 'next/image'
 // Static imports give width, height and blurDataURL at build time. Three spares in
 // assets/nature stay unimported, so they never ship. v3 promotes three: spare-terrain-golden
 // ('guide-ridge' and 'community-golden'), spare-hero-matterhorn ('start-matterhorn') and
-// spare-market-panorama ('scorecard-panorama').
+// spare-market-panorama (unused).
 import basecampHero from '@/assets/nature/basecamp-hero.jpg'
 import basecampHeroM from '@/assets/nature/m/basecamp-hero-m.jpg'
 import terrainFog from '@/assets/nature/terrain-fog.jpg'
@@ -12,7 +12,6 @@ import routeValley from '@/assets/nature/route-valley.jpg'
 import guideTrail from '@/assets/nature/guide-trail.jpg'
 import guideRidge from '@/assets/nature/spare-terrain-golden.jpg'
 import startMatterhorn from '@/assets/nature/spare-hero-matterhorn.jpg'
-import scorecardPanorama from '@/assets/nature/spare-market-panorama.jpg'
 import summitGolden from '@/assets/nature/summit-golden.jpg'
 import summitGoldenM from '@/assets/nature/m/summit-golden-m.jpg'
 import notesForestPath from '@/assets/nature/notes-forest-path.jpg'
@@ -43,7 +42,7 @@ export type PhotoId =
   | 'waypoint-position' | 'waypoint-price' | 'waypoint-market' | 'waypoint-systems' | 'waypoint-team'
   | 'expedition-canyon' | 'expedition-ice-cave' | 'expedition-aurora' | 'expedition-alpine-lake'
   | 'hero-gtm' | 'hero-about' | 'hero-contact' | 'hero-writing' | 'hero-404'
-  | 'community-golden' | 'start-matterhorn' | 'scorecard-panorama'
+  | 'community-golden' | 'start-matterhorn'
 
 /** A rectangle in fractions of the image (0–1), where text is allowed to sit. */
 export type Zone = { x: number; y: number; w: number; h: number }
@@ -464,24 +463,6 @@ export const photos: Record<PhotoId, NaturePhoto> = {
       creator: 'Sam Ferrara',
       title: 'Matterhorn sunset 2016 (Unsplash)',
       sourcePage: commons('Matterhorn_sunset_2016_%28Unsplash%29.jpg'),
-      license: 'CC0 1.0',
-    },
-  },
-  'scorecard-panorama': {
-    id: 'scorecard-panorama',
-    src: scorecardPanorama,
-    alt: 'Banded rhyolite mountains above a wide green meadow in the Icelandic highlands, under a blue sky',
-    focal: '45% 50%',
-    dominant: '#796d40',
-    tone: 'photo',
-    scrim: { side: 'bottom', rgb: '34 40 14', a: 0.8, aPortrait: 0.82, reach: 1.25, reachPortrait: 1.3 },
-    headerScrim: 'strong', // bright sky under the wordmark
-    zone: { x: 0.04, y: 0.6, w: 0.5, h: 0.34 },
-    zonePortrait: { x: 0.05, y: 0.55, w: 0.9, h: 0.38 },
-    credit: {
-      creator: 'Quinn Nietfeld',
-      title: 'Meadow in the Icelandic mountains (Unsplash)',
-      sourcePage: commons('Meadow_in_the_Icelandic_mountains_%28Unsplash%29.jpg'),
       license: 'CC0 1.0',
     },
   },

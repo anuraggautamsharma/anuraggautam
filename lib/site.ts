@@ -238,7 +238,8 @@ export const chapters = {
   summit: { n: '08', name: 'Summit', alt: '5,600 M' },
 } as const
 
-const CTA_CLIMB = 'Start the climb'
+// The one primary action everywhere: a conversation (no quizzes, no lead magnets).
+const CTA_CLIMB = 'Book a call'
 
 const fitChips = ['AI', 'Physical AI', 'Robotics', 'Infra', 'Dev tools', 'Hardware']
 
@@ -270,8 +271,8 @@ export const home: {
     h1: 'You built something the world hasn’t seen yet.',
     line: 'I take complex tech to market: positioning, pricing, pipeline, systems and team.',
     cta: CTA_CLIMB,
-    cta2: 'Score your route',
-    cta2Href: '/scorecard',
+    cta2: 'See the route',
+    cta2Href: '#route',
     cue: 'Scroll to climb',
   },
   terrain: {
@@ -464,7 +465,6 @@ export type SubscribeSource =
   | 'subscribe'
   | 'start'
   | 'community'
-  | 'scorecard'
   | 'contact'
   | 'watch'
 export type SubscribeVariant = 'row' | 'card' | 'night' | 'page'
@@ -555,7 +555,7 @@ export const newsletter = {
     welcomeSubject: 'You’re on the rope',
     welcomeAsk: 'Reply and tell me: what are you taking to market right now?',
     readCta: 'Read the note',
-    scorecardCta: 'Score your route',
+    notesCta: 'Read Field Notes',
     unsubscribe: 'Unsubscribe',
   },
 }
@@ -764,7 +764,7 @@ export const pages = {
         h: 'I’m taking hard tech to market.',
         cta: 'See how I work',
         href: '/method',
-        alt: { label: 'Score your route', href: '/scorecard' },
+        alt: { label: 'Book a call', href: '/contact' },
         photo: 'route-valley',
       },
       { id: 'learn', h: 'I want to get better at GTM.', cta: 'Read the field notes', href: '/writing', photo: 'notes-forest-path' },
@@ -776,48 +776,6 @@ export const pages = {
     whoCta: 'More about me',
   },
 
-  /**
-   * /scorecard: the Summit Route Scorecard (≤ 260 words). Ten statements, two per camp, scored
-   * 0/1/2. Answers live only in the URL hash; nothing is sent anywhere.
-   */
-  scorecard: {
-    photo: 'scorecard-panorama',
-    alt: '1,250 M',
-    kicker: 'Summit Route Scorecard',
-    title: 'How high is your GTM?',
-    line: 'Ten statements. Two minutes. Find the camp where you’re stuck.',
-    // Not "Start the climb": that label is the site-wide hire CTA (/contact), shown on this page too.
-    start: 'Score your route',
-    scale: ['Not yet', 'Partly', 'Yes'],
-    next: 'Next camp',
-    back: 'Back',
-    see: 'See my altitude',
-    progress: 'Statement',
-    resultH: 'Your altitude',
-    stallH: 'Your stall',
-    states: { stalled: 'Stalled', climbing: 'Climbing', clear: 'Clear' },
-    /** Shown instead of a stall when every camp is clear. */
-    summit: 'Every camp is clear. Keep the rope tight.',
-    cta: 'Book a Recon',
-    ctaLine: 'Two weeks. One page: the three moves that matter most.',
-    campLink: 'Read about this camp',
-    retake: 'Retake',
-    share: 'Copy link to result',
-    copied: 'Link copied',
-    privacy: 'Your answers stay in this page’s link. Nothing is sent anywhere.',
-    questions: [
-      { camp: 'position', q: 'A buyer can repeat what you do, in one sentence, after one call.' },
-      { camp: 'position', q: 'You can name the buyer who feels the pain most, and why now.' },
-      { camp: 'price', q: 'Your price is anchored to the value you create, not to cost or a rival.' },
-      { camp: 'price', q: 'Deals close without a discount deciding them.' },
-      { camp: 'market', q: 'Qualified meetings arrive every week without the founder sourcing them.' },
-      { camp: 'market', q: 'You know which signals mean an account is ready to buy.' },
-      { camp: 'systems', q: 'Pilots start with written success criteria and a path to contract.' },
-      { camp: 'systems', q: 'Your CRM shows where every deal stalls, without asking anyone.' },
-      { camp: 'team', q: 'Someone other than the founder closed a deal this quarter.' },
-      { camp: 'team', q: 'A new seller could run your playbook from what’s written down.' },
-    ],
-  },
 
   /** /watch and /watch/[slug]. These routes 404 until a real video exists. */
   watch: {
@@ -877,11 +835,6 @@ export const pageMeta = {
     title: 'Start Here',
     description: 'Three ways in: work with me on your go-to-market, read the field notes, or join the Rope Team. Pick the one that fits today.',
   },
-  scorecard: {
-    title: 'Summit Route Scorecard',
-    description:
-      'Ten statements, two minutes. Score your go-to-market across five camps, see your altitude and find the camp where you’re stuck.',
-  },
   watch: {
     title: 'Watch: GTM Teardowns',
     description: 'Route Teardowns, Trail Builds and Summit Talks: videos on taking hard tech to market, each with a full transcript.',
@@ -918,7 +871,6 @@ export const footer = {
   cols: { route: 'How I work', notes: 'Field Notes', community: 'Community', about: 'About' },
   links: {
     summitRoute: 'The Summit Route',
-    scorecard: 'Score your route',
     workshop: 'Team workshop',
     allNotes: 'All notes',
     /** Only when a video exists. */
@@ -940,7 +892,6 @@ export const footer = {
   },
   /** Hrefs for the links above that aren't obvious from the label. */
   hrefs: {
-    scorecard: '/scorecard',
     workshop: '/contact?type=workshop',
     subscribe: '/subscribe',
     watch: '/watch',

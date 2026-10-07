@@ -41,7 +41,7 @@ const essays: Essay[] = allPosts
 type Search = { [key: string]: string | string[] | undefined }
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)
 
-/** `?type=workshop&stuck=pricing&source=scorecard` (from /scorecard, /community, /method links). Unknown values are dropped. */
+/** `?type=workshop&stuck=pricing&source=community` (from /community and /method links). Unknown values are dropped. */
 function readPrefill(q: Search): Prefill {
   const type = first(q.type)
   const stuck = (Array.isArray(q.stuck) ? q.stuck : q.stuck ? q.stuck.split(',') : []).filter(isStuck)

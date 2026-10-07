@@ -36,7 +36,6 @@ export async function Footer() {
       links: [
         { label: footer.links.summitRoute, href: '/method', page: true },
         ...camps.map((c) => ({ label: c.name, href: `/method#${c.id}`, page: true })),
-        { label: footer.links.scorecard, href: footer.hrefs.scorecard, page: true },
         { label: footer.links.workshop, href: footer.hrefs.workshop, page: true },
       ],
     },

@@ -208,7 +208,7 @@ export function profilePage(path = '/about') {
 /* ───────────── v3 helpers (PLAN_V3 §8) ───────────── */
 
 /**
- * A plain WebPage node for the v3 pages (/community, /start, /subscribe, /scorecard), with
+ * A plain WebPage node for the v3 pages (/community, /start, /subscribe), with
  * its breadcrumb. `name` is the page's own title, without the site suffix.
  */
 export function webPageJsonLd({ path, name, description }: { path: string; name: string; description: string }) {

@@ -12,7 +12,7 @@ export const TYPE_LABELS: Record<WorkType, string> = {
 }
 export const isWorkType = (v: unknown): v is WorkType => typeof v === 'string' && (TYPE_VALUES as readonly string[]).includes(v)
 
-/** `?source=` is a flat attribution slug (e.g. "scorecard"); anything else is dropped. */
+/** `?source=` is a flat attribution slug (e.g. "community"); anything else is dropped. */
 export const cleanSource = (v: unknown): string | null =>
   typeof v === 'string' && /^[a-z0-9][a-z0-9-]{0,31}$/.test(v) ? v : null
 
