@@ -300,10 +300,9 @@
   }
   html[data-js]:not([data-motion="reduced"]) .route-head-in { position: relative; padding-block-start: var(--beat-top); }
   html[data-js]:not([data-motion="reduced"]) .route-head-in::before { /* paper veil, so the heading never sits on dark ground */
-    content: ""; position: absolute; z-index: -1; inset: 0 auto -30% 0; inline-size: min(60rem, 62%);
-    background: linear-gradient(to right, rgb(var(--veil-rgb) / .97) 0%, rgb(var(--veil-rgb) / .9) 42%, rgb(var(--veil-rgb) / .55) 68%, rgb(var(--veil-rgb) / 0) 100%);
-    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
-    mask-image: linear-gradient(to bottom, #000 70%, transparent);
+    content: ""; position: absolute; z-index: -1; inset: -35% auto -45% calc(-1 * var(--margin) - 8rem); inline-size: min(78rem, 92%);
+    /* closest-side: the haze reaches zero inside its own box, so no edge ever shows. */
+    background: radial-gradient(closest-side, rgb(var(--veil-rgb) / .9), rgb(var(--veil-rgb) / .72) 45%, rgb(var(--veil-rgb) / 0));
     pointer-events: none;
   }
   html[data-js]:not([data-motion="reduced"]) .route-title { max-inline-size: 13ch; }

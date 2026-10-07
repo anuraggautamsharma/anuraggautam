@@ -3,7 +3,7 @@
 
 import { useEffect, useRef } from 'react'
 import { _roots, advance, createRoot, extend, useFrame, type ReconcilerRoot, type RootState } from '@react-three/fiber'
-import { type BufferGeometry, type Material, Mesh, NoToneMapping, type PerspectiveCamera, SRGBColorSpace, type Texture, Vector3, type Vector4 } from 'three'
+import { type BufferGeometry, type Material, Mesh, NoToneMapping, type Matrix4, type PerspectiveCamera, SRGBColorSpace, type Texture, Vector3, type Vector4 } from 'three'
 import { damp, motion, setEngine, subscribe, wake } from '@/components/motion/loop'
 import { CAMP_ORDER, CAMP_XZ } from '@/lib/terrain'
 import { CAMPS, ROI, TRAILHEAD_MAP, smoothstep } from './route'
@@ -23,8 +23,8 @@ const SEGMENTS = 256
 const DPR_STEPS = [1, 0.8, 0.64, 0.5] as const
 /** Ambient frame interval (mist, clouds, drift) while nothing is being scrolled or pointed at. */
 const AMBIENT_MS = { strong: 33, weak: 50 } as const
-/** Distance haze, as multiples of the camera distance: starts just past the target, paper by 2.6×. */
-const FOG = { near: 0.95, far: 2.6 } as const
+/** Aerial haze: clear up to 0.55× the camera distance, then exponential (per world unit). */
+const FOG = { clear: 0.55, density: 0.034 } as const
 /** How long pins and the route head glide from the poster to the 3D map. */
 const ENTER_MS = 450
 
@@ -113,7 +113,6 @@ class Controller {
     this.terrainGeometry = build.geometry
     this.ground = build.sample
     this.ribbon = createRibbon(build.sample)
-    this.ribbon.material.uniforms.uRes = this.backdrop.uRes
     this.anchors = CAMP_ORDER.map((id) => {
       const [x, z] = CAMP_XZ[id]
       return new Vector3(x, build.sample(x, z) + 0.02, z)
@@ -236,7 +235,8 @@ class Controller {
     const lantern = tu.uHead.value as Vector4
     lantern.set(this.head.x, this.head.z, routeState.uS > 0.002 && routeState.uS < 0.998 ? 1 : 0, 0)
     const dist = this.rig.distance
-    tu.uFog.value.set(dist * FOG.near, dist * FOG.far)
+    tu.uFog.value.set(dist * FOG.clear, FOG.density)
+    ;(this.backdrop.uInvViewProj.value as Matrix4).multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).invert()
     const camps = tu.uCamps.value as Vector4[]
     const a = routeState.active
     this.glowing = false
@@ -402,7 +402,7 @@ export default function TopoScene(props: TopoSceneProps) {
         frameloop: 'never',
         flat: true,
         gl: { antialias: dpr <= 1, alpha: false, stencil: false, depth: true, powerPreference: 'default' },
-        camera: { fov: FOV, near: 0.1, far: 100, position: [0, 12, 16], manual: true },
+        camera: { fov: FOV, near: 0.1, far: 320, position: [0, 12, 16], manual: true },
       })
       if (cancelled) return
       // The store exists once configured; reading it here keeps the first render synchronous.

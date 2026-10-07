@@ -12,7 +12,7 @@ const SHARPEN = 1.18
 const CARVE = 0.42
 /** The direction the light comes from: low, from the south-west, behind the viewer's left. */
 export const SUN: readonly [number, number, number] = (() => {
-  const v = [-0.72, 0.36, 0.6]
+  const v = [-0.72, 0.5, 0.6]
   const l = Math.hypot(v[0], v[1], v[2])
   return [v[0] / l, v[1] / l, v[2] / l] as const
 })()
@@ -89,26 +89,98 @@ export function surfaceY(x: number, z: number) {
   return base * RELIEF - gully + rough
 }
 
-/** The baked mesh data: a (segments + 1)² grid over the 10 × 10 plane. */
-export type SurfaceGrid = {
-  n: number
-  size: number
-  y: Float32Array
-  /** Bilinear height on the grid (what the triangles show), world units. */
-  sample: (x: number, z: number) => number
+// ── The world around the island ─────────────────────────────────────────────────────────
+
+/** Half-size of the world square (world units). The island is the central 10 × 10. */
+export const WORLD = 72
+
+function fbm2(x: number, y: number) {
+  let s = 0
+  let a = 0.5
+  let f = 1
+  for (let o = 0; o < 4; o++) {
+    s += a * vnoise(x * f + o * 31.7, y * f - o * 12.3)
+    a *= 0.5
+    f *= 2.03
+  }
+  return s / 0.9375
 }
 
-export function gridSampler(n: number, y: Float32Array) {
-  const size = TERRAIN.size
-  const half = size / 2
-  const seg = n - 1
+/**
+ * Beyond the island: rolling foothills near it, rising into great ranges towards the horizon
+ * (a ring of peaks 18–60 units out), so every view is land to the edges with a skyline.
+ */
+function outerY(x: number, z: number) {
+  const r = Math.hypot(x + 0.2, z - 0.3)
+  const hills = fbm2(x * 0.16 + 4.1, z * 0.16 - 2.7)
+  const wx = vnoise(x * 0.05 + 9.2, z * 0.05) - 0.5
+  const wz = vnoise(x * 0.05, z * 0.05 - 6.6) - 0.5
+  const range = ridged(x * 0.11 + wx * 2.2, z * 0.11 + wz * 2.2)
+  const rise = smooth(16, 40, r)
+  // Valleys around the island stay low and green (and meet its rim level); the skyline ranges
+  // rise far off, where the haze turns them into blue silhouettes.
+  const near = smooth(5, 12, r)
+  // Forested ridges ring the valley the mountain stands in.
+  const ridges = ridged(x * 0.24 + wx * 1.4 + 3.3, z * 0.24 + wz * 1.4 - 1.9) * smooth(6, 13, r) * (1 - smooth(22, 36, r))
+  return 0.12 + hills * (0.12 + 0.45 * near) + ridges * 1.05 + rise * (range * 5.2 - 0.4) + smooth(40, 70, r) * 1.6
+}
+
+/** Land-cover mottling (broad patches), baked per vertex. */
+export const mottleAt = (x: number, z: number) => fbm2(x * 2.2, z * 2.2)
+
+/** World height anywhere: the island (exactly as before) blended into the outer world at its rim. */
+export function worldY(x: number, z: number) {
+  // A rounded-square rim with a ragged edge, so no straight seam shows where the two meet.
+  const ax = Math.abs(x)
+  const az = Math.abs(z)
+  const edge = Math.pow(Math.pow(ax, 6) + Math.pow(az, 6), 1 / 6) + (vnoise(x * 0.7, z * 0.7) - 0.5) * 0.5
+  if (edge <= 3.1) return surfaceY(x, z)
+  const w = smooth(3.1, 4.9, edge)
+  return surfaceY(Math.max(-5, Math.min(5, x)), Math.max(-5, Math.min(5, z))) * (1 - w) + outerY(x, z) * w
+}
+
+/**
+ * Grid coordinates along one axis: uniform over the island (`segments` cells across 10 units),
+ * then cells growing outward (4 % through the valley, 9 % beyond) to the world's edge, so detail sits where the climb is.
+ */
+export function axisCoords(segments: number) {
+  const half = TERRAIN.size / 2
+  const cell = TERRAIN.size / segments
+  const out: number[] = []
+  let step = cell
+  let x = half
+  while (x < WORLD) {
+    // Gentle growth through the valley and its ridges, faster towards the hazy horizon.
+    step *= x < 16 ? 1.04 : 1.09
+    x += step
+    out.push(Math.min(x, WORLD))
+  }
+  const inner = Array.from({ length: segments + 1 }, (_, i) => -half + cell * i)
+  return Float64Array.from([...out.map((v) => -v).reverse(), ...inner, ...out])
+}
+
+/** Bilinear height on the (non-uniform) grid: what the triangles show. */
+export function gridSampler(xs: Float64Array, y: Float32Array) {
+  const n = xs.length
+  const lo = xs[0]
+  const hi = xs[n - 1]
+  const find = (v: number) => {
+    let a = 0
+    let b = n - 1
+    while (b - a > 1) {
+      const m = (a + b) >> 1
+      if (xs[m] <= v) a = m
+      else b = m
+    }
+    return a
+  }
   return (x: number, z: number) => {
-    const fx = Math.min(seg - 1e-6, Math.max(0, ((x + half) / size) * seg))
-    const fz = Math.min(seg - 1e-6, Math.max(0, ((z + half) / size) * seg))
-    const i = Math.floor(fx)
-    const j = Math.floor(fz)
-    const u = fx - i
-    const v = fz - j
+    const cx = Math.min(hi - 1e-6, Math.max(lo, x))
+    const cz = Math.min(hi - 1e-6, Math.max(lo, z))
+    const i = find(cx)
+    const j = find(cz)
+    const u = (cx - xs[i]) / (xs[i + 1] - xs[i])
+    const v = (cz - xs[j]) / (xs[j + 1] - xs[j])
     const o = j * n + i
     const a = y[o]
     const b = y[o + 1]
@@ -121,33 +193,36 @@ export function gridSampler(n: number, y: Float32Array) {
 /**
  * Soft sun shadow for one grid vertex: march towards the sun and keep the steepest
  * occluder angle. 1 = lit, 0 = in shadow, with a penumbra that widens with distance.
+ * `cell` is the local grid spacing: steps (and the reach) scale with it.
  */
 export function shadowAt(sample: (x: number, z: number) => number, x: number, y0: number, z: number, cell: number) {
   const hl = Math.hypot(SUN[0], SUN[2])
   const sx = SUN[0] / hl
   const sz = SUN[2] / hl
   const rise = SUN[1] / hl // ray climb per unit of horizontal travel
+  const far = cell > 0.06
   let step = cell * 0.9
   let d = step
   let worst = -1
-  for (let k = 0; k < 64 && d < 7; k++) {
+  for (let k = 0; k < (far ? 18 : 64) && d < (far ? 14 : 9); k++) {
     const px = x + sx * d
     const pz = z + sz * d
-    if (Math.abs(px) > 5 || Math.abs(pz) > 5) break
+    if (Math.abs(px) > WORLD || Math.abs(pz) > WORLD) break
     const h = sample(px, pz)
     const ray = y0 + 0.012 + d * rise
     const occ = (h - ray) / d
     if (occ > worst) worst = occ
     d += step
-    step *= 1.07
+    step *= far ? 1.18 : 1.07
   }
   return 1 - smooth(-0.035, 0.07, worst)
 }
 
 /** Ambient occlusion from the height difference to rings of neighbours (cavities darken, crests open up). */
-export function occlusionAt(sample: (x: number, z: number) => number, x: number, y0: number, z: number) {
+export function occlusionAt(sample: (x: number, z: number) => number, x: number, y0: number, z: number, cell: number) {
   let occ = 0
-  const radii = [0.09, 0.24, 0.55]
+  const k = Math.max(1, cell / 0.039)
+  const radii = [0.09 * k, 0.24 * k, 0.55 * k]
   for (let ri = 0; ri < radii.length; ri++) {
     const r = radii[ri]
     for (let a = 0; a < 8; a++) {

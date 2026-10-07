@@ -4,6 +4,7 @@ import {
   DataTexture,
   LinearFilter,
   LinearMipmapLinearFilter,
+  Matrix4,
   RepeatWrapping,
   RGBAFormat,
   ShaderMaterial,
@@ -11,9 +12,8 @@ import {
   Vector3,
   Vector4,
 } from 'three'
-import { TERRAIN } from '@/lib/terrain'
 import { COLORS, skyFragment, skyVertex, srgb, terrainFragment, terrainVertex } from './shaders'
-import { RELIEF, SUN, gridSampler, occlusionAt, shadowAt, surfaceY } from './surface'
+import { RELIEF, SUN, axisCoords, gridSampler, mottleAt, occlusionAt, shadowAt, worldY } from './surface'
 
 const v3 = (hex: string) => new Vector3(...srgb(hex))
 
@@ -79,9 +79,14 @@ function noiseTexture() {
   return tex
 }
 
-/** Shared by the sky and the land: the paper and the sunrise glow behind the summit. */
+/** Shared by the sky and the land: the sky's frame (ray, sun) and the sunrise glow behind the summit. */
 export function createBackdrop() {
-  return { uPaper: { value: v3(COLORS.paper) }, uBg: { value: new Vector4(0, 0, 1, 0) }, uRes: { value: new Vector2(1, 1) } }
+  return {
+    uBg: { value: new Vector4(0, 0, 1, 0) },
+    uRes: { value: new Vector2(1, 1) },
+    uInvViewProj: { value: new Matrix4() },
+    uSun: { value: new Vector3(...SUN) },
+  }
 }
 
 /** A full-screen triangle drawn first, behind everything: the backdrop. */
@@ -112,8 +117,7 @@ export function createTerrainMaterial(backdrop: ReturnType<typeof createBackdrop
       uIce: { value: v3(COLORS.ice) },
       uGlow: { value: v3(COLORS.glow) },
       uCore: { value: v3(COLORS.core) },
-      uSun: { value: new Vector3(...SUN) },
-      uFog: { value: new Vector2(12, 30) },
+      uFog: { value: new Vector2(8, 0.026) },
       uCamps: { value: Array.from({ length: 5 }, () => new Vector4()) },
       uRing: { value: new Vector3(0, 0, 0) },
       uHead: { value: new Vector4(0, 0, 0, 0) },
@@ -132,23 +136,24 @@ export type TerrainBuild = {
 }
 
 /**
- * The 10 × 10 surface as a (segments)² grid. Per vertex: position, a smooth normal, baked sun
- * shadow (aSun) and ambient occlusion (aAo). Work is split into short steps, one per frame,
- * so building never forms a long task.
+ * The world as one grid: the 10 × 10 island at `segments` cells across, then cells that grow
+ * outward to the horizon. Per vertex: position, a smooth normal, baked sun shadow (aSun) and
+ * ambient occlusion (aAo). Work is split into short steps, one per frame, so building never
+ * forms a long task.
  */
 export function buildTerrain(segments: number): TerrainBuild {
-  const n = segments + 1
-  const size = TERRAIN.size
-  const half = size / 2
-  const cell = size / segments
+  const xs = axisCoords(segments)
+  const n = xs.length
   const ys = new Float32Array(n * n)
   const pos = new Float32Array(n * n * 3)
   const nor = new Float32Array(n * n * 3)
   const sun = new Float32Array(n * n)
   const ao = new Float32Array(n * n)
+  const mot = new Float32Array(n * n)
   const geometry = new BufferGeometry()
-  const sample = gridSampler(n, ys)
+  const sample = gridSampler(xs, ys)
   const steps: (() => void)[] = []
+  const spacing = (i: number) => (xs[Math.min(n - 1, i + 1)] - xs[Math.max(0, i - 1)]) / 2
 
   const rows = (k: number, parts: number, fn: (j: number) => void) => () => {
     const per = Math.ceil(n / parts)
@@ -160,12 +165,13 @@ export function buildTerrain(segments: number): TerrainBuild {
   for (let k = 0; k < 4; k++)
     steps.push(
       rows(k, 4, (j) => {
-        const z = -half + cell * j
+        const z = xs[j]
         for (let i = 0; i < n; i++) {
-          const x = -half + cell * i
+          const x = xs[i]
           const o = j * n + i
-          const y = surfaceY(x, z)
+          const y = worldY(x, z)
           ys[o] = y
+          mot[o] = mottleAt(x, z)
           pos[o * 3] = x
           pos[o * 3 + 1] = y
           pos[o * 3 + 2] = z
@@ -173,46 +179,49 @@ export function buildTerrain(segments: number): TerrainBuild {
       }),
     )
 
-  // 2. Normals from central differences.
+  // 2. Normals from central differences (the grid spacing varies, so use the real distances).
   steps.push(() => {
     for (let j = 0; j < n; j++)
       for (let i = 0; i < n; i++) {
         const o = j * n + i
-        const l = ys[j * n + Math.max(0, i - 1)]
-        const r = ys[j * n + Math.min(n - 1, i + 1)]
-        const d = ys[Math.max(0, j - 1) * n + i]
-        const u = ys[Math.min(n - 1, j + 1) * n + i]
-        const nx = l - r
-        const nz = d - u
-        const ny = 2 * cell
-        const len = Math.hypot(nx, ny, nz) || 1
-        nor[o * 3] = nx / len
-        nor[o * 3 + 1] = ny / len
-        nor[o * 3 + 2] = nz / len
+        const i0 = Math.max(0, i - 1)
+        const i1 = Math.min(n - 1, i + 1)
+        const j0 = Math.max(0, j - 1)
+        const j1 = Math.min(n - 1, j + 1)
+        const gx = (ys[j * n + i1] - ys[j * n + i0]) / (xs[i1] - xs[i0])
+        const gz = (ys[j1 * n + i] - ys[j0 * n + i]) / (xs[j1] - xs[j0])
+        const len = Math.hypot(gx, 1, gz)
+        nor[o * 3] = -gx / len
+        nor[o * 3 + 1] = 1 / len
+        nor[o * 3 + 2] = -gz / len
       }
   })
 
-  // 3. Sun shadows and occlusion, in eight slices.
-  for (let k = 0; k < 8; k++)
+  // 3. Sun shadows and occlusion, in ten slices.
+  for (let k = 0; k < 10; k++)
     steps.push(
-      rows(k, 8, (j) => {
-        const z = -half + cell * j
+      rows(k, 10, (j) => {
+        const z = xs[j]
+        const cz = spacing(j)
         for (let i = 0; i < n; i++) {
-          const x = -half + cell * i
+          const x = xs[i]
           const o = j * n + i
+          const cell = Math.max(cz, spacing(i))
           sun[o] = shadowAt(sample, x, ys[o], z, cell)
-          ao[o] = occlusionAt(sample, x, ys[o], z)
+          ao[o] = occlusionAt(sample, x, ys[o], z, cell)
         }
       }),
     )
 
   // 4. Index and attributes.
   steps.push(() => {
-    const count = segments * segments * 6
-    const index = n * n > 65535 ? new Uint32Array(count) : new Uint16Array(count)
+    const cells = n - 1
+    const index = new Uint32Array(cells * cells * 6)
     let o = 0
-    for (let j = 0; j < segments; j++)
-      for (let i = 0; i < segments; i++) {
+    // Near rows first (the camera sits on the +z side): the depth test then skips the far land
+    // hidden behind them, instead of shading it and painting over it.
+    for (let j = cells - 1; j >= 0; j--)
+      for (let i = 0; i < cells; i++) {
         const a = j * n + i
         const b = a + 1
         const c = a + n
@@ -228,6 +237,7 @@ export function buildTerrain(segments: number): TerrainBuild {
     geometry.setAttribute('normal', new BufferAttribute(nor, 3))
     geometry.setAttribute('aSun', new BufferAttribute(sun, 1))
     geometry.setAttribute('aAo', new BufferAttribute(ao, 1))
+    geometry.setAttribute('aMottle', new BufferAttribute(mot, 1))
     geometry.setIndex(new BufferAttribute(index, 1))
     geometry.computeBoundingSphere()
   })

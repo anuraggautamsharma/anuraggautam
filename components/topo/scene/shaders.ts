@@ -35,20 +35,33 @@ const BIOME = {
 } as const
 
 /**
- * The backdrop: paper, warmed by a sunrise glow that rises behind the summit at the end of the
- * climb. Screen space, shared by the sky and the land's misty edges, so they always agree.
+ * The sky, and the haze the land fades into with distance (so far ridges melt into the horizon
+ * the way air makes them), warmed by a sunrise glow behind the summit at the end of the climb.
  */
 const BACKDROP = /* glsl */ `
-uniform vec3 uPaper;
 uniform vec4 uBg; // glow centre x, y (device px from bottom-left), radius px, intensity 0–1
 uniform vec2 uRes; // drawing buffer, device px
-/** 1 at the stage's bottom edge, 0 above its lowest 18 %: the land dissolves into the page there. */
-float bottomFade() { return 1.0 - smoothstep(0.0, 0.18, gl_FragCoord.y / uRes.y); }
-vec3 backdrop() {
+uniform mat4 uInvViewProj;
+uniform vec3 uSun;
+vec3 skyColor(vec3 dir) {
+  float e = dir.y;
+  vec3 c = mix(${vec3('#E8DFCF')}, ${vec3('#CCD9E1')}, smoothstep(-0.02, 0.2, e));
+  c = mix(c, ${vec3('#9EB9CD')}, smoothstep(0.2, 0.65, e));
+  // The sky warms on the sun's side, low down.
+  vec2 h = normalize(dir.xz + 1e-5);
+  float s = max(dot(h, normalize(uSun.xz)), 0.0);
+  return mix(c, ${vec3('#F2D6B4')}, s * s * s * (1.0 - smoothstep(0.0, 0.3, e)) * 0.5);
+}
+vec3 withGlow(vec3 c) {
   vec2 d = (gl_FragCoord.xy - uBg.xy) / uBg.z;
   float r2 = dot(d * vec2(0.8, 1.15), d * vec2(0.8, 1.15));
-  vec3 c = mix(uPaper, ${vec3('#F6DCC6')}, exp(-r2 * 0.55) * uBg.w * 0.75);
-  return mix(c, ${vec3('#FAD0A2')}, exp(-r2 * 2.2) * uBg.w * 0.55);
+  c = mix(c, ${vec3('#F6DCC6')}, exp(-r2 * 0.55) * uBg.w * 0.7);
+  return mix(c, ${vec3('#FAD0A2')}, exp(-r2 * 2.2) * uBg.w * 0.5);
+}
+vec3 viewRay() {
+  vec2 ndc = gl_FragCoord.xy / uRes * 2.0 - 1.0;
+  vec4 w = uInvViewProj * vec4(ndc, 1.0, 1.0);
+  return normalize(w.xyz / w.w - cameraPosition);
 }
 `
 
@@ -58,7 +71,7 @@ void main() { gl_Position = vec4(position.xy, 0.0, 1.0); }
 
 export const skyFragment = /* glsl */ `
 ${BACKDROP}
-void main() { gl_FragColor = vec4(mix(backdrop(), uPaper, bottomFade()), 1.0); }
+void main() { gl_FragColor = vec4(withGlow(skyColor(viewRay())), 1.0); }
 `
 
 const NOISE = /* glsl */ `
@@ -69,6 +82,7 @@ float vnoise(vec2 p) {
   vec2 u = q * q * (3.0 - 2.0 * q);
   return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
+float fbm2(vec2 p) { return (vnoise(p) * 0.667 + vnoise(p * 2.03 + 11.7) * 0.333); }
 float fbm(vec2 p) {
   float s = 0.0;
   float a = 0.5;
@@ -86,13 +100,13 @@ uniform vec2 uFog;
 uniform vec4 uCamps[5]; // x, z, glow 0–1, unused
 attribute float aSun;
 attribute float aAo;
+attribute float aMottle;
 varying vec3 vPos;
 varying vec3 vN;
 varying float vSun;
 varying float vAo;
 varying float vT;
 varying float vGlow;
-varying float vEdge;
 varying float vFog;
 varying float vMottle;
 varying float vCloud;
@@ -103,9 +117,9 @@ ${NOISE}
 void main() {
   vec4 wp = modelMatrix * vec4(position, 1.0);
   // Broad noise lives on the vertices (256² of them): land-cover patches, cloud shadows, mist.
-  vMottle = fbm(wp.xz * 2.2);
-  vCloud = smoothstep(0.5, 0.74, fbm(wp.xz * 0.26 + uTime * vec2(0.03, 0.016)));
-  vMist = 0.25 + 0.6 * fbm(wp.xz * 0.55 + uTime * vec2(0.022, -0.012));
+  vMottle = aMottle;
+  vCloud = smoothstep(0.5, 0.74, fbm2(wp.xz * 0.26 + uTime * vec2(0.03, 0.016)));
+  vMist = 0.25 + 0.6 * fbm2(wp.xz * 0.55 + uTime * vec2(0.022, -0.012));
   vPos = wp.xyz;
   vN = normal;
   vSun = aSun;
@@ -120,13 +134,10 @@ void main() {
   }
   vGlow = g;
 
-  // An island, not a tile: a ragged round shore that dissolves into paper.
-  vec2 q = wp.xz - vec2(-0.2, 0.3);
-  float shore = length(q * vec2(1.0, 1.08)) / 5.0 + (fbm(wp.xz * 0.7) - 0.5) * 0.16;
-  vEdge = smoothstep(0.66, 0.93, shore);
-
+  // Aerial perspective: haze thickens with distance, thinner over high ground.
   vec4 mv = viewMatrix * wp;
-  vFog = smoothstep(uFog.x, uFog.y, -mv.z);
+  float dist = length(wp.xyz - cameraPosition);
+  vFog = (1.0 - exp(-max(dist - uFog.x, 0.0) * uFog.y)) * (1.0 - 0.25 * smoothstep(2.0, 8.0, wp.y));
   gl_Position = projectionMatrix * mv;
 }
 `
@@ -138,7 +149,6 @@ uniform vec3 uInk;
 uniform vec3 uIce;
 uniform vec3 uGlow;
 uniform vec3 uCore;
-uniform vec3 uSun;
 uniform vec3 uRing; // active camp: x, z, intensity 0–1
 uniform vec4 uHead; // the climber: x, z, intensity, unused
 uniform sampler2D uNoise; // tiling noise: r grain, g clumps
@@ -148,13 +158,18 @@ varying float vSun;
 varying float vAo;
 varying float vT;
 varying float vGlow;
-varying float vEdge;
 varying float vFog;
 varying float vMottle;
 varying float vCloud;
 varying float vMist;
 
 void main() {
+  vec3 haze = withGlow(skyColor(normalize(vPos - cameraPosition)));
+  // Far land that the haze has all but swallowed: skip the detail work.
+  if (vFog > 0.94) {
+    gl_FragColor = vec4(mix(haze, ${vec3('#A9BCC9')}, 0.5 * smoothstep(0.35, 0.8, vFog)), 1.0);
+    return;
+  }
   vec3 n = normalize(vN);
   float slope = 1.0 - n.y;
   vec2 p = vPos.xz;
@@ -171,7 +186,9 @@ void main() {
   col = mix(col, meadow, smoothstep(0.16, 0.3, t + (mottle - 0.5) * 0.12));
   vec3 alpine = mix(${vec3(BIOME.alpine)}, ${vec3(BIOME.dry)}, grain);
   col = mix(col, alpine, smoothstep(0.42, 0.56, t));
-  float strata = 0.5 + 0.5 * sin(vPos.y * 22.0 + mottle * 5.0);
+  // The map's marks (rock strata, contours) belong to the climb's mountain, not the far world.
+  float home = 1.0 - smoothstep(5.0, 7.0, length(p - vec2(-0.2, 0.3)));
+  float strata = mix(0.5, 0.5 + 0.5 * sin(vPos.y * 22.0 + mottle * 5.0), home);
   vec3 rock = mix(${vec3(BIOME.rockDeep)}, ${vec3(BIOME.rock)}, grain * 0.75 + strata * 0.15 + 0.05);
   rock = mix(rock, ${vec3(BIOME.rockLight)}, smoothstep(0.6, 0.9, t) * 0.5);
   float rockAmt = smoothstep(0.3, 0.52, slope * 1.25 + t * 0.22 + (grain - 0.5) * 0.12);
@@ -200,7 +217,7 @@ void main() {
   float lvl = floor(x + 0.5);
   float major = 1.0 - step(0.5, mod(lvl, 5.0));
   float lineA = 1.0 - smoothstep(mix(0.5, 0.8, major) - 0.5, mix(0.5, 0.8, major) + 0.5, d);
-  lineA *= mix(0.07 * (1.0 - smoothstep(0.2, 0.32, fw)), 0.17 * (1.0 - smoothstep(1.0, 1.6, fw)), major) * step(0.5, lvl);
+  lineA *= mix(0.07 * (1.0 - smoothstep(0.2, 0.32, fw)), 0.17 * (1.0 - smoothstep(1.0, 1.6, fw)), major) * step(0.5, lvl) * home;
   lit = mix(lit, vT > 0.7 ? uIce : uInk, lineA);
 
   // Reached camps pool warm light; the active one wears a ring; the climber carries a lantern.
@@ -218,12 +235,12 @@ void main() {
 
   // Mist pools in the valleys and drifts.
   float mist = (1.0 - smoothstep(0.0, 0.14, vT)) * vMist;
-  vec3 bg = backdrop();
-  lit = mix(lit, bg, mist * 0.32);
+  lit = mix(lit, haze, mist * 0.32);
 
   // Distance haze, then the shore into paper.
-  lit = mix(lit, mix(bg, vec3(0.86, 0.9, 0.93), 0.25), vFog * 0.9);
-  gl_FragColor = vec4(mix(mix(lit, bg, vEdge), uPaper, bottomFade()), 1.0);
+  // Far land turns blue-grey before it vanishes, like real distance.
+  vec3 far = mix(haze, ${vec3('#A9BCC9')}, 0.5);
+  gl_FragColor = vec4(mix(lit, mix(haze, far, smoothstep(0.35, 0.8, vFog)), vFog), 1.0);
 }
 `
 
@@ -232,13 +249,9 @@ attribute float aT;
 attribute float aSide;
 varying float vT;
 varying float vSide;
-varying float vShore;
 void main() {
   vT = aT;
   vSide = aSide;
-  // The trail emerges from the mist at the island's shore, like the land does.
-  vec2 q = position.xz - vec2(-0.2, 0.3);
-  vShore = 1.0 - smoothstep(0.62, 0.86, length(q * vec2(1.0, 1.08)) / 5.0);
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `
@@ -250,10 +263,8 @@ uniform vec3 uCore;
 uniform vec3 uPaper;
 uniform vec3 uInk;
 uniform vec3 uTip;
-uniform vec2 uRes;
 varying float vT;
 varying float vSide;
-varying float vShore;
 void main() {
   float s = abs(vSide);
   float aa = max(fwidth(s), 1e-4) * 1.2;
@@ -276,6 +287,6 @@ void main() {
   vec3 ahead = mix(uInk, uPaper, inDash);
   float aheadA = dash * inRim * mix(0.5, 0.95, inDash);
 
-  gl_FragColor = vec4(mix(ahead, walked, drawn), mix(aheadA, walkedA, drawn) * vShore * smoothstep(0.0, 0.18, gl_FragCoord.y / uRes.y));
+  gl_FragColor = vec4(mix(ahead, walked, drawn), mix(aheadA, walkedA, drawn));
 }
 `

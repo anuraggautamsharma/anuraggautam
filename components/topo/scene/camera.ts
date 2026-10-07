@@ -2,7 +2,7 @@ import { type PerspectiveCamera, Vector3 } from 'three'
 import { legAt } from '../route'
 import { surfaceY } from './surface'
 
-export const FOV = 30
+export const FOV = 38
 const DEG = Math.PI / 180
 
 /** A camera chapter: look at `c` (x, z) from `dist`, `elev`° up, `azim`° about y from +z. */
@@ -13,13 +13,13 @@ type Chapter = { c: readonly [number, number]; dist: number; elev: number; azim:
  * from the sunlit side, so the ridges, shadows and the summit read as a landscape, not a map.
  */
 export const CHAPTERS: readonly Chapter[] = [
-  { c: [-0.5, 0.7], dist: 16.5, elev: 50, azim: -24 }, // overview
-  { c: [-2.4, 2.6], dist: 7, elev: 34, azim: -40 }, // Position
-  { c: [-0.2, 2.9], dist: 6.8, elev: 31, azim: -14 }, // Price
-  { c: [-1.9, 0.9], dist: 6.6, elev: 35, azim: -46 }, // Market
-  { c: [-0.7, 0.4], dist: 6.4, elev: 34, azim: -22 }, // Systems
-  { c: [0.5, -0.6], dist: 8.2, elev: 42, azim: -10 }, // Team
-  { c: [-0.4, 0.5], dist: 15, elev: 40, azim: 16 }, // outro
+  { c: [-0.3, 0.4], dist: 15, elev: 21, azim: -22 }, // overview: the massif against its skyline
+  { c: [-2.4, 2.6], dist: 6.6, elev: 25, azim: -38 }, // Position
+  { c: [-0.2, 2.9], dist: 6.4, elev: 23, azim: -12 }, // Price
+  { c: [-1.9, 0.9], dist: 6.4, elev: 26, azim: -44 }, // Market
+  { c: [-0.7, 0.4], dist: 6.2, elev: 25, azim: -20 }, // Systems
+  { c: [0.5, -0.6], dist: 7.6, elev: 22, azim: -8 }, // Team
+  { c: [-0.4, 0.4], dist: 14, elev: 19, azim: 14 }, // outro
 ]
 
 const TARGET_Y = CHAPTERS.map(({ c: [x, z] }) => surfaceY(x, z) + 0.15)
