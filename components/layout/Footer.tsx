@@ -101,9 +101,9 @@ export async function Footer() {
           <div className="ft-grid">
             <div className="ft-contact">
               <p className="t-label ft-col-title">{footer.contactLabel}</p>
-              <a href={`mailto:${site.email}`} className="t-h4 ft-email">
-                {site.email}
-              </a>
+              <Link href="/contact" className="t-h4 ft-email">
+                {footer.contactCta}
+              </Link>
               <p className="t-small ft-entity">{person.oneLiner}</p>
             </div>
 

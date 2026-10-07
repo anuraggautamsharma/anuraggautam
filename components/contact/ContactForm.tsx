@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useActionState, useEffect, useRef } from 'react'
 import { track } from '@vercel/analytics'
 import { submitWorkOrder } from '@/app/contact/actions'
-import { pages } from '@/lib/site'
+import { directLine, pages } from '@/lib/site'
 import { CopyButton } from '@/components/ui/CopyButton'
 import {
   FIELD_ORDER,
@@ -30,7 +30,6 @@ import './contact.css'
 export type Essay = { title: string; href: string; docNo?: string }
 
 type Props = {
-  email: string
   calLink: string | null
   essays: Essay[]
   /** Validated `?type`, `?stuck` and `?source` from the page. */
@@ -83,7 +82,7 @@ function draftSummary(v: WorkOrderValues) {
  * Six questions and a Server Action. Values survive a failed submission because the action
  * echoes them back and React resets the form to those defaults.
  */
-export function ContactForm({ email, calLink, essays, prefill = NO_PREFILL, notesReady = false }: Props) {
+export function ContactForm({ calLink, essays, prefill = NO_PREFILL, notesReady = false }: Props) {
   const [state, formAction, pending] = useActionState(submitWorkOrder, INITIAL)
   const formRef = useRef<HTMLFormElement>(null)
   const resultRef = useRef<HTMLHeadingElement>(null)
@@ -107,7 +106,7 @@ export function ContactForm({ email, calLink, essays, prefill = NO_PREFILL, note
   }, [state, prefill.source])
 
   if (state.status === 'sent' || state.status === 'unsent') {
-    return <Result state={state} email={email} calLink={calLink} essays={essays} headingRef={resultRef} />
+    return <Result state={state} calLink={calLink} essays={essays} headingRef={resultRef} />
   }
 
   const values: WorkOrderValues = 'values' in state ? state.values : {}
@@ -172,9 +171,9 @@ export function ContactForm({ email, calLink, essays, prefill = NO_PREFILL, note
           </>
         ) : state.status === 'blocked' ? (
           <p className="t-small">
-            That was faster than a person types, so nothing was sent. Give it a few seconds and try again, or email{' '}
-            <a href={`mailto:${email}`} className="link">
-              {email}
+            That was faster than a person types, so nothing was sent. Give it a few seconds and try again, or message me on{' '}
+            <a href={directLine.url} className="link">
+              {directLine.label}
             </a>
             .
           </p>
@@ -182,8 +181,8 @@ export function ContactForm({ email, calLink, essays, prefill = NO_PREFILL, note
           <>
             <p className="t-h4">{COPY.failed}</p>
             <div className="wo-actions">
-              <a href={`mailto:${email}`} className="btn">
-                Email me
+              <a href={directLine.url} className="btn">
+                Message me on LinkedIn
               </a>
               <CopyButton
                 text={draftSummary(state.values)}
@@ -485,13 +484,11 @@ function GoLink({ href, children }: { href: string; children: React.ReactNode })
 
 function Result({
   state,
-  email,
   calLink,
   essays,
   headingRef,
 }: {
   state: Extract<WorkOrderState, { status: 'sent' } | { status: 'unsent' }>
-  email: string
   calLink: string | null
   essays: Essay[]
   headingRef: React.RefObject<HTMLHeadingElement | null>
@@ -511,8 +508,8 @@ function Result({
         </h2>
         <pre className="wo-summary">{state.summary}</pre>
         <div className="wo-actions">
-          <a href={`mailto:${email}`} className="btn">
-            Email me
+          <a href={directLine.url} className="btn">
+            Message me on LinkedIn
             <SubmitArrow />
           </a>
           <CopyButton text={state.summary} label="Copy answers" done="Answers copied" className="btn btn-secondary" />

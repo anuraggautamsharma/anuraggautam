@@ -4,7 +4,7 @@ import { FullBleedPhoto } from '@/components/ui/FullBleedPhoto'
 import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { photos } from '@/lib/photos'
-import { chapters, home, site } from '@/lib/site'
+import { chapters, directLine, home } from '@/lib/site'
 import { MaskWords } from './MaskWords'
 import './summit.css'
 
@@ -38,9 +38,9 @@ export function SummitCta({ n }: { n?: string }) {
             {copy.cta}
           </ButtonLink>
           <p className="sm-email">
-            <span>{copy.emailPrefix}</span>{' '}
-            <a className="link" href={`mailto:${site.email}`}>
-              {site.email}
+            <span>{copy.dmPrefix}</span>{' '}
+            <a className="link" href={directLine.url} rel="me">
+              {copy.dm}
             </a>
           </p>
         </div>

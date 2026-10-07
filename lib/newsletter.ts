@@ -3,7 +3,7 @@ import { createCipheriv, createDecipheriv, createHash, hkdfSync, randomBytes } f
 import { Resend } from 'resend'
 import { after } from 'next/server'
 import { allPosts } from 'content-collections'
-import { SITE_URL, newsletter, site, type SubscribeIntent, type SubscribeSource } from '@/lib/site'
+import { SITE_URL, newsletter, type SubscribeIntent, type SubscribeSource } from '@/lib/site'
 import { alreadyEmail, confirmEmail, welcomeEmail } from '@/lib/email/templates'
 
 /*
@@ -23,7 +23,7 @@ type Env = {
   apiKey: string
   secret: string
   from: string
-  replyTo: string
+  replyTo: string | undefined
   segmentId: string
   topics: { notes: string; events: string | null; community: string | null; cohort: string | null }
   postal: string | null
@@ -45,7 +45,8 @@ function readEnv(): Env | null {
     apiKey,
     secret,
     from,
-    replyTo: val('NEWSLETTER_REPLY_TO') ?? site.email,
+    // No public address: replies reach the first private inbox that receives briefs.
+    replyTo: val('NEWSLETTER_REPLY_TO') ?? val('CONTACT_TO')?.split(',')[0].trim() ?? undefined,
     segmentId,
     topics: {
       notes,
@@ -327,7 +328,7 @@ export async function confirmToken(token: string): Promise<'confirmed' | 'expire
               subject: mail.subject,
               html: mail.html,
               text: mail.text,
-              headers: { 'List-Unsubscribe': `<mailto:${env.replyTo.replace(/^.*<|>.*$/g, '')}?subject=unsubscribe>` },
+              headers: env.replyTo ? { 'List-Unsubscribe': `<mailto:${env.replyTo.replace(/^.*<|>.*$/g, '')}?subject=unsubscribe>` } : undefined,
             },
             { idempotencyKey: `welcome/${sha256(p.e)}` },
           )

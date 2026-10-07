@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { chrome, nav, profiles, site } from '@/lib/site'
+import { chrome, nav, profiles } from '@/lib/site'
 import { getLenis } from '@/components/motion/loop'
 import { isActive } from './NavLinks'
 
@@ -141,9 +141,6 @@ export function MobileMenu() {
                 {p.label}
               </a>
             ))}
-            <a href={`mailto:${site.email}`} className="link">
-              {site.email}
-            </a>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { JSX } from 'react'
-import { newsletter, site, type SubscribeIntent, type SubscribeSource, type SubscribeVariant } from '@/lib/site'
+import { directLine, newsletter, type SubscribeIntent, type SubscribeSource, type SubscribeVariant } from '@/lib/site'
 import { newsletterReady } from '@/lib/newsletter'
 import { Icon } from '@/components/ui/Icon'
 import { SubscribeForm, type SubscribeFormCopy } from './SubscribeForm'
@@ -147,7 +147,7 @@ export function Subscribe({
                 {ic ? (
                   // A waitlist can't live in a feed: until sign-up opens, a plain email holds the place.
                   <a
-                    href={`mailto:${site.email}?subject=${encodeURIComponent(ic.subject)}`}
+                    href={directLine.url}
                     className={clsx('btn', 'btn-secondary', 'sb-rss')}
                   >
                     <Icon name="mail" size={16} />

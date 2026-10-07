@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { allPosts } from 'content-collections'
-import { pageMeta, pages, person, site } from '@/lib/site'
+import { directLine, pageMeta, pages, person, site } from '@/lib/site'
 import { pageAlternates } from '@/lib/meta'
 import { newsletterReady } from '@/lib/newsletter'
 import { OG_DEFAULT_IMAGE } from '@/lib/og'
@@ -66,9 +66,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         <div className="wrap cols ct-grid">
           <aside className="ct-aside" aria-label="Contact details">
             <p className="t-label ct-aside-mark">{aside.label}</p>
-            <p className="t-small ct-small">{aside.emailPrefix}</p>
-            <a href={`mailto:${site.email}`} className="ct-mail link">
-              {site.email}
+            <p className="t-small ct-small">{aside.dmPrefix}</p>
+            <a href={directLine.url} rel="me" className="ct-mail link">
+              {aside.dm}
             </a>
             {site.timezone ? (
               <p className="t-label ct-time">
@@ -94,7 +94,6 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               Six questions
             </h2>
             <ContactForm
-              email={site.email}
               calLink={site.calLink}
               essays={essays}
               prefill={prefill}

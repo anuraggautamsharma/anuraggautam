@@ -9,7 +9,6 @@ import type { PhotoId } from './photos'
 export const SITE_URL = 'https://anuraggautam.com'
 
 export const site = {
-  email: 'hello@anuraggautam.com', // CONFIRM the mailbox exists before launch (spec §12.2)
   timezone: null as string | null, // e.g. 'Asia/Kolkata'. LocalTime hides while null
   city: null as string | null,
   status: 'OPEN FOR GTM ENGAGEMENTS',
@@ -65,6 +64,9 @@ export const profiles: { label: string; url: string }[] = [
   ...(channels.youtube.handle ? [{ label: 'YouTube', url: `https://www.youtube.com/@${at(channels.youtube.handle)}` }] : []),
   ...(channels.instagram.handle ? [{ label: 'Instagram', url: `https://www.instagram.com/${at(channels.instagram.handle)}/` }] : []),
 ]
+
+// The one public direct line. No email address is published: briefs arrive through the form.
+export const directLine = profiles[0]
 
 // Frozen figures. Same wording everywhere.
 export const stats = [
@@ -264,7 +266,7 @@ export const home: {
    * only once a long-form video exists, so the page never promises footage it doesn't have.
    */
   notes: { h2: string; line: string; lineVideo: string; cta: string; empty: string }
-  summit: { h2: string; line: string; cta: string; emailPrefix: string }
+  summit: { h2: string; line: string; cta: string; dmPrefix: string; dm: string }
 } = {
   basecamp: {
     kicker: 'Anurag Gautam · GTM for complex technology',
@@ -320,7 +322,8 @@ export const home: {
     h2: 'Let’s take it to market.',
     line: 'Tell me what you built and where it’s stuck. Two minutes.',
     cta: CTA_CLIMB,
-    emailPrefix: 'Prefer email?',
+    dmPrefix: 'Prefer a message?',
+    dm: 'LinkedIn',
   },
 }
 
@@ -526,8 +529,8 @@ export const newsletter = {
     unconfigured: 'Email sign-up opens soon. Follow by RSS meanwhile.',
     rss: 'RSS feed',
     /** Closed state for the waitlists (events, founding list, cohort): RSS can't hold a seat, an email can. */
-    unconfiguredList: 'The list opens soon. Email me and I’ll add you by hand.',
-    mail: 'Email me',
+    unconfiguredList: 'The list opens soon. Message me and I’ll add you by hand.',
+    mail: 'Message me',
   },
   confirm: {
     title: 'One click to confirm.',
@@ -626,7 +629,7 @@ export const pages = {
       line: 'Six questions, about two minutes. If it’s a fit, we book a 30-minute call.',
       alt: '5,600 M',
     },
-    aside: { label: 'Direct line', emailPrefix: 'Prefer email?' },
+    aside: { label: 'Direct line', dmPrefix: 'Prefer a message?', dm: 'Message me on LinkedIn' },
     submit: { idle: 'Send my answers', pending: 'Packing it up…' },
     /** "What's this about?" chips (TYPE_VALUES in components/contact/options.ts). Only `engagement` runs fit routing. */
     types: {
@@ -669,11 +672,11 @@ export const pages = {
   /** /privacy (≤ 150 words). Linked next to every form. */
   privacy: {
     title: 'Privacy',
-    updated: '2026-10-07',
+    updated: '2026-10-08',
     body: [
       'Forms on this site collect your email, plus the answers you choose to give. They are used only for what the form says: Field Notes, event invites, waitlists or a reply to your work order.',
       'Email runs on Resend. Sign-up is double opt-in; every email has a one-click unsubscribe, and you can withdraw consent at any time.',
-      'Nothing is sold or shared. To see, correct or delete your data, or to raise a grievance, write to hello@anuraggautam.com.',
+      'Nothing is sold or shared. To see, correct or delete your data, or to raise a grievance, write to me through the contact page.',
     ],
   },
 
@@ -868,6 +871,7 @@ export const chrome = {
 export const footer = {
   signoff: 'Go somewhere new.',
   contactLabel: 'Contact',
+  contactCta: CTA_CLIMB,
   cols: { route: 'How I work', notes: 'Field Notes', community: 'Community', about: 'About' },
   links: {
     summitRoute: 'The Summit Route',

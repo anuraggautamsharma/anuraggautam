@@ -1,6 +1,7 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import { SITE_URL, pageMeta, pages, person, site } from '@/lib/site'
+import { SITE_URL, pageMeta, pages, person } from '@/lib/site'
 import { pageAlternates } from '@/lib/meta'
 import { OG_DEFAULT_IMAGE } from '@/lib/og'
 import { breadcrumbs, ids } from '@/lib/schema'
@@ -27,17 +28,18 @@ export const metadata: Metadata = {
   },
 }
 
-/** The contact address inside the copy becomes a mailto link. */
-function withMail(text: string): ReactNode {
-  const i = text.indexOf(site.email)
+/** 'the contact page' inside the copy becomes a link. */
+const CONTACT_PHRASE = "the contact page"
+function withContact(text: string): ReactNode {
+  const i = text.indexOf(CONTACT_PHRASE)
   if (i === -1) return text
   return (
     <>
       {text.slice(0, i)}
-      <a href={`mailto:${site.email}`} className="link">
-        {site.email}
-      </a>
-      {text.slice(i + site.email.length)}
+      <Link href="/contact" className="link">
+        {CONTACT_PHRASE}
+      </Link>
+      {text.slice(i + CONTACT_PHRASE.length)}
     </>
   )
 }
@@ -61,7 +63,7 @@ export default function PrivacyPage() {
             {copy.body.map((para, i) => (
               <li key={i}>
                 <span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                <p className="t-body">{withMail(para)}</p>
+                <p className="t-body">{withContact(para)}</p>
               </li>
             ))}
           </ol>
