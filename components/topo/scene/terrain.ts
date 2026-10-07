@@ -81,7 +81,7 @@ function noiseTexture() {
 
 /** Shared by the sky and the land: the paper and the sunrise glow behind the summit. */
 export function createBackdrop() {
-  return { uPaper: { value: v3(COLORS.paper) }, uBg: { value: new Vector4(0, 0, 1, 0) } }
+  return { uPaper: { value: v3(COLORS.paper) }, uBg: { value: new Vector4(0, 0, 1, 0) }, uRes: { value: new Vector2(1, 1) } }
 }
 
 /** A full-screen triangle drawn first, behind everything: the backdrop. */

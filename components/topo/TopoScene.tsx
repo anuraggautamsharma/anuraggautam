@@ -7,7 +7,7 @@ import { type BufferGeometry, type Material, Mesh, NoToneMapping, type Perspecti
 import { damp, motion, setEngine, subscribe, wake } from '@/components/motion/loop'
 import { CAMP_ORDER, CAMP_XZ } from '@/lib/terrain'
 import { CAMPS, ROI, TRAILHEAD_MAP, smoothstep } from './route'
-import { routeState } from './topo-state'
+import { routeState, topoDebug } from './topo-state'
 import { CameraRig, FOV } from './scene/camera'
 import { GpuTimer, Governor, dprCap, isWeakGpu, noteGpu } from './scene/governor'
 import { createRibbon, routeAt } from './scene/ribbon'
@@ -19,8 +19,8 @@ extend({ Mesh })
 
 /** Terrain segments: 256² (≈66k vertices). The map is fill-bound, so steps trade pixels, not vertices. */
 const SEGMENTS = 256
-/** Governor steps scale the pixel ratio: full, then 80 %, then 64 % (then the SVG map). */
-const DPR_STEPS = [1, 0.8, 0.64] as const
+/** Governor steps scale the pixel ratio: full, then 80 %, 64 %, 50 %. Slow never means off. */
+const DPR_STEPS = [1, 0.8, 0.64, 0.5] as const
 /** Ambient frame interval (mist, clouds, drift) while nothing is being scrolled or pointed at. */
 const AMBIENT_MS = { strong: 33, weak: 50 } as const
 /** Distance haze, as multiples of the camera distance: starts just past the target, paper by 2.6×. */
@@ -33,6 +33,12 @@ export type TopoSceneProps = {
   onLive: () => void
   /** permanent = stay on the SVG map for the rest of the session (context loss, governor, failure). */
   onRetreat: (permanent: boolean) => void
+}
+
+/** The renderer string, for the `?topo-debug` readout. */
+function gpuName(gl: WebGL2RenderingContext) {
+  const info = gl.getExtension('WEBGL_debug_renderer_info')
+  return String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)).replace(/^ANGLE \((.*)\)$/, '$1').slice(0, 80)
 }
 
 /** True when a cached px value is stale (NaN-safe: an unset cache always counts as moved). */
@@ -107,6 +113,7 @@ class Controller {
     this.terrainGeometry = build.geometry
     this.ground = build.sample
     this.ribbon = createRibbon(build.sample)
+    this.ribbon.material.uniforms.uRes = this.backdrop.uRes
     this.anchors = CAMP_ORDER.map((id) => {
       const [x, z] = CAMP_XZ[id]
       return new Vector3(x, build.sample(x, z) + 0.02, z)
@@ -171,19 +178,21 @@ class Controller {
     }, 150)
   }
 
-  /** Governor steps: 1 → 80 % pixels, 2 → 64 %, 3 → back to the SVG map for good. No rebuilds, no hitches. */
+  /**
+   * Governor steps trade pixels only (80 %, 64 %, 50 %), with no rebuilds and no hitches. A slow
+   * machine keeps the 3D map at its lightest; only a real failure falls back to the SVG.
+   */
   private step(level: number) {
-    if (level < DPR_STEPS.length) {
-      this.host.setDpr(dprCap(DPR_STEPS[level]))
-      this.sizeDirty = true
-    } else {
-      this.host.retreat(true)
-    }
+    if (level >= DPR_STEPS.length) return
+    this.host.setDpr(dprCap(DPR_STEPS[level]))
+    this.sizeDirty = true
   }
 
   /** Full rate while the climb, the camera or the pointer is moving; a calm ambient rate otherwise. */
   private activeUntil = 0
   private lastRender = 0
+  private debugAt = 0
+  gpuName = ''
 
   shouldRender = () => {
     if (this.dead || !this.visible || document.visibilityState !== 'visible') return false
@@ -253,6 +262,7 @@ class Controller {
     // Sunrise behind the summit: rises over the last camp and stays through the outro.
     const want = smoothstep(0.62, 0.92, routeState.uS)
     this.glowAt = dt ? damp(this.glowAt, want, 2, dt) : want
+    state.gl.getDrawingBufferSize(this.backdrop.uRes.value)
     const bg = this.backdrop.uBg.value
     if (this.glowAt > 0.002) {
       const dpr = state.gl.getPixelRatio()
@@ -264,6 +274,12 @@ class Controller {
     state.gl.render(state.scene, camera)
     this.host.timer.end()
     this.frames++
+    if (now - this.debugAt > 500) {
+      this.debugAt = now
+      topoDebug(
+        `3D map: live\nGPU: ${this.gpuName}${isWeakGpu() ? ' (weak: light mode)' : ''}\npixel ratio ${state.gl.getPixelRatio().toFixed(2)} · step ${this.gov.level}\nmap GPU ${this.host.timer.ms < 0 ? 'n/a' : this.host.timer.ms.toFixed(1) + ' ms'} · frames ${this.frames}`,
+      )
+    }
     this.placeDom(camera)
     if (this.frames === 1) this.host.live()
   }
@@ -368,7 +384,7 @@ export default function TopoScene(props: TopoSceneProps) {
     const onLost = (e: Event) => {
       e.preventDefault()
       if (process.env.NODE_ENV !== 'production') console.info('[topo] WebGL context lost')
-      retreat(true)
+      retreat(false) // the GPU reset (driver, sleep): try again on the next visit, not never
     }
     canvas.addEventListener('webglcontextlost', onLost)
 
@@ -394,7 +410,8 @@ export default function TopoScene(props: TopoSceneProps) {
       if (!store) throw new Error('R3F root missing after configure')
       const { gl, scene, camera } = store.getState()
       // Weak GPUs start on a smaller pixel budget (known only now that the context exists).
-      if (noteGpu(gl.getContext() as WebGL2RenderingContext)) store.getState().setDpr(dprCap())
+      const ctx2 = gl.getContext() as WebGL2RenderingContext
+      if (noteGpu(ctx2)) store.getState().setDpr(dprCap())
       gl.toneMapping = NoToneMapping
       gl.outputColorSpace = SRGBColorSpace
       gl.setClearColor(COLORS.paper, 1)
@@ -448,6 +465,7 @@ export default function TopoScene(props: TopoSceneProps) {
         await nextFrame()
         if (cancelled) return
       }
+      ctl.gpuName = gpuName(ctx2)
       ctl.start(track)
       setEngine({ shouldRender: ctl.shouldRender, frame: (t) => advance(t / 1000) })
       if (process.env.NODE_ENV !== 'production') {

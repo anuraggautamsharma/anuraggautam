@@ -41,6 +41,9 @@ const BIOME = {
 const BACKDROP = /* glsl */ `
 uniform vec3 uPaper;
 uniform vec4 uBg; // glow centre x, y (device px from bottom-left), radius px, intensity 0–1
+uniform vec2 uRes; // drawing buffer, device px
+/** 1 at the stage's bottom edge, 0 above its lowest 18 %: the land dissolves into the page there. */
+float bottomFade() { return 1.0 - smoothstep(0.0, 0.18, gl_FragCoord.y / uRes.y); }
 vec3 backdrop() {
   vec2 d = (gl_FragCoord.xy - uBg.xy) / uBg.z;
   float r2 = dot(d * vec2(0.8, 1.15), d * vec2(0.8, 1.15));
@@ -55,7 +58,7 @@ void main() { gl_Position = vec4(position.xy, 0.0, 1.0); }
 
 export const skyFragment = /* glsl */ `
 ${BACKDROP}
-void main() { gl_FragColor = vec4(backdrop(), 1.0); }
+void main() { gl_FragColor = vec4(mix(backdrop(), uPaper, bottomFade()), 1.0); }
 `
 
 const NOISE = /* glsl */ `
@@ -220,7 +223,7 @@ void main() {
 
   // Distance haze, then the shore into paper.
   lit = mix(lit, mix(bg, vec3(0.86, 0.9, 0.93), 0.25), vFog * 0.9);
-  gl_FragColor = vec4(mix(lit, bg, vEdge), 1.0);
+  gl_FragColor = vec4(mix(mix(lit, bg, vEdge), uPaper, bottomFade()), 1.0);
 }
 `
 
@@ -247,6 +250,7 @@ uniform vec3 uCore;
 uniform vec3 uPaper;
 uniform vec3 uInk;
 uniform vec3 uTip;
+uniform vec2 uRes;
 varying float vT;
 varying float vSide;
 varying float vShore;
@@ -272,6 +276,6 @@ void main() {
   vec3 ahead = mix(uInk, uPaper, inDash);
   float aheadA = dash * inRim * mix(0.5, 0.95, inDash);
 
-  gl_FragColor = vec4(mix(ahead, walked, drawn), mix(aheadA, walkedA, drawn) * vShore);
+  gl_FragColor = vec4(mix(ahead, walked, drawn), mix(aheadA, walkedA, drawn) * vShore * smoothstep(0.0, 0.18, gl_FragCoord.y / uRes.y));
 }
 `

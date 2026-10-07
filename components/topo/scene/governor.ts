@@ -91,7 +91,7 @@ export class GpuTimer {
 
 /**
  * Adaptive quality, sampled on rendered frames only: when the average interval over 60
- * consecutive full-rate frames passes 22 ms, step down (1: 80 % pixels, 2: 64 %, 3: retreat).
+ * consecutive full-rate frames passes 22 ms, step down (each step trades pixels; slow never turns the map off).
  * Two guards against blaming the map for a slow page: the bar rises to 1.5× the fastest
  * interval in the window (a display or battery saver capping rAF at 30 Hz), and where a GPU
  * timer exists the map's own draw must cost ≥ 6 ms. Gaps (idle, hidden tab) and the first

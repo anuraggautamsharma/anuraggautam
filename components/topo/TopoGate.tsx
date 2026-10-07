@@ -4,7 +4,7 @@
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { MOTION_EVENT } from '@/components/layout/motionPref'
-import { disableTopo, isTopoDisabled, prefersReducedMotion } from './topo-state'
+import { disableTopo, isTopoDisabled, prefersReducedMotion, topoDebug } from './topo-state'
 
 // The only 3D code in the first-load bundle: this gate and a dynamic import. three, R3F and
 // the scene load only after every check passes.
@@ -22,13 +22,25 @@ const DESKTOP = '(min-width: 64rem) and (pointer: fine)'
 
 /** No reduced motion (OS or site toggle), no Save-Data or 2G, ≥ 4 GB when reported, WebGL2, not retreated. */
 function can3D() {
-  if (typeof window === 'undefined' || isTopoDisabled() || prefersReducedMotion()) return false
-  if (!window.matchMedia(DESKTOP).matches) return false
+  if (typeof window === 'undefined') return false
   const nav = navigator as Nav
-  if (nav.connection?.saveData) return false
-  if (/2g$/.test(nav.connection?.effectiveType ?? '')) return false
-  if (typeof nav.deviceMemory === 'number' && nav.deviceMemory < 4) return false
-  return typeof WebGL2RenderingContext !== 'undefined'
+  const why = isTopoDisabled()
+    ? 'turned off this session after a failure'
+    : prefersReducedMotion()
+      ? 'reduced motion is on'
+      : !window.matchMedia(DESKTOP).matches
+        ? 'not a desktop viewport with a mouse'
+        : nav.connection?.saveData
+          ? 'Save-Data is on'
+          : /2g$/.test(nav.connection?.effectiveType ?? '')
+            ? 'slow connection'
+            : typeof nav.deviceMemory === 'number' && nav.deviceMemory < 4
+              ? 'under 4 GB memory'
+              : typeof WebGL2RenderingContext === 'undefined'
+                ? 'no WebGL2'
+                : ''
+  if (why) topoDebug(`3D map: off (${why})`)
+  return !why
 }
 
 /**
@@ -125,6 +137,7 @@ export function TopoGate() {
 
   const onLive = useCallback(() => setPhase('live'), [])
   const onRetreat = useCallback((permanent: boolean) => {
+    topoDebug(`3D map: fell back to the flat map (${permanent ? 'failure' : 'GPU reset'})`)
     if (permanent) disableTopo()
     setPhase('off')
   }, [])

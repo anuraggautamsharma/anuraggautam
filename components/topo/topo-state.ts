@@ -1,6 +1,7 @@
 // State shared by the route stage (DOM, first-load) and the lazy WebGL scene. Three-free.
 
-export const SESSION_OFF = 'ag-topo-off'
+// v2: performance no longer turns the map off, so flags left by the old governor are ignored.
+export const SESSION_OFF = 'ag-topo-off-v2'
 
 /** sessionStorage can throw (privacy modes, blocked storage); never let it break the page. */
 export function isTopoDisabled() {
@@ -47,6 +48,23 @@ export const routeState = {
   gl: false,
   dom: null as RouteDom | null,
   layout: { x: 0, y: 0, w: 1, h: 1, fx: 0, fy: 0, fw: 1000, fh: 1000 } as PlaneLayout,
+}
+
+/**
+ * `?topo-debug` on any page with the route map: a corner readout of what the 3D map is doing on
+ * this machine (GPU, pixel ratio, quality step, frame time, or why it is off). Nothing otherwise.
+ */
+export function topoDebug(line: string) {
+  if (typeof window === 'undefined' || !/[?&]topo-debug\b/.test(window.location.search)) return
+  let el = document.getElementById('topo-debug')
+  if (!el) {
+    el = document.createElement('pre')
+    el.id = 'topo-debug'
+    el.style.cssText =
+      'position:fixed;left:8px;bottom:8px;z-index:9999;margin:0;padding:8px 10px;max-width:46ch;white-space:pre-wrap;font:11px/1.4 ui-monospace,monospace;background:rgb(14 29 21/.88);color:#F7F2E8;pointer-events:none'
+    document.body.appendChild(el)
+  }
+  el.textContent = line
 }
 
 export const prefersReducedMotion = () =>
