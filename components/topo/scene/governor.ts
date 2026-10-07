@@ -1,8 +1,8 @@
-/** Pixel budget: ≤ 1.5× and ≤ 3 MP for the full canvas, never below 1× on 1× screens. */
+/** Pixel budget: ≤ 1.25× and ≤ 2.2 MP for the full canvas (the lit landscape costs more than the old map), never below 1× on 1× screens. */
 export function dprCap() {
   const d = window.devicePixelRatio || 1
   const px = Math.max(1, window.innerWidth * window.innerHeight)
-  return Math.max(Math.min(d, 1), Math.min(d, 1.5, Math.sqrt(3.0e6 / px)))
+  return Math.max(Math.min(d, 1), Math.min(d, 1.25, Math.sqrt(2.2e6 / px)))
 }
 
 const WARMUP_MS = 1500

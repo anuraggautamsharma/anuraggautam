@@ -300,8 +300,10 @@
   }
   html[data-js]:not([data-motion="reduced"]) .route-head-in { position: relative; padding-block-start: var(--beat-top); }
   html[data-js]:not([data-motion="reduced"]) .route-head-in::before { /* paper veil, so the heading never sits on dark ground */
-    content: ""; position: absolute; z-index: -1; inset: 0 auto -20% 0; inline-size: min(64rem, 70%);
-    background: radial-gradient(closest-side at 40% 50%, rgb(var(--veil-rgb) / .94), rgb(var(--veil-rgb) / .82) 50%, rgb(var(--veil-rgb) / 0));
+    content: ""; position: absolute; z-index: -1; inset: 0 auto -30% 0; inline-size: min(60rem, 62%);
+    background: linear-gradient(to right, rgb(var(--veil-rgb) / .97) 0%, rgb(var(--veil-rgb) / .9) 42%, rgb(var(--veil-rgb) / .55) 68%, rgb(var(--veil-rgb) / 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent);
     pointer-events: none;
   }
   html[data-js]:not([data-motion="reduced"]) .route-title { max-inline-size: 13ch; }

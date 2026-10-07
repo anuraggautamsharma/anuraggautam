@@ -3,24 +3,24 @@
 
 import { useEffect, useRef } from 'react'
 import { _roots, advance, createRoot, extend, useFrame, type ReconcilerRoot, type RootState } from '@react-three/fiber'
-import { type BufferGeometry, type Material, Mesh, NoToneMapping, type Object3D, type PerspectiveCamera, SRGBColorSpace, Vector3, type Vector4 } from 'three'
-import { damp, setEngine, subscribe, wake } from '@/components/motion/loop'
-import { CAMP_ORDER, CAMP_XZ, TERRAIN, heightAt } from '@/lib/terrain'
+import { type BufferGeometry, type Material, Mesh, NoToneMapping, type Object3D, type PerspectiveCamera, SRGBColorSpace, type Texture, Vector3, type Vector4 } from 'three'
+import { damp, motion, setEngine, subscribe, wake } from '@/components/motion/loop'
+import { CAMP_ORDER, CAMP_XZ } from '@/lib/terrain'
 import { CAMPS, ROI, TRAILHEAD_MAP } from './route'
 import { routeState } from './topo-state'
 import { CameraRig, FOV } from './scene/camera'
 import { GpuTimer, Governor, dprCap } from './scene/governor'
 import { createRibbon, routeAt } from './scene/ribbon'
 import { COLORS } from './scene/shaders'
-import { buildTerrain, createTerrainMaterial } from './scene/terrain'
+import { type TerrainBuild, buildTerrain, createTerrainMaterial } from './scene/terrain'
 
 // Lean root: only the one element the JSX uses is registered (no <Canvas>, no full namespace).
 extend({ Mesh })
 
-/** Terrain segments per governor level: 192² (≈37k vertices), then 128². */
-const SEGMENTS = [192, 128] as const
-/** Distance fog, as multiples of the camera distance: starts just past the target, paper by 2.3×. */
-const FOG = { near: 0.92, far: 2.3 } as const
+/** Terrain segments per governor level: 256² (≈66k vertices), then 160². */
+const SEGMENTS = [256, 160] as const
+/** Distance haze, as multiples of the camera distance: starts just past the target, paper by 2.6×. */
+const FOG = { near: 0.95, far: 2.6 } as const
 /** How long pins and the route head glide from the poster to the 3D map. */
 const ENTER_MS = 450
 
@@ -59,8 +59,10 @@ type Host = {
  */
 class Controller {
   readonly terrainMaterial = createTerrainMaterial()
-  readonly ribbon = createRibbon()
+  readonly ribbon: ReturnType<typeof createRibbon>
   terrainGeometry: BufferGeometry
+  /** Height on the built grid (what the triangles show): pins, the ribbon and the head sit on it. */
+  private readonly ground: TerrainBuild['sample']
   /** A coarser terrain waiting to be swapped in on the next frame (governor step 2). */
   private pendingGeometry: BufferGeometry | null = null
   private readonly rig = new CameraRig()
@@ -69,10 +71,13 @@ class Controller {
   /** The ring marks the active camp: it moves on arrival and fades in there. */
   private ring = 0
   private ringAt = -1
-  private readonly anchors = CAMP_ORDER.map((id) => {
-    const [x, z] = CAMP_XZ[id]
-    return new Vector3(x, heightAt(x, z) * TERRAIN.H + 0.01, z)
-  })
+  private readonly anchors: Vector3[]
+  private readonly head = new Vector3()
+  /** Seconds since the scene went live (drift, clouds, mist, the lantern's pulse). */
+  private time = 0
+  /** Damped pointer offset from the stage centre, −1…1. */
+  private px = 0
+  private py = 0
   private readonly pinAt = CAMP_ORDER.map(() => ({ x: NaN, y: NaN, off: false }))
   private readonly headAt = { x: NaN, y: NaN }
   private readonly v = new Vector3()
@@ -91,10 +96,16 @@ class Controller {
   private resizeTimer = 0
 
   constructor(
-    geometry: BufferGeometry,
+    build: TerrainBuild,
     private readonly host: Host,
   ) {
-    this.terrainGeometry = geometry
+    this.terrainGeometry = build.geometry
+    this.ground = build.sample
+    this.ribbon = createRibbon(build.sample)
+    this.anchors = CAMP_ORDER.map((id) => {
+      const [x, z] = CAMP_XZ[id]
+      return new Vector3(x, build.sample(x, z) + 0.02, z)
+    })
     this.gov = new Governor((level) => this.step(level))
   }
 
@@ -121,6 +132,7 @@ class Controller {
     clearTimeout(this.resizeTimer)
     this.host.timer.dispose()
     this.terrainGeometry.dispose()
+    ;(this.terrainMaterial.uniforms.uNoise.value as Texture).dispose()
     this.terrainMaterial.dispose()
     this.ribbon.geometry.dispose()
     this.ribbon.material.dispose()
@@ -158,9 +170,21 @@ class Controller {
       this.host.setDpr(1)
       this.sizeDirty = true
     } else if (level === 2) {
+      // Rebuild coarser over the next frames (shadows are not free), then swap.
       const build = buildTerrain(SEGMENTS[1])
-      for (const s of build.steps) s()
-      this.pendingGeometry = build.geometry
+      const queue = [...build.steps]
+      const un = subscribe(() => {
+        if (this.dead) {
+          un()
+          build.geometry.dispose()
+          return
+        }
+        queue.shift()?.()
+        if (!queue.length) {
+          un()
+          this.pendingGeometry = build.geometry
+        }
+      })
     } else {
       this.host.retreat(true)
     }
@@ -168,7 +192,8 @@ class Controller {
 
   shouldRender = () => {
     if (this.dead || !this.visible || document.visibilityState !== 'visible') return false
-    return this.frames < 2 || this.sizeDirty || this.moving || this.glowing || routeState.rev !== this.lastRev
+    // The land is alive (drifting cloud shadows, mist, the lantern): render every frame while on screen.
+    return true
   }
 
   frame = (state: RootState, delta: number) => {
@@ -182,10 +207,22 @@ class Controller {
     }
     if (this.pendingGeometry) this.swapTerrain(state.scene, this.pendingGeometry)
     this.lastRev = routeState.rev
-    this.moving = this.rig.update(routeState.p, dt, camera)
+    this.time += dt
+    // Pointer parallax: only a fine pointer over the stage leans the view.
+    const p = motion.pointer
+    const tx = p.fine ? Math.max(-1, Math.min(1, (p.x / this.w) * 2 - 1)) : 0
+    const ty = p.fine ? Math.max(-1, Math.min(1, (p.y / this.h) * 2 - 1)) : 0
+    this.px = dt ? damp(this.px, tx, 2.2, dt) : tx
+    this.py = dt ? damp(this.py, ty, 2.2, dt) : ty
+    routeAt(routeState.uS, this.head, this.ground)
+    this.moving = this.rig.update({ p: routeState.p, head: this.head, px: this.px, py: this.py, time: this.time }, dt, camera)
 
     this.ribbon.material.uniforms.uProgress.value = routeState.uS
+    this.ribbon.material.uniforms.uTime.value = this.time
     const tu = this.terrainMaterial.uniforms
+    tu.uTime.value = this.time
+    const lantern = tu.uHead.value as Vector4
+    lantern.set(this.head.x, this.head.z, routeState.uS > 0.002 && routeState.uS < 0.998 ? 1 : 0, 0)
     const dist = this.rig.distance
     tu.uFog.value.set(dist * FOG.near, dist * FOG.far)
     const camps = tu.uCamps.value as Vector4[]
@@ -272,7 +309,7 @@ class Controller {
       }
     }
     if (dom.head) {
-      routeAt(routeState.uS, this.v).project(camera)
+      routeAt(routeState.uS, this.v, this.ground).project(camera)
       const dx = ((this.v.x + 1) / 2) * this.w - toX(TRAILHEAD_MAP.x)
       const dy = ((1 - this.v.y) / 2) * this.h - toY(TRAILHEAD_MAP.y)
       if (moved(this.headAt.x, dx) || moved(this.headAt.y, dy)) {
@@ -367,7 +404,7 @@ export default function TopoScene(props: TopoSceneProps) {
         step()
       }
 
-      ctl = new Controller(build.geometry, {
+      ctl = new Controller(build, {
         timer: new GpuTimer(gl.getContext() as WebGL2RenderingContext),
         layer,
         setSize: (w, h) => store.getState().setSize(w, h, 0, 0),
