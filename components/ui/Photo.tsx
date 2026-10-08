@@ -1,6 +1,6 @@
 import Image, { getImageProps } from 'next/image'
 import clsx from 'clsx'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { photos, type PhotoId } from '@/lib/photos'
 
 const QUALITY = 60
@@ -25,9 +25,12 @@ export function FullBleedPhoto({
   drift = false,
   parallax,
   night,
+  overlay,
   className,
 }: {
   id: PhotoId
+  /** Drawn over the photograph but under its scrim (e.g. a LivingPhoto canvas). */
+  overlay?: ReactNode
   /** The same view at night, shown instead in the dark theme (lazy: fetched only when shown). */
   night?: PhotoId
   priority?: boolean
@@ -84,6 +87,7 @@ export function FullBleedPhoto({
           <img {...nightImg} />
         </picture>
       ) : null}
+      {overlay}
       {showScrim && p.scrim ? (
         <div
           className="photo-scrim"
@@ -120,9 +124,12 @@ export function Plate({
   caption,
   index,
   wipe = false,
+  overlay,
   className,
 }: {
   id: PhotoId
+  /** Drawn over the photograph, under the tag (e.g. a LivingPhoto canvas). */
+  overlay?: ReactNode
   aspect?: PlateAspect
   sizes: string
   caption?: string
@@ -146,6 +153,7 @@ export function Plate({
           placeholder="blur"
           style={{ objectPosition: p.focal }}
         />
+        {overlay}
         {index && !caption ? (
           <span className="plate-tag t-label" aria-hidden="true">
             {index}

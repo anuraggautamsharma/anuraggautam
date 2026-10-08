@@ -3,6 +3,8 @@ import { Section } from '@/components/ui/Section'
 import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { Icon } from '@/components/ui/Icon'
 import { Plate } from '@/components/ui/Plate'
+import { LivingPhoto } from '@/components/living/LivingPhoto'
+import forestDepth from '@/assets/nature/depth/notes-forest-path-depth.webp'
 import { NoteCard } from '@/components/writing/NoteCard'
 import { publishedPosts, type Post } from '@/components/writing/posts'
 import { Subscribe } from '@/components/subscribe/Subscribe'
@@ -60,7 +62,13 @@ export async function FieldNotes() {
 
         {/* 64rem and up only: the plate fills the left columns and holds still while a long column scrolls. */}
         <div className="fn-plate" aria-hidden="true">
-          <Plate id="notes-forest-path" aspect="4/5" sizes="(min-width: 100rem) 30rem, (min-width: 64rem) 30vw, 1px" wipe />
+          <Plate
+            id="notes-forest-path"
+            aspect="4/5"
+            sizes="(min-width: 100rem) 30rem, (min-width: 64rem) 30vw, 1px"
+            wipe
+            overlay={<LivingPhoto depth={forestDepth.src} scene="forest" skyCut={0.03} vanish={[0.5, 0.8]} fx={0.5} fy={0.5} />}
+          />
         </div>
 
         <div className="fn-main">

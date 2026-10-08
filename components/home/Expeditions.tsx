@@ -5,6 +5,20 @@ import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { Signpost, Sign } from '@/components/ui/Signpost'
 import { chapters, home, ventures } from '@/lib/site'
 import { ExpeditionTrack } from './ExpeditionTrack'
+import { LivingPhoto, type LivingScene } from '@/components/living/LivingPhoto'
+import type { PhotoId } from '@/lib/photos'
+import canyonDepth from '@/assets/nature/depth/expedition-canyon-depth.webp'
+import auroraDepth from '@/assets/nature/depth/expedition-aurora-depth.webp'
+import lakeDepth from '@/assets/nature/depth/expedition-alpine-lake-depth.webp'
+import iceDepth from '@/assets/nature/depth/expedition-ice-cave-depth.webp'
+
+/** Each card's photograph comes alive in its own way (components/living). */
+const LIVING: Partial<Record<PhotoId, { depth: string; scene: LivingScene; skyCut: number; vanish: [number, number] }>> = {
+  'expedition-canyon': { depth: canyonDepth.src, scene: 'canyon', skyCut: 0.03, vanish: [0.5, 0.45] },
+  'expedition-aurora': { depth: auroraDepth.src, scene: 'aurora', skyCut: 0.08, vanish: [0.5, 0.7] },
+  'expedition-alpine-lake': { depth: lakeDepth.src, scene: 'lake', skyCut: 0.03, vanish: [0.55, 0.55] },
+  'expedition-ice-cave': { depth: iceDepth.src, scene: 'ice', skyCut: -1, vanish: [0.55, 0.6] },
+}
 import './home.css'
 
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -43,7 +57,11 @@ export function Expeditions() {
           <ol className="ex-track">
             {ventures.map((v, i) => (
               <li key={v.id} className="ex-card photo-stage">
-                <FullBleedPhoto id={v.photo} sizes="(min-width:64rem) 34vw, 82vw" />
+                <FullBleedPhoto
+                  id={v.photo}
+                  sizes="(min-width:64rem) 34vw, 82vw"
+                  overlay={LIVING[v.photo] ? <LivingPhoto {...LIVING[v.photo]!} fx={0.5} fy={0.5} /> : null}
+                />
                 {v.stats.length > 0 ? (
                   <Signpost className="ex-signs">
                     {v.stats.map((s, j) => (

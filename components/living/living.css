@@ -13,3 +13,6 @@
 .living[data-on] { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .living { display: none; } }
 html[data-motion="reduced"] .living { display: none; }
+/* Inside a Plate the canvas sits over the photo, under the tag. */
+.plate-img > .living { z-index: 0; }
+.plate-img > .plate-tag { z-index: 1; }

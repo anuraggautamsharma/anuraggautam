@@ -589,3 +589,5 @@ html[data-revealed] .gd-fig.wipe:not(.is-in) { clip-path: inset(calc(-1 * var(--
     linear-gradient(to bottom, #2E2618, #1A160F);
 }
 :root[data-theme="dark"] .gd-cutout { filter: drop-shadow(0 24px 40px rgb(0 0 0 / .55)); }
+/* Dark theme: the card scrims follow the band into night. */
+:root[data-theme="dark"] .ex-card .photo-scrim { --scrim-c: 8 27 18 !important; }

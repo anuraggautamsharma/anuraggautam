@@ -10,8 +10,6 @@ type Nav = Navigator & { connection?: { saveData?: boolean } }
 
 /** Calm frame interval while nothing is being touched (clouds still drift). */
 const AMBIENT_MS = 33
-/** The vanishing point the camera pushes into, in image uv. */
-const VANISH = [0.62, 0.6] as const
 
 const VERT = `
 attribute vec2 aPos;
@@ -19,11 +17,20 @@ varying vec2 vUv;
 void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }
 `
 
+export type LivingScene = 'valley' | 'aurora' | 'lake' | 'ice' | 'canyon' | 'forest'
+const SCENES: Record<LivingScene, number> = { valley: 0, aurora: 1, lake: 2, ice: 3, canyon: 4, forest: 5 }
+
 /**
- * One pass over the photograph and its depth map (estimated offline, Depth Anything V2):
- * the camera leans and pushes in with real parallax, the sky's clouds billow, their shadows
- * sweep the land, light glints on the river and snow, and the sun follows the pointer. In the
- * dark theme the same valley is graded to moonlit night, with stars, and the pointer holds the moon.
+ * One pass over the photograph and its depth map (estimated offline, Depth Anything V2). Every
+ * scene shares the camera: it leans with real parallax and pushes in as it passes. Then each
+ * photograph does what its own world does:
+ *   valley  clouds billow, their shadows cross the land, the sun follows the pointer
+ *   aurora  the curtains flow and flicker; the lake below mirrors them in ripples
+ *   lake    the water shimmers; the pointer sends rings across it
+ *   ice     caustics swim through the blue ice; the pointer is a headlamp
+ *   canyon  the pointer is the sun: light rakes across the hoodoos (normals from the depth map)
+ *   forest  sunbeams pour through the canopy gaps toward the pointer; fireflies at night
+ * In the dark theme each is graded to night (the aurora already is).
  */
 const FRAG = `
 precision highp float;
@@ -33,12 +40,17 @@ uniform sampler2D uDepth;
 uniform vec2 uScale;   // canvas uv -> image uv (cover, with a parallax margin)
 uniform vec2 uCenter;  // image uv at the canvas centre
 uniform vec2 uLook;    // -1..1, the camera's lean
-uniform vec2 uSun;     // canvas uv
+uniform vec2 uSun;     // canvas uv: the light (or the pointer)
 uniform float uSunA;
 uniform float uDolly;  // 0..1, the push-in
 uniform float uTime;
 uniform float uAspect;
-uniform float uNight;  // 0 day, 1 night (dark theme): the same valley under the moon
+uniform float uNight;  // 0 day, 1 night (dark theme)
+uniform float uScene;
+uniform vec2 uVanish;
+uniform float uSkyCut; // raw depth below which it is sky
+uniform vec2 uTexel;   // 1 / depth map size
+uniform float uPara;   // parallax strength (thin branches against sky want less)
 
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p) {
@@ -52,94 +64,189 @@ float fbm(vec2 p) {
   return s;
 }
 float depthAt(vec2 uv) { return pow(texture2D(uDepth, uv).r, 0.55); }
+float skyAt(vec2 uv) { return 1.0 - smoothstep(uSkyCut, uSkyCut + 0.04, texture2D(uDepth, uv).r); }
+vec2 toImg(vec2 c) { vec2 u = uCenter + (c - 0.5) * uScale; u.y = 1.0 - u.y; return u; }
+
+// Swimming light through ice or water (a tileable caustic, after Dave Hoskins).
+float caustic(vec2 uv, float t) {
+  vec2 p = mod(uv * 6.2831, 6.2831) - 250.0;
+  vec2 i = p;
+  float c = 1.0;
+  for (int n = 0; n < 4; n++) {
+    float tn = t * (1.0 - 3.5 / float(n + 1));
+    i = p + vec2(cos(tn - i.x) + sin(tn + i.y), sin(tn - i.y) + cos(tn + i.x));
+    c += 1.0 / length(vec2(p.x / (sin(i.x + tn) / 0.005), p.y / (cos(i.y + tn) / 0.005)));
+  }
+  c /= 4.0;
+  c = 1.17 - pow(c, 1.4);
+  return pow(abs(c), 8.0);
+}
+
+vec3 stars(vec2 c, float cloud) {
+  vec2 sg = c * vec2(uAspect, 1.0) * 160.0;
+  vec2 id = floor(sg);
+  vec2 f = fract(sg) - 0.5;
+  float h = hash(id);
+  float s = step(0.965, h) * (1.0 - smoothstep(0.04, 0.16, length(f - (vec2(hash(id + 3.1), hash(id + 7.7)) - 0.5) * 0.6)));
+  s *= 0.6 + 0.4 * sin(uTime * (1.0 + h * 3.0) + h * 50.0);
+  vec2 sg2 = c * vec2(uAspect, 1.0) * 420.0;
+  float s2 = step(0.985, hash(floor(sg2) + 11.0)) * (1.0 - smoothstep(0.05, 0.2, length(fract(sg2) - 0.5))) * 0.6;
+  return vec3(0.85, 0.9, 1.0) * (s + s2) * (1.0 - cloud);
+}
+
+// Day for night: the land sinks into moonlit blue (its highlights stay silver); bright cloud
+// stays moonlit cloud; the clear sky turns deep navy with stars.
+vec3 nightGrade(vec3 day, float sky) {
+  float l = dot(day, vec3(0.299, 0.587, 0.114));
+  vec3 landN = mix(vec3(l), day, 0.22) * vec3(0.42, 0.52, 0.78);
+  landN = landN * 0.55 + vec3(0.62, 0.74, 1.0) * pow(smoothstep(0.45, 0.95, l), 1.6) * 0.42;
+  float cloud = smoothstep(0.55, 0.92, l);
+  vec3 skyN = mix(mix(vec3(0.06, 0.09, 0.16), vec3(0.02, 0.035, 0.075), vUv.y), vec3(0.42, 0.5, 0.66) * l, cloud * 0.85);
+  skyN += stars(vUv, cloud);
+  return mix(landN, skyN, sky);
+}
 
 void main() {
-  vec2 uv = uCenter + (vUv - 0.5) * uScale;
-  uv.y = 1.0 - uv.y;
+  vec2 uv = toImg(vUv);
 
-  // Dolly: zoom toward the valley; near ground grows faster than the far range (real parallax).
-  vec2 vp = vec2(${VANISH[0]}, ${VANISH[1]});
+  // Dolly: zoom toward the vanishing point; near ground grows faster than the far (parallax).
   float d = depthAt(uv);
-  uv = vp + (uv - vp) / (1.0 + uDolly * (0.015 + 0.09 * d));
+  uv = uVanish + (uv - uVanish) / (1.0 + uDolly * (0.015 + 0.09 * d * uPara));
 
   // Lean: shift by depth around a mid-ground focus plane, refined twice against the depth map.
-  vec2 k = uLook * vec2(0.02, -0.012);
+  vec2 k = uLook * vec2(0.02, -0.012) * uPara;
   vec2 p = uv - k * (d - 0.35);
   p = uv - k * (depthAt(p) - 0.35);
   p = uv - k * (depthAt(p) - 0.35);
   uv = p;
-  float dr = texture2D(uDepth, uv).r;
-  d = pow(dr, 0.55);
-  float sky = 1.0 - smoothstep(0.02, 0.06, dr);
-
-  // The sky breathes: a slow, evolving warp, kept off the peaks.
-  vec2 suv = uv;
-  if (sky > 0.0) {
-    vec2 c = uv * vec2(2.4, 4.0);
-    vec2 q = vec2(fbm(c + vec2(uTime * 0.018, 0.0)), fbm(c + vec2(5.2, 1.3) - vec2(uTime * 0.014, uTime * 0.004)));
-    suv = uv + (q - 0.5) * vec2(0.016, 0.008) + vec2(sin(uTime * 0.04) * 0.004, 0.0);
-    sky *= 1.0 - smoothstep(0.02, 0.06, texture2D(uDepth, suv).r);
-  }
-  vec3 col = texture2D(uImg, mix(uv, suv, sky)).rgb;
+  d = depthAt(uv);
+  float sky = skyAt(uv);
   float land = 1.0 - sky;
-  vec3 day = col;
-
-  // Cloud shadows: noise laid on the ground plane (x / depth, 1 / depth), blown by the wind.
-  float z = 0.14 + d;
-  vec2 g = vec2((uv.x - 0.5) / z, 1.0 / z) * 0.55 + vec2(uTime * 0.03, uTime * 0.01);
-  float s = smoothstep(0.42, 0.68, fbm(g));
-  col = mix(col, col * vec3(0.62, 0.67, 0.78), s * 0.42 * land * smoothstep(0.03, 0.12, d));
-
-  // Glints on water and snow.
-  float lum = dot(col, vec3(0.299, 0.587, 0.114));
-  float tw = noise(uv * vec2(1400.0, 800.0) + vec2(uTime * 1.7, -uTime * 1.1));
-  col += pow(tw, 14.0) * 1.6 * smoothstep(0.62, 0.86, lum) * land * (1.0 - s) * vec3(1.0, 0.97, 0.9);
-
-  // The sun, wherever the pointer leads it.
+  float t = uTime;
   vec2 dv = (vUv - uSun) * vec2(uAspect, 1.0);
   float r = length(dv);
-  float glow = uSunA * (0.5 * exp(-r * 9.0) + 0.22 * exp(-r * 2.4));
-  col += glow * vec3(1.0, 0.84, 0.6) * mix(0.12, 1.0, sky);
-  // On the land, only a warm wash below the sun, stronger as it climbs.
-  col *= 1.0 + uSunA * 0.14 * smoothstep(0.5, 0.9, uSun.y) * exp(-abs(dv.x) * 1.8) * land * vec3(1.1, 1.0, 0.86);
+  vec3 col;
+  float tw = noise(uv * vec2(1400.0, 800.0) + vec2(t * 1.7, -t * 1.1));
+  bool graded = true;
 
-  // ── Night: day-for-night, the way cinema grades it. The land sinks into moonlit blue (its
-  // highlights, the snow and the river, stay silver); the bright clouds become moonlit cloud
-  // against a deep navy sky full of stars; the pointer carries the moon instead of the sun.
-  if (uNight > 0.001) {
-    float l = dot(day, vec3(0.299, 0.587, 0.114));
-    vec3 landN = mix(vec3(l), day, 0.22) * vec3(0.42, 0.52, 0.78);
-    landN = landN * 0.55 + vec3(0.62, 0.74, 1.0) * pow(smoothstep(0.45, 0.95, l), 1.6) * 0.42;
-    float cloud = smoothstep(0.55, 0.92, l);
-    vec3 skyBase = mix(vec3(0.02, 0.035, 0.075), vec3(0.06, 0.09, 0.16), vUv.y * -1.0 + 1.0);
-    vec3 skyN = mix(skyBase, vec3(0.42, 0.5, 0.66) * l, cloud * 0.85);
-    // Stars, only where the sky is clear of cloud, twinkling.
-    vec2 sg = vUv * vec2(uAspect, 1.0) * 160.0;
-    vec2 id = floor(sg);
-    vec2 f = fract(sg) - 0.5;
-    float h = hash(id);
-    float star = step(0.965, h) * (1.0 - smoothstep(0.04, 0.16, length(f - (vec2(hash(id + 3.1), hash(id + 7.7)) - 0.5) * 0.6)));
-    star *= (0.6 + 0.4 * sin(uTime * (1.0 + h * 3.0) + h * 50.0)) * (1.0 - cloud);
-    vec2 sg2 = vUv * vec2(uAspect, 1.0) * 420.0;
-    float h2 = hash(floor(sg2) + 11.0);
-    float star2 = step(0.985, h2) * (1.0 - smoothstep(0.05, 0.2, length(fract(sg2) - 0.5))) * (1.0 - cloud) * 0.6;
-    skyN += vec3(0.85, 0.9, 1.0) * (star + star2);
-    vec3 night = mix(landN, skyN, sky);
-    // Cloud shadows at night are moon shadows: softer.
-    night = mix(night, night * 0.8, s * 0.25 * land);
-    // The moon at the pointer: a crisp disc and a cold halo; moonlight pools on the land below it.
-    vec2 mv = (vUv - uSun) * vec2(uAspect, 1.0);
-    float mr = length(mv);
-    float disc = 1.0 - smoothstep(0.022, 0.026, mr);
-    float halo = uSunA * (0.35 * exp(-mr * 14.0) + 0.12 * exp(-mr * 3.0));
-    night += vec3(0.72, 0.82, 1.0) * halo * mix(0.25, 1.0, sky);
-    night = mix(night, vec3(0.95, 0.97, 1.0), disc * sky * uSunA);
-    night *= 1.0 + uSunA * 0.35 * exp(-abs(mv.x) * 2.0) * land * vec3(0.85, 0.95, 1.15);
-    // Glints on the river and snow, silver.
-    night += pow(tw, 14.0) * 1.2 * smoothstep(0.62, 0.86, l) * land * vec3(0.8, 0.9, 1.0);
-    col = mix(col, night, uNight);
+  if (uScene < 0.5) {
+    // ── valley ──
+    vec2 suv = uv;
+    if (sky > 0.0) {
+      vec2 c = uv * vec2(2.4, 4.0);
+      vec2 q = vec2(fbm(c + vec2(t * 0.018, 0.0)), fbm(c + vec2(5.2, 1.3) - vec2(t * 0.014, t * 0.004)));
+      suv = uv + (q - 0.5) * vec2(0.016, 0.008) + vec2(sin(t * 0.04) * 0.004, 0.0);
+      sky *= skyAt(suv);
+    }
+    col = texture2D(uImg, mix(uv, suv, sky)).rgb;
+    land = 1.0 - sky;
+    float z = 0.14 + d;
+    vec2 g = vec2((uv.x - 0.5) / z, 1.0 / z) * 0.55 + vec2(t * 0.03, t * 0.01);
+    float s = smoothstep(0.42, 0.68, fbm(g)) * (1.0 - uNight * 0.75);
+    col = mix(col, col * vec3(0.62, 0.67, 0.78), s * 0.42 * land * smoothstep(0.03, 0.12, d));
+    float lum = dot(col, vec3(0.299, 0.587, 0.114));
+    col += pow(tw, 14.0) * 1.6 * smoothstep(0.62, 0.86, lum) * land * (1.0 - s) * vec3(1.0, 0.97, 0.9) * (1.0 - uNight);
+    if (uNight > 0.001) col = mix(col, nightGrade(col, sky), uNight);
+    graded = false;
+    // The sun (day) or the moon (night) at the pointer.
+    float glow = uSunA * (0.5 * exp(-r * 9.0) + 0.22 * exp(-r * 2.4));
+    col += glow * vec3(1.0, 0.84, 0.6) * mix(0.12, 1.0, sky) * (1.0 - uNight);
+    col *= 1.0 + uSunA * 0.14 * smoothstep(0.5, 0.9, uSun.y) * exp(-abs(dv.x) * 1.8) * land * vec3(1.1, 1.0, 0.86) * (1.0 - uNight);
+    float disc = 1.0 - smoothstep(0.022, 0.026, r);
+    float halo = uSunA * (0.35 * exp(-r * 14.0) + 0.12 * exp(-r * 3.0));
+    col += vec3(0.72, 0.82, 1.0) * halo * mix(0.25, 1.0, sky) * uNight;
+    col = mix(col, vec3(0.95, 0.97, 1.0), disc * sky * uSunA * uNight);
+    col *= 1.0 + uSunA * 0.35 * exp(-abs(dv.x) * 2.0) * land * vec3(0.85, 0.95, 1.15) * uNight;
+  } else if (uScene < 1.5) {
+    // ── aurora: curtains flow and flicker; the lake mirrors them, rippling ──
+    float water = smoothstep(0.765, 0.785, uv.y);
+    vec2 a = vec2(sin(uv.y * 7.0 + t * 0.4 + fbm(uv * 2.5 + t * 0.07) * 4.0) * 0.005, (fbm(vec2(uv.x * 4.0 - t * 0.1, t * 0.06)) - 0.5) * 0.008);
+    vec2 w = vec2(sin(uv.y * 260.0 - t * 2.2 + noise(uv * vec2(30.0, 90.0)) * 5.0) * 0.0022, 0.0) * (uv.y - 0.76) * 6.0;
+    vec2 suv = uv + a * sky + w * water;
+    col = texture2D(uImg, suv).rgb;
+    float rays = 0.86 + 0.3 * pow(fbm(vec2(uv.x * 9.0 + t * 0.12, uv.y * 1.5 + t * 0.05)), 1.4);
+    float glowNear = exp(-r * 3.0) * uSunA * 0.25; // the sky brightens a little where you look
+    col *= mix(1.0, rays + glowNear, max(sky, water * 0.75));
+    col += pow(tw, 16.0) * 0.6 * water * vec3(0.7, 1.0, 0.85);
+    col *= mix(1.0, 0.85, uNight);
+    graded = false;
+  } else if (uScene < 2.5) {
+    // ── lake: shimmer, and rings from the pointer ──
+    vec3 c0 = texture2D(uImg, uv).rgb;
+    float wm = smoothstep(0.06, 0.16, c0.b - c0.r) * smoothstep(0.03, 0.12, c0.g - c0.r) * smoothstep(0.55, 0.62, uv.y);
+    vec2 rip = vec2(sin(uv.y * 320.0 + t * 1.4 + noise(uv * vec2(24.0, 90.0)) * 6.0) * 0.0016, 0.0);
+    float ring = sin(r * 140.0 - t * 7.0) * exp(-r * 9.0) * uSunA;
+    vec2 rd = r > 0.0 ? dv / r : vec2(0.0);
+    vec2 duv = (rip + rd * ring * 0.004 * vec2(1.0, -1.0)) * wm;
+    col = texture2D(uImg, uv + duv).rgb;
+    col += wm * (ring * 0.06 + pow(tw, 12.0) * 0.9) * vec3(0.85, 1.0, 1.0);
+  } else if (uScene < 3.5) {
+    // ── ice: caustics in the blue ice; the pointer is a headlamp ──
+    col = texture2D(uImg, uv).rgb;
+    float l = dot(col, vec3(0.299, 0.587, 0.114));
+    float ice = smoothstep(0.05, 0.2, col.b - col.r) * smoothstep(0.12, 0.4, l);
+    float cs = caustic(uv * vec2(1.6, 1.1) + vec2(0.0, t * 0.01), t * 0.35);
+    float shimmer = (cs - 0.35) * ice;
+    col *= 1.0 + shimmer * 0.45;
+    col += vec3(0.75, 0.95, 1.0) * max(shimmer, 0.0) * l * 0.25;
+    col *= mix(1.0, 0.42, uNight);
+    float lamp = exp(-r * mix(4.5, 3.0, uNight)) * uSunA;
+    col *= 1.0 + lamp * mix(0.3, 2.4, uNight) * vec3(1.0, 0.95, 0.88);
+    col += lamp * max(shimmer, 0.0) * 0.25 * vec3(0.8, 0.97, 1.0);
+    graded = false;
+  } else if (uScene < 4.5) {
+    // ── canyon: the pointer is the sun, raking across the hoodoos ──
+    col = texture2D(uImg, uv + vec2(0.0, sin(uv.x * 80.0 + t * 3.0) * 0.0006 * sky)).rgb;
+    float dx = depthAt(uv + vec2(uTexel.x * 2.0, 0.0)) - depthAt(uv - vec2(uTexel.x * 2.0, 0.0));
+    float dy = depthAt(uv + vec2(0.0, uTexel.y * 2.0)) - depthAt(uv - vec2(0.0, uTexel.y * 2.0));
+    vec3 n = normalize(vec3(-dx * 22.0, dy * 22.0, 1.0));
+    vec3 L = normalize(vec3((uSun - 0.5) * vec2(2.2, 1.6), 0.55));
+    float lam = dot(n, L);
+    col *= mix(1.0, 0.78 + 0.5 * clamp(lam, 0.0, 1.0), land * 0.9) * mix(vec3(1.0), vec3(1.06, 1.0, 0.92), uSunA * land);
+    col += vec3(1.0, 0.75, 0.45) * pow(clamp(lam, 0.0, 1.0), 6.0) * 0.12 * land;
+  } else {
+    // ── forest: sunbeams through the canopy toward the pointer; fireflies at night ──
+    col = texture2D(uImg, uv).rgb;
+    vec2 ls = toImg(uSun);
+    vec2 dir = normalize(ls - uv + 1e-5);
+    float reach = min(length(ls - uv), 0.45);
+    vec2 stepv = dir * reach / 24.0;
+    vec2 q = uv;
+    float acc = 0.0;
+    float wgt = 1.0;
+    for (int i = 0; i < 24; i++) {
+      q += stepv;
+      float g = texture2D(uDepth, q).r;
+      vec3 c = texture2D(uImg, q).rgb;
+      // Only open, bright sky lets light in.
+      acc += (1.0 - smoothstep(0.0, 0.05, g)) * smoothstep(0.62, 0.92, dot(c, vec3(0.333))) * wgt;
+      wgt *= 0.93;
+    }
+    float shafts = 0.55 + 0.45 * fbm(vec2(atan(uv.y - ls.y, uv.x - ls.x) * 9.0, t * 0.12));
+    float beams = smoothstep(0.0, 6.0, acc) * shafts * smoothstep(0.03, 0.35, length(uv - ls));
+    vec3 beamC = mix(vec3(1.0, 0.86, 0.62), vec3(0.6, 0.72, 1.0), uNight);
+    col = mix(col, col + beamC * 0.55, beams * mix(0.45, 0.3, uNight) * land);
+    if (uNight > 0.001) {
+      // Sky here is only what is both far and bright, with soft edges: thin branches and the
+      // dark distant forest never get cut out.
+      float l0 = dot(texture2D(uImg, uv).rgb, vec3(0.299, 0.587, 0.114));
+      float skyB = (1.0 - smoothstep(0.0, 0.12, texture2D(uDepth, uv).r)) * smoothstep(0.5, 0.82, l0);
+      col = mix(col, nightGrade(col, skyB) + beamC * beams * 0.3 * (1.0 - skyB), uNight);
+      graded = false;
+      // Fireflies over the path: a few warm points drifting and blinking.
+      float ff = 0.0;
+      for (int i = 0; i < 9; i++) {
+        float fi = float(i);
+        vec2 fp = vec2(0.15 + 0.7 * hash(vec2(fi, 1.3)) + 0.04 * sin(t * (0.3 + 0.2 * hash(vec2(fi, 4.0))) + fi), 0.12 + 0.35 * hash(vec2(fi, 7.1)) + 0.03 * cos(t * 0.4 + fi * 2.0));
+        float blink = smoothstep(0.3, 1.0, sin(t * (0.8 + hash(vec2(fi, 2.2))) + fi * 3.0));
+        float fr = length((vUv - fp) * vec2(uAspect, 1.0));
+        ff += blink * (exp(-fr * 260.0) * 1.2 + exp(-fr * 40.0) * 0.12);
+      }
+      col += vec3(1.0, 0.85, 0.4) * ff * uNight;
+    }
   }
 
+  if (graded && uNight > 0.001) col = mix(col, nightGrade(col, sky), uNight);
   gl_FragColor = vec4(col, 1.0);
 }
 `
@@ -150,13 +257,32 @@ void main() {
  * canvas fades in over it once its first frame is drawn. Off under reduced motion, Save-Data,
  * or without WebGL.
  */
-export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?: number; fy?: number }) {
+export function LivingPhoto({
+  depth,
+  scene = 'valley',
+  fx = 0.5,
+  fy = 0.55,
+  vanish = [0.62, 0.6],
+  skyCut = 0.02,
+}: {
+  depth: string
+  scene?: LivingScene
+  /** Focal point (image uv) the crop centres on. */
+  fx?: number
+  fy?: number
+  /** Where the camera pushes in (image uv). */
+  vanish?: [number, number]
+  /** Raw depth below which the map is sky. */
+  skyCut?: number
+}) {
+  const sceneN = SCENES[scene]
+  const [vx, vy] = vanish
   const ref = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     const canvas = ref.current
     const stage = canvas?.parentElement
-    const img = stage?.querySelector<HTMLImageElement>('.photo-img img')
+    const img = stage?.querySelector<HTMLImageElement>('.photo-img:not(.photo-night) img') ?? stage?.querySelector<HTMLImageElement>('img')
     if (!canvas || !stage || !img) return
     if ((navigator as Nav).connection?.saveData) return
 
@@ -234,10 +360,14 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
       const loc = gl.getAttribLocation(prog, 'aPos')
       gl.enableVertexAttribArray(loc)
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
-      for (const n of ['uImg', 'uDepth', 'uScale', 'uCenter', 'uLook', 'uSun', 'uSunA', 'uDolly', 'uTime', 'uAspect', 'uNight'])
+      for (const n of ['uImg', 'uDepth', 'uScale', 'uCenter', 'uLook', 'uSun', 'uSunA', 'uDolly', 'uTime', 'uAspect', 'uNight', 'uScene', 'uVanish', 'uSkyCut', 'uTexel', 'uPara'])
         u[n] = gl.getUniformLocation(prog, n)
       gl.uniform1i(u.uImg, 0)
       gl.uniform1i(u.uDepth, 1)
+      gl.uniform1f(u.uScene, sceneN)
+      gl.uniform2f(u.uVanish, vx, vy)
+      gl.uniform1f(u.uSkyCut, skyCut)
+      gl.uniform1f(u.uPara, scene === 'forest' ? 0.3 : scene === 'aurora' ? 0.6 : 1)
       try {
         // The photo is already on the page (same origin); the depth map is ~7 KB.
         const photo = img.complete && img.naturalWidth ? img : await load(img.currentSrc || img.src)
@@ -246,6 +376,7 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
         texture(photo, 0)
         const dm = await load(depth)
         if (dead) return
+        gl.uniform2f(u.uTexel, 1 / dm.naturalWidth, 1 / dm.naturalHeight)
         texture(dm, 1)
       } catch {
         /* no texture, no canvas: the photo stays */
@@ -269,20 +400,34 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
       const now = performance.now()
       const r = stage.getBoundingClientRect()
       const vh = window.innerHeight
-      // Pointer: a fine pointer anywhere over the band leads the sun and leans the camera.
+      // Pointer: a fine pointer over the photo leads the light and leans the camera.
       const p = motion.pointer
-      const over = p.fine && p.y >= r.top && p.y <= r.bottom
+      const over = p.fine && p.y >= r.top && p.y <= r.bottom && p.x >= r.left && p.x <= r.right
+      const px = (p.x - r.left) / r.width
+      const py = 1 - (p.y - r.top) / r.height
+      const tnight = document.documentElement.dataset.theme === 'dark' ? 1 : 0
       let tx = 0
       let ty = 0
-      let tsx = 0.74
-      let tsy = 0.8
-      let tsa = 0.3
+      // Where the light rests with no pointer, per scene (canvas uv, y up), and how present it is.
+      let tsx = scene === 'forest' ? 0.78 : scene === 'canyon' ? 0.5 + 0.38 * Math.sin(time * 0.18) : 0.74
+      let tsy = scene === 'forest' ? 0.95 : scene === 'canyon' ? 0.8 : 0.8
+      let tsa = scene === 'valley' ? (tnight ? 0.75 : 0.3) : scene === 'forest' || scene === 'canyon' ? 0.8 : 0
+      // In the dark cave, with nobody holding the lamp, it rests on the ice.
+      if (scene === 'ice') {
+        tsx = 0.55 + 0.08 * Math.sin(time * 0.3)
+        tsy = 0.5
+        tsa = tnight ? 0.7 : 0
+      }
+      if (scene === 'valley' && tnight) {
+        tsx = 0.7
+        tsy = 0.82
+      }
       if (over || drag) {
-        tx = Math.max(-1, Math.min(1, ((p.x - r.left) / r.width) * 2 - 1))
-        ty = Math.max(-1, Math.min(1, ((p.y - r.top) / r.height) * 2 - 1))
-        tsx = (p.x - r.left) / r.width
-        // The sun stays in the sky: the pointer's height sets how high it rides.
-        tsy = 0.62 + 0.34 * (1 - Math.min(1, Math.max(0, (p.y - r.top) / r.height)))
+        tx = Math.max(-1, Math.min(1, px * 2 - 1))
+        ty = Math.max(-1, Math.min(1, -py * 2 + 1))
+        tsx = px
+        // The valley's sun and moon stay in the sky: the pointer's height sets how high they ride.
+        tsy = scene === 'valley' ? 0.62 + 0.34 * Math.min(1, Math.max(0, py)) : py
         tsa = 1
       } else {
         // Touch screens and idle: the scroll leans the camera, the view sways a touch.
@@ -291,13 +436,6 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
         tx = Math.sin(time * 0.25) * 0.35
       }
       const tdolly = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)))
-      const tnight = document.documentElement.dataset.theme === 'dark' ? 1 : 0
-      // At night the moon keeps a soft presence even with no pointer over the band.
-      if (tnight && !(over || drag)) {
-        tsx = 0.7
-        tsy = 0.82
-        tsa = 0.75
-      }
       const moving =
         Math.abs(tx - lx) + Math.abs(ty - ly) + Math.abs(tdolly - dolly) + Math.abs(tsa - sa) + Math.abs(tnight - night) > 0.002
       if (moving || now - motion.lastInput < 400) activeUntil = now + 500
@@ -386,7 +524,7 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
       canvas.removeEventListener('webglcontextlost', onLost)
       gl?.getExtension('WEBGL_lose_context')?.loseContext()
     }
-  }, [depth, fx, fy])
+  }, [depth, fx, fy, sceneN, vx, vy, skyCut, scene])
 
   return <canvas ref={ref} className="living" aria-hidden="true" />
 }
