@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <>
       {/* The ascent: one scroll-played cinematic flight behind basecamp and terrain. */}
-      <ScrollFilm name="ascent" className="film-scrim">
+      <ScrollFilm name="ascent" night="ascent-night" className="film-scrim">
         <Basecamp />
         <Terrain />
       </ScrollFilm>

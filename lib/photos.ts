@@ -13,6 +13,10 @@ import guideTrail from '@/assets/nature/guide-trail.jpg'
 import guideRidge from '@/assets/nature/spare-terrain-golden.jpg'
 import startMatterhorn from '@/assets/nature/spare-hero-matterhorn.jpg'
 import summitGolden from '@/assets/nature/summit-golden.jpg'
+import basecampNight from '@/assets/nature/basecamp-night.jpg'
+import basecampNightM from '@/assets/nature/m/basecamp-night-m.jpg'
+import terrainNight from '@/assets/nature/terrain-night.jpg'
+import terrainNightM from '@/assets/nature/m/terrain-night-m.jpg'
 import summitGoldenM from '@/assets/nature/m/summit-golden-m.jpg'
 import notesForestPath from '@/assets/nature/notes-forest-path.jpg'
 import waypointPosition from '@/assets/nature/waypoint-position.jpg'
@@ -43,6 +47,7 @@ export type PhotoId =
   | 'expedition-canyon' | 'expedition-ice-cave' | 'expedition-aurora' | 'expedition-alpine-lake'
   | 'hero-gtm' | 'hero-about' | 'hero-contact' | 'hero-writing' | 'hero-404'
   | 'community-golden' | 'start-matterhorn'
+  | 'basecamp-night' | 'terrain-night'
 
 /** A rectangle in fractions of the image (0–1), where text is allowed to sit. */
 export type Zone = { x: number; y: number; w: number; h: number }
@@ -110,6 +115,30 @@ export const photos: Record<PhotoId, NaturePhoto> = {
     dominant: '#6c707f',
     tone: 'photo',
     scrim: { side: 'top', rgb: '22 28 50', a: 0.55 },
+    zone: { x: 0.04, y: 0.1, w: 0.46, h: 0.3 },
+    zonePortrait: { x: 0.05, y: 0.08, w: 0.9, h: 0.32 },
+  },
+  'basecamp-night': {
+    id: 'basecamp-night',
+    src: basecampNight,
+    portrait: basecampNightM,
+    alt: 'The Matterhorn at night under a full moon and the Milky Way, above a silver sea of cloud',
+    focal: '62% 50%',
+    dominant: '#2a3346',
+    tone: 'photo',
+    scrim: { side: 'top', rgb: '6 10 22', a: 0.42, aPortrait: 0.6, reachPortrait: 1.3 },
+    zone: { x: 0.04, y: 0.1, w: 0.52, h: 0.42 },
+    zonePortrait: { x: 0.05, y: 0.08, w: 0.9, h: 0.46 },
+  },
+  'terrain-night': {
+    id: 'terrain-night',
+    src: terrainNight,
+    portrait: terrainNightM,
+    alt: 'Low over a moonlit sea of cloud at night, distant ridges and stars on the horizon',
+    focal: '50% 45%',
+    dominant: '#3a4458',
+    tone: 'photo',
+    scrim: { side: 'top', rgb: '6 10 22', a: 0.55 },
     zone: { x: 0.04, y: 0.1, w: 0.46, h: 0.3 },
     zonePortrait: { x: 0.05, y: 0.08, w: 0.9, h: 0.32 },
   },

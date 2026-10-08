@@ -30,7 +30,7 @@ export function Terrain() {
       className="tr photo-stage"
       style={{ '--photo-dominant': photos['terrain-fog'].dominant } as CSSProperties}
     >
-      <FullBleedPhoto id="terrain-fog" sizes="100vw" drift className="tr-photo" />
+      <FullBleedPhoto id="terrain-fog" night="terrain-night" sizes="100vw" drift className="tr-photo" />
       <InViewFlag />
       <div className="tr-fog" aria-hidden="true">
         <span className="fog-a" />

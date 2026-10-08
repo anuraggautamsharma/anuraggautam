@@ -26,7 +26,7 @@ export function Basecamp() {
       className="bc photo-stage"
       style={{ '--photo-dominant': photos['basecamp-hero'].dominant } as CSSProperties}
     >
-      <FullBleedPhoto id="basecamp-hero" priority sizes="100vw" parallax={0.15} />
+      <FullBleedPhoto id="basecamp-hero" night="basecamp-night" priority sizes="100vw" parallax={0.15} />
       <InViewFlag />
       <div className="wrap cols bc-inner">
         <div className="bc-text">
