@@ -21,6 +21,8 @@ const CHIMES = [74, 76, 79, 81, 83, 86, 88]
 type Voice = { osc: OscillatorNode; osc2: OscillatorNode; gain: GainNode }
 
 export type Ambient = {
+  /** True if the browser lets this page play sound without a gesture right now. */
+  canAutoplay(): Promise<boolean>
   start(): Promise<void>
   stop(): Promise<void>
   /** 0–1 each: how deep in the cloud flight, and how close to the summit sunrise. */
@@ -199,6 +201,16 @@ export function createAmbient(): Ambient {
 
   let playing = false
   return {
+    async canAutoplay() {
+      const nav = navigator as Navigator & { getAutoplayPolicy?: (t: string) => string }
+      if (nav.getAutoplayPolicy) return nav.getAutoplayPolicy('audiocontext') === 'allowed'
+      try {
+        await Promise.race([ctx.resume(), new Promise((r) => setTimeout(r, 300))])
+      } catch {
+        /* blocked */
+      }
+      return (ctx.state as string) === 'running'
+    },
     async start() {
       if (playing) return
       playing = true

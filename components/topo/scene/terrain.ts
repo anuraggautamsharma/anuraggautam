@@ -97,7 +97,7 @@ export function createSky(backdrop: ReturnType<typeof createBackdrop>) {
   const material = new ShaderMaterial({
     vertexShader: skyVertex,
     fragmentShader: skyFragment,
-    uniforms: { ...backdrop },
+    uniforms: { ...backdrop, uTime: { value: 0 } },
     depthTest: false,
     depthWrite: false,
     toneMapped: false,

@@ -24,9 +24,12 @@ export function FullBleedPhoto({
   scrim,
   drift = false,
   parallax,
+  night,
   className,
 }: {
   id: PhotoId
+  /** The same view at night, shown instead in the dark theme (lazy: fetched only when shown). */
+  night?: PhotoId
   priority?: boolean
   sizes?: string
   scrim?: boolean
@@ -45,13 +48,16 @@ export function FullBleedPhoto({
   }
   const { props: img } = getImageProps({ ...common, src: p.src })
   const mobile = p.portrait ? getImageProps({ ...common, src: p.portrait }).props : null
+  const n = night ? photos[night] : null
+  const nightImg = n ? getImageProps({ alt: n.alt, sizes, quality: QUALITY, loading: 'lazy', src: n.src }).props : null
+  const nightMobile = n?.portrait ? getImageProps({ alt: n.alt, sizes, quality: QUALITY, loading: 'lazy', src: n.portrait }).props : null
   const showScrim = (scrim ?? true) && !!p.scrim
   const showVeil = (scrim ?? true) && p.tone === 'photo-light' && !!p.veil
 
   return (
     <>
       <picture
-        className={clsx('photo-img', drift && 'photo-drift', className)}
+        className={clsx('photo-img', drift && 'photo-drift', n && 'photo-day', className)}
         data-drift={drift ? '' : undefined}
         data-parallax={parallax ? String(parallax) : undefined}
         data-hd-scrim={p.headerScrim}
@@ -64,9 +70,20 @@ export function FullBleedPhoto({
         }
       >
         {mobile ? <source media="(max-aspect-ratio: 4/5)" srcSet={mobile.srcSet} sizes={sizes} width={mobile.width} height={mobile.height} /> : null}
-        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- getImageProps output, alt included */}
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- getImageProps output, alt included */}
         <img {...img} className={clsx(priority && 'photo-settle')} />
       </picture>
+      {n && nightImg ? (
+        <picture
+          className={clsx('photo-img photo-night', drift && 'photo-drift', className)}
+          data-parallax={parallax ? String(parallax) : undefined}
+          style={{ '--focal': n.focal, '--focal-m': n.portrait ? `50% ${focalY(n.focal)}` : undefined, backgroundColor: n.dominant } as CSSProperties}
+        >
+          {nightMobile ? <source media="(max-aspect-ratio: 4/5)" srcSet={nightMobile.srcSet} sizes={sizes} width={nightMobile.width} height={nightMobile.height} /> : null}
+          {/* eslint-disable-next-line jsx-a11y/alt-text -- getImageProps output, alt included */}
+          <img {...nightImg} />
+        </picture>
+      ) : null}
       {showScrim && p.scrim ? (
         <div
           className="photo-scrim"

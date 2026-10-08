@@ -25,9 +25,9 @@ function story() {
 }
 
 /**
- * Header switch for the soundscape. Off by default; a choice to hear it is remembered, and
- * since browsers only allow sound after a gesture, a returning listener's score resumes on
- * their first tap or key. The engine (components/sound/ambient.ts) loads on first use.
+ * Header switch for the soundscape. On by default (an "off" is remembered). Browsers only allow
+ * sound after a gesture, so where autoplay is blocked the score starts on the visitor's first
+ * click, tap or key anywhere; until then the icon breathes. The engine loads after hydration.
  */
 export function SoundToggle({ className }: { className?: string }) {
   const [on, setOn] = useState(false)
@@ -53,30 +53,36 @@ export function SoundToggle({ className }: { className?: string }) {
   }
 
   useEffect(() => {
-    let stored = false
+    // On by default: only an explicit "off" keeps it quiet.
+    let off = false
     try {
-      stored = localStorage.getItem(KEY) === 'on'
+      off = localStorage.getItem(KEY) === 'off'
     } catch {
       /* storage blocked */
     }
-    if (!stored) return
-    // Restoring a remembered "on" after mount; the score starts on the first gesture.
+    if (off) return
+    // Browsers only let a page make sound after the visitor's first click, tap or key (Chrome
+    // waives it for sites the visitor already plays sound on). Try now; else start on that gesture.
     // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is client-only
     setOn(true)
     setWaiting(true)
+    let done = false
     const go = () => {
-      setWaiting(false)
-      void play()
-      off()
+      if (done) return
+      done = true
+      detach()
+      void play().then(() => setWaiting(false))
     }
-    const off = () => {
-      window.removeEventListener('pointerdown', go)
-      window.removeEventListener('keydown', go)
-    }
-    window.addEventListener('pointerdown', go, { once: true })
-    window.addEventListener('keydown', go, { once: true })
-    return off
-     
+    const events = ['pointerdown', 'keydown', 'touchend'] as const
+    const detach = () => events.forEach((e) => window.removeEventListener(e, go, true))
+    events.forEach((e) => window.addEventListener(e, go, { capture: true, passive: true }))
+    void (async () => {
+      const { createAmbient } = await import('./ambient')
+      if (done) return
+      engine.current ??= createAmbient()
+      if (await engine.current.canAutoplay()) go()
+    })()
+    return detach
   }, [])
 
   // Quiet while the tab is hidden; back when it returns.
@@ -100,7 +106,8 @@ export function SoundToggle({ className }: { className?: string }) {
   )
 
   const toggle = () => {
-    const next = !on
+    // While waiting for a gesture, a click on the icon means "yes, play", not "off".
+    const next = waiting ? true : !on
     setOn(next)
     setWaiting(false)
     try {

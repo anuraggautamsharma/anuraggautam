@@ -16,7 +16,10 @@ export function ThemeToggle({ className }: { className?: string }) {
       className={className ? `hd-tool ${className}` : 'hd-tool'}
       aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
       title={dark ? 'Light theme' : 'Dark theme'}
-      onClick={() => setTheme(dark ? 'light' : 'dark')}
+      onClick={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        setTheme(dark ? 'light' : 'dark', { x: r.left + r.width / 2, y: r.top + r.height / 2 })
+      }}
     >
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" className="hd-tool-icon">
         {/* The sun sets into a crescent: one shape, its mask slides in. */}

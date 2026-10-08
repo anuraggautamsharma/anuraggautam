@@ -208,7 +208,34 @@
   --topo-color: var(--c-glacier-300); --topo-opacity: .08;
 }
 /* Brand marks stay exactly as their owners publish them: on dark, each sits on its own paper tile. */
-:root[data-theme="dark"] .tool-logo { box-sizing: content-box; padding: 5px 7px; background: #EEE8DC; }
+/* … on its own paper tag, all the same height, like gear tags clipped to a pack. */
+:root[data-theme="dark"] .tool-logo {
+  box-sizing: content-box; padding: 6px 9px; background: #ECE6D9;
+  border-radius: 3px; box-shadow: 0 0 0 1px rgb(255 255 255 / .06), 0 6px 16px -8px rgb(0 0 0 / .8);
+}
+
+/* ── Night, section by section ── */
+/* The coloured bands keep their hue but turn to night: deep, not neon. */
+:root[data-theme="dark"] [data-tone="forest"] { --bg: #0C2419; --surface: #081B12; --surface-2: #123223; --line: #1E3A2B; --topo-color: var(--c-alpine-300); --topo-opacity: .08; }
+:root[data-theme="dark"] [data-tone="alpine"] { --bg: #0F2D1F; --surface: #0B2418; --surface-2: #163A28; --line: #1F4230; }
+:root[data-theme="dark"] [data-tone="glacier"] { --bg: #0B2236; --surface: #081A2A; --surface-2: #11304A; --line: #1B3B57; --topo-color: var(--c-glacier-200); --topo-opacity: .08; }
+/* The contour motif becomes moonlit linework: cool, faint, never a grey wash. */
+:root[data-theme="dark"] .topo::before { background: linear-gradient(160deg, #B9C8E6, #6E8BB8 60%, #C9A27A); opacity: .085; }
+:root[data-theme="dark"] [data-tone="sand"].topo::before { background: linear-gradient(160deg, #E0C79E, #8C7A5C); opacity: .09; }
+/* A sparse, still starfield over the dark paper and earth beats (pure CSS, no paint cost on scroll). */
+:root[data-theme="dark"] :is([data-tone="paper"], [data-tone="sand"])::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .55;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, #DCE4F5 50%, transparent 51%),
+    radial-gradient(1px 1px at 37% 64%, #DCE4F5 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 71% 23%, #F4E9D8 50%, transparent 51%),
+    radial-gradient(1px 1px at 86% 77%, #DCE4F5 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 41%, #C8D4EE 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 23% 88%, #DCE4F5 50%, transparent 51%),
+    radial-gradient(1px 1px at 93% 9%, #F4E9D8 50%, transparent 51%);
+  background-size: 520px 380px;
+}
+:root[data-theme="dark"] :is([data-tone="paper"], [data-tone="sand"]) { position: relative; isolation: isolate; }
 /* While the theme flips, nothing animates its colours (one clean swap, no rainbow of transitions). */
 :root[data-theme-switching] *, :root[data-theme-switching] *::before, :root[data-theme-switching] *::after { transition: none !important; }
 
@@ -682,3 +709,12 @@ html[data-js] .signpost:not(.is-in) > .sign { clip-path: var(--sign-from); }
 .link-inline:hover { text-decoration-color: currentColor; }
 .t-mono { font-family: var(--ff-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
 }
+
+/* Night photographs (FullBleedPhoto `night`): in the dark theme they replace the day view.
+   Hidden with display:none, a lazy image is never fetched, so light visitors pay nothing. */
+.photo-stage > picture.photo-night { display: none; }
+:root[data-theme="dark"] .photo-stage > picture.photo-night { display: block; }
+:root[data-theme="dark"] .photo-stage > picture.photo-day { visibility: hidden; }
+/* The theme reveal: the old page stays put underneath while the new one is uncovered. */
+:root[data-theme-vt]::view-transition-old(root), :root[data-theme-vt]::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+:root[data-theme-vt] .site-header { view-transition-name: none; }

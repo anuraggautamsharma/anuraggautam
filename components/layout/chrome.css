@@ -278,3 +278,11 @@ body:has(#main .sb:not([data-ready])) .ft-camp[data-event] .ft-sub { display: no
 /* The narrowest phones keep the bar uncluttered: the theme switch lives in the menu there. */
 @media (max-width: 23.99rem) { .hd-theme { display: none; } }
 .mm-foot .mm-theme { color: var(--c-paper); margin-inline-start: auto; }
+/* Sound is on but the browser is waiting for a first click: the bars breathe, inviting it. */
+@media (prefers-reduced-motion: no-preference) {
+  .hd-tool[aria-pressed="true"]:not([data-on]) .hd-bar-i { animation: hd-breathe 2.4s ease-in-out infinite; }
+}
+@keyframes hd-breathe { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(.62); } }
+/* Dark theme: the deep header follows the bands into night. */
+:root[data-theme="dark"] .site-header[data-mode="deep"] { --hd-bg: rgb(12 36 25 / .9); }
+:root[data-theme="dark"] .site-header[data-mode="deep"][data-under="glacier"] { --hd-bg: rgb(11 34 54 / .9); }

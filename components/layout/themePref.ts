@@ -34,13 +34,35 @@ function apply(t: Theme) {
   requestAnimationFrame(() => requestAnimationFrame(() => d.removeAttribute('data-theme-switching')))
 }
 
-export function setTheme(t: Theme) {
+type VT = { ready: Promise<void> }
+type Doc = Document & { startViewTransition?: (cb: () => void) => VT }
+
+/**
+ * Switch theme. From the header switch, the new light spreads out from the button: a circle
+ * that grows to cover the page (a View Transition, so the compositor does it, at any page size).
+ */
+export function setTheme(t: Theme, from?: { x: number; y: number }) {
   try {
     localStorage.setItem(THEME_KEY, t)
   } catch {
     // Storage blocked: the switch still works for this page view.
   }
-  apply(t)
+  const doc = document as Doc
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches || doc.documentElement.dataset.motion === 'reduced'
+  if (!from || !doc.startViewTransition || reduced) return apply(t)
+  const r = Math.hypot(Math.max(from.x, innerWidth - from.x), Math.max(from.y, innerHeight - from.y))
+  const d = doc.documentElement
+  d.setAttribute('data-theme-vt', '')
+  const vt = doc.startViewTransition(() => apply(t))
+  vt.ready
+    .then(() => {
+      d.animate(
+        { clipPath: [`circle(0px at ${from.x}px ${from.y}px)`, `circle(${r}px at ${from.x}px ${from.y}px)`] },
+        { duration: 900, easing: 'cubic-bezier(.65, 0, .35, 1)', pseudoElement: '::view-transition-new(root)' },
+      )
+    })
+    .catch(() => {})
+  ;(vt as VT & { finished?: Promise<void> }).finished?.finally(() => d.removeAttribute('data-theme-vt'))
 }
 
 /** Calls `cb` on any theme change: the switch, or the system setting while no choice is stored. */

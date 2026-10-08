@@ -24,7 +24,7 @@ const DPR_STEPS = [1, 0.8, 0.64, 0.5] as const
 /** Ambient frame interval (mist, clouds, drift) while nothing is being scrolled or pointed at. */
 const AMBIENT_MS = { strong: 33, weak: 50 } as const
 /** Aerial haze: clear up to 0.55× the camera distance, then exponential (per world unit). */
-const FOG = { clear: 0.7, density: 0.026 } as const
+const FOG = { clear: 0.55, density: 0.034 } as const
 /** How long pins and the route head glide from the poster to the 3D map. */
 const ENTER_MS = 450
 
@@ -248,6 +248,7 @@ class Controller {
     this.night = dt ? damp(this.night, nightTo, 2.5, dt) : nightTo
     if (Math.abs(this.night - nightTo) < 0.002) this.night = nightTo
     this.backdrop.uNight.value = this.night
+    this.sky.material.uniforms.uTime.value = this.time
 
     this.ribbon.material.uniforms.uProgress.value = routeState.uS
     this.ribbon.material.uniforms.uTime.value = this.time

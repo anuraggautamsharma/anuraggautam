@@ -1,9 +1,10 @@
 'use client'
 'use no memo' // React Compiler: this island drives a canvas imperatively from the shared loop
 
-import { type ReactNode, useEffect, useRef } from 'react'
+import { type ReactNode, useEffect, useRef, useSyncExternalStore } from 'react'
 import { damp, subscribe, wake } from '@/components/motion/loop'
 import { isReducedMotion, subscribeMotionPref } from '@/components/layout/motionPref'
+import { getTheme, subscribeTheme } from '@/components/layout/themePref'
 import './film.css'
 
 /** public/film/<name>/manifest.json */
@@ -30,13 +31,16 @@ const pad = (i: number) => String(i).padStart(4, '0')
  * ever decoded (off the main thread, via createImageBitmap), so memory stays flat.
  */
 export function ScrollFilm({
-  name,
+  name: dayName,
+  night,
   range = [0, 1],
   className,
   cssProgress = false,
   children,
 }: {
   name: string
+  /** The same flight shot at night, played in the dark theme (public/film/<night>/). */
+  night?: string
   /** Expose the scroll progress as var(--film-p) on the wrapper, for the beats' own effects.
    *  Off by default: every change restyles the whole subtree. */
   cssProgress?: boolean
@@ -45,6 +49,8 @@ export function ScrollFilm({
   className?: string
   children: ReactNode
 }) {
+  const theme = useSyncExternalStore(subscribeTheme, getTheme, () => 'light' as const)
+  const name = theme === 'dark' && night ? night : dayName
   const wrap = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -70,7 +76,7 @@ export function ScrollFilm({
     let started = false
     let unsub: (() => void) | null = null
     let pVar = ''
-    const attr = `data-film-${name}`
+    const attr = `data-film-${dayName}`
     const [r0, r1] = range
 
     const pickVariant = (m: Manifest) => {
@@ -287,10 +293,10 @@ export function ScrollFilm({
       document.documentElement.removeAttribute(attr)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- range and cssProgress are static per film
-  }, [name])
+  }, [name, dayName])
 
   return (
-    <div ref={wrap} className={className ? `film ${className}` : 'film'} data-film={name}>
+    <div ref={wrap} className={className ? `film ${className}` : 'film'} data-film={dayName}>
       <div className="film-stage" aria-hidden="true">
         <canvas ref={canvasRef} className="film-canvas" />
       </div>

@@ -582,4 +582,10 @@ html[data-revealed] .gd-fig.wipe:not(.is-in) { clip-path: inset(calc(-1 * var(--
 :root[data-motion="reduced"] .bc .load-lines .mask > span, :root[data-motion="reduced"] .bc .load-rise { animation: none; }
 
 /* Dark theme: the guide's portrait panel turns from sand to a warm night brown. */
-:root[data-theme="dark"] .gd-panel { background: #2A261C; }
+:root[data-theme="dark"] .gd-panel {
+  /* Night: he stands in the warm light of a camp lamp, the panel falling off into dark earth. */
+  background:
+    radial-gradient(90% 70% at 50% 34%, rgb(255 190 120 / .30), rgb(255 160 90 / .08) 55%, transparent 75%),
+    linear-gradient(to bottom, #2E2618, #1A160F);
+}
+:root[data-theme="dark"] .gd-cutout { filter: drop-shadow(0 24px 40px rgb(0 0 0 / .55)); }

@@ -22,7 +22,8 @@ void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }
 /**
  * One pass over the photograph and its depth map (estimated offline, Depth Anything V2):
  * the camera leans and pushes in with real parallax, the sky's clouds billow, their shadows
- * sweep the land, light glints on the river and snow, and the sun follows the pointer.
+ * sweep the land, light glints on the river and snow, and the sun follows the pointer. In the
+ * dark theme the same valley is graded to moonlit night, with stars, and the pointer holds the moon.
  */
 const FRAG = `
 precision highp float;
@@ -37,6 +38,7 @@ uniform float uSunA;
 uniform float uDolly;  // 0..1, the push-in
 uniform float uTime;
 uniform float uAspect;
+uniform float uNight;  // 0 day, 1 night (dark theme): the same valley under the moon
 
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p) {
@@ -80,6 +82,7 @@ void main() {
   }
   vec3 col = texture2D(uImg, mix(uv, suv, sky)).rgb;
   float land = 1.0 - sky;
+  vec3 day = col;
 
   // Cloud shadows: noise laid on the ground plane (x / depth, 1 / depth), blown by the wind.
   float z = 0.14 + d;
@@ -99,6 +102,43 @@ void main() {
   col += glow * vec3(1.0, 0.84, 0.6) * mix(0.12, 1.0, sky);
   // On the land, only a warm wash below the sun, stronger as it climbs.
   col *= 1.0 + uSunA * 0.14 * smoothstep(0.5, 0.9, uSun.y) * exp(-abs(dv.x) * 1.8) * land * vec3(1.1, 1.0, 0.86);
+
+  // ── Night: day-for-night, the way cinema grades it. The land sinks into moonlit blue (its
+  // highlights, the snow and the river, stay silver); the bright clouds become moonlit cloud
+  // against a deep navy sky full of stars; the pointer carries the moon instead of the sun.
+  if (uNight > 0.001) {
+    float l = dot(day, vec3(0.299, 0.587, 0.114));
+    vec3 landN = mix(vec3(l), day, 0.22) * vec3(0.42, 0.52, 0.78);
+    landN = landN * 0.55 + vec3(0.62, 0.74, 1.0) * pow(smoothstep(0.45, 0.95, l), 1.6) * 0.42;
+    float cloud = smoothstep(0.55, 0.92, l);
+    vec3 skyBase = mix(vec3(0.02, 0.035, 0.075), vec3(0.06, 0.09, 0.16), vUv.y * -1.0 + 1.0);
+    vec3 skyN = mix(skyBase, vec3(0.42, 0.5, 0.66) * l, cloud * 0.85);
+    // Stars, only where the sky is clear of cloud, twinkling.
+    vec2 sg = vUv * vec2(uAspect, 1.0) * 160.0;
+    vec2 id = floor(sg);
+    vec2 f = fract(sg) - 0.5;
+    float h = hash(id);
+    float star = step(0.965, h) * (1.0 - smoothstep(0.04, 0.16, length(f - (vec2(hash(id + 3.1), hash(id + 7.7)) - 0.5) * 0.6)));
+    star *= (0.6 + 0.4 * sin(uTime * (1.0 + h * 3.0) + h * 50.0)) * (1.0 - cloud);
+    vec2 sg2 = vUv * vec2(uAspect, 1.0) * 420.0;
+    float h2 = hash(floor(sg2) + 11.0);
+    float star2 = step(0.985, h2) * (1.0 - smoothstep(0.05, 0.2, length(fract(sg2) - 0.5))) * (1.0 - cloud) * 0.6;
+    skyN += vec3(0.85, 0.9, 1.0) * (star + star2);
+    vec3 night = mix(landN, skyN, sky);
+    // Cloud shadows at night are moon shadows: softer.
+    night = mix(night, night * 0.8, s * 0.25 * land);
+    // The moon at the pointer: a crisp disc and a cold halo; moonlight pools on the land below it.
+    vec2 mv = (vUv - uSun) * vec2(uAspect, 1.0);
+    float mr = length(mv);
+    float disc = 1.0 - smoothstep(0.022, 0.026, mr);
+    float halo = uSunA * (0.35 * exp(-mr * 14.0) + 0.12 * exp(-mr * 3.0));
+    night += vec3(0.72, 0.82, 1.0) * halo * mix(0.25, 1.0, sky);
+    night = mix(night, vec3(0.95, 0.97, 1.0), disc * sky * uSunA);
+    night *= 1.0 + uSunA * 0.35 * exp(-abs(mv.x) * 2.0) * land * vec3(0.85, 0.95, 1.15);
+    // Glints on the river and snow, silver.
+    night += pow(tw, 14.0) * 1.2 * smoothstep(0.62, 0.86, l) * land * vec3(0.8, 0.9, 1.0);
+    col = mix(col, night, uNight);
+  }
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -141,6 +181,7 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
     let sy = 0.78
     let sa = 0.35
     let dolly = 0
+    let night = document.documentElement.dataset.theme === 'dark' ? 1 : 0
     let drag = false
 
     const compile = (type: number, src: string) => {
@@ -193,7 +234,7 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
       const loc = gl.getAttribLocation(prog, 'aPos')
       gl.enableVertexAttribArray(loc)
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
-      for (const n of ['uImg', 'uDepth', 'uScale', 'uCenter', 'uLook', 'uSun', 'uSunA', 'uDolly', 'uTime', 'uAspect'])
+      for (const n of ['uImg', 'uDepth', 'uScale', 'uCenter', 'uLook', 'uSun', 'uSunA', 'uDolly', 'uTime', 'uAspect', 'uNight'])
         u[n] = gl.getUniformLocation(prog, n)
       gl.uniform1i(u.uImg, 0)
       gl.uniform1i(u.uDepth, 1)
@@ -250,7 +291,15 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
         tx = Math.sin(time * 0.25) * 0.35
       }
       const tdolly = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)))
-      const moving = Math.abs(tx - lx) + Math.abs(ty - ly) + Math.abs(tdolly - dolly) + Math.abs(tsa - sa) > 0.002
+      const tnight = document.documentElement.dataset.theme === 'dark' ? 1 : 0
+      // At night the moon keeps a soft presence even with no pointer over the band.
+      if (tnight && !(over || drag)) {
+        tsx = 0.7
+        tsy = 0.82
+        tsa = 0.75
+      }
+      const moving =
+        Math.abs(tx - lx) + Math.abs(ty - ly) + Math.abs(tdolly - dolly) + Math.abs(tsa - sa) + Math.abs(tnight - night) > 0.002
       if (moving || now - motion.lastInput < 400) activeUntil = now + 500
       if (now < activeUntil ? false : now - lastRender < AMBIENT_MS - 4) return
       const step = Math.min(dt || 1 / 60, 1 / 20)
@@ -262,6 +311,7 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
       sy = damp(sy, tsy, 5, step)
       sa = damp(sa, tsa, 3, step)
       dolly = damp(dolly, tdolly, 4, step)
+      night = damp(night, tnight, 2.2, step)
 
       size()
       const aspect = w / h
@@ -281,6 +331,7 @@ export function LivingPhoto({ depth, fx = 0.5, fy = 0.55 }: { depth: string; fx?
       gl.uniform1f(u.uDolly, dolly)
       gl.uniform1f(u.uTime, time)
       gl.uniform1f(u.uAspect, aspect)
+      gl.uniform1f(u.uNight, night)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
       if (!canvas.hasAttribute('data-on')) canvas.setAttribute('data-on', '')
     }
