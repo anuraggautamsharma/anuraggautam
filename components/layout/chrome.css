@@ -10,6 +10,8 @@
   view-transition-name: chrome;
   transition: transform var(--dur-ui) var(--ease-out);
 }
+/* Dark theme: the default (paper) slab becomes a night slab. */
+:root[data-theme="dark"] :is(.site-header:not([data-mode]), .site-header[data-mode="paper"]) { --hd-bg: rgb(10 20 16 / .82); --hd-fg: #EEE8DC; --hd-bd: #22322A; --focus: var(--c-sunrise-300); }
 .site-header[data-hidden] { transform: translateY(calc(-100% - var(--nav-inset) - 24px)); }
 /* The bar's shadow reaches ~20px below it: drop it while hidden so no smear lingers at the top edge. */
 .site-header[data-hidden] .hd-bar { box-shadow: none; }
@@ -102,11 +104,11 @@ html[data-menu-open] .site-header .hd-cta { visibility: hidden; }
 @media (min-width: 64rem) {
   .site-header { --hd-cta-w: 12.25rem; --hd-cta-shift: calc(var(--hd-cta-w) + 28px - 10px); }
   .site-header .hd-cta { inline-size: var(--hd-cta-w); }
-  .hd-nav, .hd-alt { transition: transform var(--dur-ui) var(--ease-out); }
-  .site-header[data-mode="clear"] :is(.hd-nav, .hd-alt),
-  .site-header[data-cta-off] :is(.hd-nav, .hd-alt),
-  body:has(.wo-form) .site-header :is(.hd-nav, .hd-alt),
-  body:has(#main > [data-nav="photo"]:first-child, #main > :first-child > [data-nav="photo"]:first-child) .site-header:not([data-mode]) :is(.hd-nav, .hd-alt) {
+  .hd-nav, .hd-alt, .hd-tools { transition: transform var(--dur-ui) var(--ease-out); }
+  .site-header[data-mode="clear"] :is(.hd-nav, .hd-alt, .hd-tools),
+  .site-header[data-cta-off] :is(.hd-nav, .hd-alt, .hd-tools),
+  body:has(.wo-form) .site-header :is(.hd-nav, .hd-alt, .hd-tools),
+  body:has(#main > [data-nav="photo"]:first-child, #main > :first-child > [data-nav="photo"]:first-child) .site-header:not([data-mode]) :is(.hd-nav, .hd-alt, .hd-tools) {
     transform: translateX(var(--hd-cta-shift));
   }
 }
@@ -253,3 +255,26 @@ body:has(#main .sb:not([data-ready])) .ft-camp[data-event] .ft-sub { display: no
 .ft-opt[data-on] { opacity: 1; color: var(--c-paper); text-decoration: underline 2px var(--c-sunrise-500); text-underline-offset: .3em; }
 
 @media print { .site-header, .ft-ridge, .ft-mega-wrap, .ft-toggle { display: none !important; } }
+
+/* ── Header tools: sound and theme ── */
+.hd-tools { display: flex; align-items: center; gap: 0; margin-inline-end: 2px; }
+.hd-tool {
+  display: grid; place-items: center; inline-size: 38px; block-size: 38px; flex: none;
+  color: var(--hd-fg); background: transparent; border: 0; cursor: pointer;
+  transition: background-color var(--dur-hover) var(--ease-out), opacity var(--dur-hover) var(--ease-out);
+}
+.hd-tool:hover { background-color: color-mix(in srgb, currentColor 10%, transparent); }
+.hd-tool:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.hd-tool-icon { display: block; filter: drop-shadow(var(--hd-ts, none)); }
+.hd-sun-disc, .hd-moon-bite, .hd-sun-rays { transition: r 500ms var(--ease-out), cx 500ms var(--ease-out), cy 500ms var(--ease-out), opacity 300ms var(--ease-out); }
+/* Sound: five bars at rest; they sway while the score plays. */
+.hd-bar-i { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(.28); transition: transform 400ms var(--ease-out); }
+.hd-tool[aria-pressed="true"]:not([data-on]) .hd-bar-i { transform: scaleY(.5); } /* chosen, waiting for a tap */
+@media (prefers-reduced-motion: no-preference) {
+  .hd-tool[data-on] .hd-bar-i { animation: hd-sway 1.4s ease-in-out infinite alternate; }
+}
+.hd-tool[data-on] .hd-bar-i { transform: scaleY(.6); }
+@keyframes hd-sway { 0% { transform: scaleY(.25); } 100% { transform: scaleY(1); } }
+/* The narrowest phones keep the bar uncluttered: the theme switch lives in the menu there. */
+@media (max-width: 23.99rem) { .hd-theme { display: none; } }
+.mm-foot .mm-theme { color: var(--c-paper); margin-inline-start: auto; }

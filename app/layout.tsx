@@ -38,11 +38,20 @@ export const metadata: Metadata = {
   },
 }
 
-export const viewport: Viewport = { themeColor: '#F7F2E8', colorScheme: 'light' }
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F7F2E8' },
+    { media: '(prefers-color-scheme: dark)', color: '#0A1410' },
+  ],
+  colorScheme: 'light dark',
+}
 
-// Runs before first paint (SPEC_V2 §3.1): gates JS reveals, restores the motion toggle, and
-// releases every reveal after 2.5s if the RevealObserver never arrives.
-const headScript = `(function(){try{var d=document.documentElement;d.setAttribute('data-js','');
+// Runs before first paint (SPEC_V2 §3.1): gates JS reveals, sets the colour theme (the stored
+// choice, else the system's) so there is never a flash of the wrong one, restores the motion
+// toggle, and releases every reveal after 2.5s if the RevealObserver never arrives.
+const headScript = `(function(){var d=document.documentElement;try{var t=localStorage.getItem('ag-theme');
+d.setAttribute('data-theme',(t==='dark'||t==='light')?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));}catch(e){d.setAttribute('data-theme','light')}
+try{d.setAttribute('data-js','');
 if(localStorage.getItem('ag-motion')==='off')d.setAttribute('data-motion','reduced');
 setTimeout(function(){if(!d.hasAttribute('data-reveal-ready'))d.setAttribute('data-revealed','')},2500);}catch(e){}})()`
 

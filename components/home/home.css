@@ -580,3 +580,6 @@ html[data-revealed] .gd-fig.wipe:not(.is-in) { clip-path: inset(calc(-1 * var(--
 @keyframes bc-rise-in { from { opacity: 0; transform: translateY(12px); } }
 @media (prefers-reduced-motion: reduce) { .bc .load-lines .mask > span, .bc .load-rise { animation: none; } }
 :root[data-motion="reduced"] .bc .load-lines .mask > span, :root[data-motion="reduced"] .bc .load-rise { animation: none; }
+
+/* Dark theme: the guide's portrait panel turns from sand to a warm night brown. */
+:root[data-theme="dark"] .gd-panel { background: #2A261C; }

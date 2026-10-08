@@ -13,7 +13,7 @@ export function ToolLogo({ tool, base = 26, className }: { tool: Tool; base?: nu
       height={h}
       loading="lazy"
       decoding="async"
-      className={className}
+      className={className ? `tool-logo ${className}` : 'tool-logo'}
       style={{ inlineSize: w, blockSize: h }}
     />
   )

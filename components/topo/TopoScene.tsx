@@ -24,7 +24,7 @@ const DPR_STEPS = [1, 0.8, 0.64, 0.5] as const
 /** Ambient frame interval (mist, clouds, drift) while nothing is being scrolled or pointed at. */
 const AMBIENT_MS = { strong: 33, weak: 50 } as const
 /** Aerial haze: clear up to 0.55× the camera distance, then exponential (per world unit). */
-const FOG = { clear: 0.55, density: 0.034 } as const
+const FOG = { clear: 0.7, density: 0.026 } as const
 /** How long pins and the route head glide from the poster to the 3D map. */
 const ENTER_MS = 450
 
@@ -95,6 +95,8 @@ class Controller {
   private lastRev = -1
   private moving = true
   private glowing = true
+  /** 0 day, 1 night: eases toward the page theme, so a switch is a dusk, not a cut. */
+  private night = document.documentElement.dataset.theme === 'dark' ? 1 : 0
   private sizeDirty = true
   // False until the IntersectionObserver reports, so a deep link below the map never pays for frames.
   private visible = false
@@ -209,7 +211,9 @@ class Controller {
   shouldRender = () => {
     if (this.dead || !this.visible || document.visibilityState !== 'visible') return false
     const now = performance.now()
-    if (routeState.rev !== this.lastRev || this.moving || now - motion.lastInput < 400) this.activeUntil = now + 500
+    const nightTo = document.documentElement.dataset.theme === 'dark' ? 1 : 0
+    if (routeState.rev !== this.lastRev || this.moving || now - motion.lastInput < 400 || Math.abs(this.night - nightTo) > 0.002)
+      this.activeUntil = now + 500
     if (now < this.activeUntil || this.frames < 2 || this.sizeDirty) return true
     return now - this.lastRender >= (isWeakGpu() ? AMBIENT_MS.weak : AMBIENT_MS.strong) - 4
   }
@@ -240,6 +244,10 @@ class Controller {
     this.py = dt ? damp(this.py, ty, 2.2, dt) : ty
     routeAt(routeState.uS, this.head, this.ground)
     this.moving = this.rig.update({ p: routeState.p, head: this.head, px: this.px, py: this.py, time: this.time, zoom: this.zoom }, dt, camera)
+    const nightTo = document.documentElement.dataset.theme === 'dark' ? 1 : 0
+    this.night = dt ? damp(this.night, nightTo, 2.5, dt) : nightTo
+    if (Math.abs(this.night - nightTo) < 0.002) this.night = nightTo
+    this.backdrop.uNight.value = this.night
 
     this.ribbon.material.uniforms.uProgress.value = routeState.uS
     this.ribbon.material.uniforms.uTime.value = this.time

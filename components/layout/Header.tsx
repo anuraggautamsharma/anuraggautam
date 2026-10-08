@@ -5,6 +5,8 @@ import { SummitMark } from './SummitMark'
 import { NavLinks } from './NavLinks'
 import { HeaderState } from './HeaderState'
 import { MobileMenu } from './MobileMenu'
+import { ThemeToggle } from './ThemeToggle'
+import { SoundToggle } from '@/components/sound/SoundToggle'
 import './chrome.css'
 
 /**
@@ -25,6 +27,11 @@ export function Header() {
         <nav className="hd-nav" aria-label="Primary">
           <NavLinks />
         </nav>
+
+        <div className="hd-tools">
+          <SoundToggle />
+          <ThemeToggle className="hd-theme" />
+        </div>
 
         <ButtonLink href="/contact" size="sm" magnetic className="hd-cta" aria-label={chrome.cta}>
           <span className="hd-cta-full">{chrome.cta}</span>

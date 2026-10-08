@@ -33,11 +33,12 @@
   transition: opacity 700ms var(--ease-out);
   background:
     linear-gradient(to bottom in oklab, rgb(14 17 36 / 0.42), rgb(14 17 36 / 0) 22%),
-    linear-gradient(to right in oklab, rgb(14 17 36 / 0.58), rgb(14 17 36 / 0.34) 38%, rgb(14 17 36 / 0) 66%);
+    radial-gradient(70% 55% at 18% 62% in oklab, rgb(14 17 36 / 0.32), rgb(14 17 36 / 0)),
+    linear-gradient(to right in oklab, rgb(14 17 36 / 0.6), rgb(14 17 36 / 0.36) 38%, rgb(14 17 36 / 0) 66%);
 }
 .film-scrim[data-on] .film-stage::after { opacity: 1; }
 @media (max-aspect-ratio: 4/5) {
   .film-scrim .film-stage::after {
-    background: linear-gradient(to bottom in oklab, rgb(14 17 36 / 0.66), rgb(14 17 36 / 0.46) 34%, rgb(14 17 36 / 0.16) 62%, rgb(14 17 36 / 0) 82%);
+    background: linear-gradient(to bottom in oklab, rgb(14 17 36 / 0.7), rgb(14 17 36 / 0.6) 30%, rgb(14 17 36 / 0.46) 52%, rgb(14 17 36 / 0.22) 72%, rgb(14 17 36 / 0) 90%);
   }
 }

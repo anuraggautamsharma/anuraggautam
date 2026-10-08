@@ -86,6 +86,7 @@ export function createBackdrop() {
     uRes: { value: new Vector2(1, 1) },
     uInvViewProj: { value: new Matrix4() },
     uSun: { value: new Vector3(...SUN) },
+    uNight: { value: 0 },
   }
 }
 

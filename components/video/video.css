@@ -272,3 +272,4 @@
   .vd-facade-wrap, .vd-strip-sec, .vd-aside .vd-chapters { display: none; }
   .vd-transcript > .vd-transcript-body { display: block; }
 }
+:root[data-theme="dark"] .vd-takeaways { background: var(--surface-2); border-top-color: var(--ink); }

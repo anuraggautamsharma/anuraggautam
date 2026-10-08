@@ -375,3 +375,9 @@
   .wr-foot-grid { display: block; }
   .wr-pull blockquote p { font-size: 16pt; }
 }
+
+/* Dark theme: the sand panels become night panels; code blocks stay paper cards (their syntax
+   colours are the light theme's). */
+:root[data-theme="dark"] :is(.wr-takeaways, .prose > .wr-callout) { background: var(--surface-2); color: var(--ink); border-top-color: var(--ink); }
+:root[data-theme="dark"] .prose :not(pre) > code { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+:root[data-theme="dark"] .wr-cite-text { background: var(--surface-2); }

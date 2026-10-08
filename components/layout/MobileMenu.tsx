@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { chrome, nav, profiles } from '@/lib/site'
 import { getLenis } from '@/components/motion/loop'
 import { isActive } from './NavLinks'
+import { ThemeToggle } from './ThemeToggle'
 
 const FOCUSABLE = 'a[href], button:not([disabled])'
 const DESKTOP = '(min-width: 64rem)'
@@ -141,6 +142,7 @@ export function MobileMenu() {
                 {p.label}
               </a>
             ))}
+            <ThemeToggle className="mm-theme" />
           </div>
         </div>
       </div>
