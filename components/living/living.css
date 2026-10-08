@@ -1,0 +1,15 @@
+/* LivingPhoto: a canvas over its stage's photo, faded in on its first frame. */
+.living {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  z-index: -1;
+  display: block;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-out);
+  touch-action: pan-y;
+}
+.living[data-on] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .living { display: none; } }
+html[data-motion="reduced"] .living { display: none; }

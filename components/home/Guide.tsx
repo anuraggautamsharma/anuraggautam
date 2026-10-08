@@ -4,6 +4,8 @@ import { Section } from '@/components/ui/Section'
 import { FullBleedPhoto } from '@/components/ui/FullBleedPhoto'
 import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { ButtonLink } from '@/components/ui/ButtonLink'
+import { LivingPhoto } from '@/components/living/LivingPhoto'
+import guideDepth from '@/assets/nature/depth/guide-trail-depth.webp'
 import { photos, portraitCutout } from '@/lib/photos'
 import { chapters, home } from '@/lib/site'
 import './home.css'
@@ -25,6 +27,8 @@ export function Guide() {
         style={{ '--photo-dominant': photos['guide-trail'].dominant } as CSSProperties}
       >
         <FullBleedPhoto id="guide-trail" sizes="100vw" drift className="gd-band-photo" />
+        {/* The valley, alive: depth parallax, drifting cloud and its shadows, the sun at the pointer. */}
+        <LivingPhoto depth={guideDepth.src} fx={0.5} fy={0.55} />
       </div>
 
       <Section id="guide" tone="sand" topo alt={chapters.guide.alt} labelledBy="guide-title" className="gd">
