@@ -25,6 +25,8 @@ export function SummitCta({ n }: { n?: string }) {
       style={{ '--photo-dominant': photos['summit-golden'].dominant } as CSSProperties}
     >
       <FullBleedPhoto id="summit-golden" sizes="100vw" scrim={false} className="sm-iris wipe" />
+      {/* Home: the sun breaking over the ridge as the summit film plays (summit.css). */}
+      <div className="sm-flare" aria-hidden="true" />
       <div className="wrap sm-inner">
         <div className="sm-head">
           <ChapterLabel n={n} name={chapters.summit.name} alt={chapters.summit.alt} />

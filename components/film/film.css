@@ -9,8 +9,35 @@
 }
 .film-canvas { display: block; inline-size: 100%; block-size: 100%; opacity: 0; transition: opacity 700ms var(--ease-out); }
 
-/* The ascent (basecamp → terrain): once its first frame is up, the beats' stills step aside. */
-html[data-film-ascent] .film[data-film="ascent"] .film-canvas { opacity: 1; }
-html[data-film-ascent] .film[data-film="ascent"] > section { background-color: transparent; }
-html[data-film-ascent] .film[data-film="ascent"] .photo-img { opacity: 0; transition: opacity 700ms var(--ease-out); }
-html[data-film-ascent] .film[data-film="ascent"] .tr-fog { opacity: 0; transition: opacity 700ms var(--ease-out); }
+/* Once a film's first frame is up (data-on), the beats' own stills step aside for it. */
+.film[data-on] .film-canvas { opacity: 1; }
+.film[data-on] > section { background-color: transparent; }
+.film[data-on] .photo-img,
+.film[data-on] .tr-fog { opacity: 0; transition: opacity 700ms var(--ease-out); }
+
+/* A pinned film: the beat holds still while the film plays under it, over 2.4 extra screens of
+   scroll. Only where the film can run, and where the beat fits one screen. */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 34rem) {
+  html[data-js]:not([data-motion="reduced"]) .film-pin { min-block-size: 340svh; }
+  html[data-js]:not([data-motion="reduced"]) .film-pin > section { position: sticky; top: 0; block-size: 100svh; min-block-size: 0; }
+}
+
+/* Over a moving film the beats' own scrims (sized to each section) would show as bands. A
+   .film-scrim film shades the viewport instead: one soft wash behind the copy, wherever it is. */
+.film[data-on] .photo-scrim { opacity: 0; transition: opacity 700ms var(--ease-out); }
+.film-scrim .film-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+  background:
+    linear-gradient(to bottom in oklab, rgb(14 17 36 / 0.42), rgb(14 17 36 / 0) 22%),
+    linear-gradient(to right in oklab, rgb(14 17 36 / 0.58), rgb(14 17 36 / 0.34) 38%, rgb(14 17 36 / 0) 66%);
+}
+.film-scrim[data-on] .film-stage::after { opacity: 1; }
+@media (max-aspect-ratio: 4/5) {
+  .film-scrim .film-stage::after {
+    background: linear-gradient(to bottom in oklab, rgb(14 17 36 / 0.66), rgb(14 17 36 / 0.46) 34%, rgb(14 17 36 / 0.16) 62%, rgb(14 17 36 / 0) 82%);
+  }
+}

@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <>
       {/* The ascent: one scroll-played cinematic flight behind basecamp and terrain. */}
-      <ScrollFilm name="ascent">
+      <ScrollFilm name="ascent" className="film-scrim">
         <Basecamp />
         <Terrain />
       </ScrollFilm>
@@ -46,7 +46,10 @@ export default function Home() {
       <Expeditions />
       <FieldNotes />
       <FitBand notFit={home.fit.no} notReady={home.fit.notReady} />
-      <SummitCta n="08" />
+      {/* The ending: pinned while the camera rises past the summit into the sunrise. */}
+      <ScrollFilm name="summit" className="film-pin" range={[0.02, 0.84]}>
+        <SummitCta n="08" />
+      </ScrollFilm>
     </>
   )
 }

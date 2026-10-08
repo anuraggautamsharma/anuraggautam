@@ -79,7 +79,8 @@ export type NaturePhoto = {
   zonePortrait?: Zone
   /** A bright top edge under the clear header: 'strong' raises its scrim from .42 to .62 (chrome.css). */
   headerScrim?: 'strong'
-  credit: { creator: string; title: string; sourcePage: string; license: 'CC0 1.0' }
+  /** Third-party photos only: stills taken from the site's own film carry none. */
+  credit?: { creator: string; title: string; sourcePage: string; license: 'CC0 1.0' }
 }
 
 const commons = (file: string) => `https://commons.wikimedia.org/wiki/File:${file}`
@@ -92,37 +93,25 @@ export const photos: Record<PhotoId, NaturePhoto> = {
     id: 'basecamp-hero',
     src: basecampHero,
     portrait: basecampHeroM,
-    alt: 'The snow-covered Matterhorn under a streaked pink and violet sky',
-    focal: '58% 62%',
-    dominant: '#45365c',
+    alt: 'The Matterhorn before dawn, rising out of a sea of cloud under an indigo sky with a thin peach horizon',
+    focal: '62% 50%',
+    dominant: '#4b5470',
     tone: 'photo',
     scrim: { side: 'top', rgb: '21 17 41', a: 0.42, aPortrait: 0.66, reachPortrait: 1.3 },
     zone: { x: 0.04, y: 0.1, w: 0.52, h: 0.42 },
     zonePortrait: { x: 0.05, y: 0.08, w: 0.9, h: 0.46 },
-    credit: {
-      creator: 'Sam Ferrara',
-      title: 'Sunset over Matterhorn (Unsplash)',
-      sourcePage: commons('Sunset_over_Matterhorn_%28Unsplash%29.jpg'),
-      license: 'CC0 1.0',
-    },
   },
   'terrain-fog': {
     id: 'terrain-fog',
     src: terrainFog,
     portrait: terrainFogM,
-    alt: 'A dark ridge dropping into a golden, back-lit sea of cloud with teal shadows',
-    focal: '24% 30%',
-    dominant: '#153233',
+    alt: 'Low over a golden, back-lit sea of cloud at sunrise, the Matterhorn glowing on the right',
+    focal: '70% 45%',
+    dominant: '#6c707f',
     tone: 'photo',
-    scrim: { side: 'top', rgb: '21 50 51', a: 0.6 },
+    scrim: { side: 'top', rgb: '22 28 50', a: 0.55 },
     zone: { x: 0.04, y: 0.1, w: 0.46, h: 0.3 },
     zonePortrait: { x: 0.05, y: 0.08, w: 0.9, h: 0.32 },
-    credit: {
-      creator: 'Anton Repponen',
-      title: 'Golden mountain (Unsplash)',
-      sourcePage: commons('Golden_mountain_%28Unsplash%29.jpg'),
-      license: 'CC0 1.0',
-    },
   },
   'route-valley': {
     id: 'route-valley',
@@ -174,18 +163,12 @@ export const photos: Record<PhotoId, NaturePhoto> = {
     id: 'summit-golden',
     src: summitGolden,
     portrait: summitGoldenM,
-    alt: 'A golden, snow-dusted ridge rising toward a blazing sunrise over a lake and cloud',
-    focal: '30% 60%',
-    dominant: '#e8cdb5', // the light sky, so the orange plate never sits on brown while decoding
+    alt: 'Above the summit at sunrise: the sun breaking over an endless sea of cloud and distant peaks',
+    focal: '50% 40%',
+    dominant: '#e8d9c6', // the light sky, so the orange plate never sits on brown while decoding
     tone: 'photo-light',
     zone: { x: 0.04, y: 0.14, w: 0.88, h: 0.2 },
     zonePortrait: { x: 0.05, y: 0.08, w: 0.9, h: 0.26 },
-    credit: {
-      creator: 'Jingwei Ke',
-      title: 'Sunrise at Roy’s Peak (Unsplash)',
-      sourcePage: commons('Sunrise_at_Roy%27s_Peak_%28Unsplash%29.jpg'),
-      license: 'CC0 1.0',
-    },
   },
   'notes-forest-path': {
     id: 'notes-forest-path',

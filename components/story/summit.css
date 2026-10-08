@@ -96,3 +96,39 @@
 @media (forced-colors: active) {
   .sm-plate { border: 2px solid CanvasText; }
 }
+
+/* ── Home: the summit film (ScrollFilm "summit", var(--film-p) = 0 → 1 over the pin) ─────────
+   The camera rises past the ridge into the sunrise: the sun flares as it clears the summit,
+   then the headline arrives, then the plate. Only once the film is on screen; otherwise the
+   beat reveals as everywhere else. */
+.sm-flare { display: none; }
+.film[data-on] .sm-flare {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 52% 24%, rgb(255 246 226 / 0.95) 0%, rgb(255 214 150 / 0.55) 14%, rgb(255 190 120 / 0) 46%),
+    radial-gradient(ellipse 120% 60% at 50% 30%, rgb(255 225 180 / 0.35), transparent 70%);
+  /* A swell around the moment the sun clears the ridge (p ≈ .42), settling to a soft glow. */
+  --flare: max(0, 1 - max(var(--film-p, 0) - 0.42, 0.42 - var(--film-p, 0)) * 4.2);
+  opacity: calc(var(--flare) * 0.85 + min(1, max(0, var(--film-p, 0) - 0.5) * 3) * 0.18);
+}
+.film[data-on] .sm-head {
+  --in: min(1, max(0, (var(--film-p, 1) - 0.36) * 5));
+  opacity: var(--in);
+  transform: translateY(calc((1 - var(--in)) * 48px)) scale(calc(0.96 + var(--in) * 0.04));
+  filter: blur(calc((1 - var(--in)) * 10px));
+  transform-origin: 0 100%;
+}
+html[data-js] .film[data-on] .sm-plate.reveal {
+  transition: none;
+  transform: none;
+  --in: min(1, max(0, (var(--film-p, 1) - 0.62) * 6));
+  opacity: var(--in);
+  translate: 0 calc((1 - var(--in)) * 32px);
+}
+@media (min-width: 64rem) {
+  .film[data-on] .sm-head { transform-origin: 0 50%; }
+}

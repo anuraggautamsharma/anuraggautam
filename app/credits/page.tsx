@@ -15,7 +15,8 @@ export const metadata: Metadata = {
 }
 
 // lib/photos.ts imports only the photos the site ships, so the spares never appear here.
-const list = photoList
+// Only photographs by others need crediting (stills from the site's own film don't).
+const list = photoList.filter((p): p is typeof p & { credit: NonNullable<typeof p.credit> } => !!p.credit)
 
 /**
  * Commons titles end in an upload ID, e.g. "(Unsplash abc123)" or "(48213)", and some keep a

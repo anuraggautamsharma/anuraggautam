@@ -29,7 +29,18 @@ const pad = (i: number) => String(i).padStart(4, '0')
  * Loading: compressed frames stream coarse-to-fine; only a small window around the playhead is
  * ever decoded (off the main thread, via createImageBitmap), so memory stays flat.
  */
-export function ScrollFilm({ name, children }: { name: string; children: ReactNode }) {
+export function ScrollFilm({
+  name,
+  range = [0, 1],
+  className,
+  children,
+}: {
+  name: string
+  /** The part of the wrapper's scroll that plays the film; the rest holds the first or last frame. */
+  range?: [number, number]
+  className?: string
+  children: ReactNode
+}) {
   const wrap = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -54,7 +65,9 @@ export function ScrollFilm({ name, children }: { name: string; children: ReactNo
     let visible = false
     let started = false
     let unsub: (() => void) | null = null
+    let pVar = ''
     const attr = `data-film-${name}`
+    const [r0, r1] = range
 
     const pickVariant = (m: Manifest) => {
       const portrait = window.innerHeight > window.innerWidth
@@ -102,15 +115,6 @@ export function ScrollFilm({ name, children }: { name: string; children: ReactNo
     }
 
     // ── Decoding and drawing ─────────────────────────────────────────────────────────────
-    const nearestLoaded = (i: number) => {
-      const n = blobs.length
-      for (let d = 0; d < n; d++) {
-        if (i - d >= 0 && blobs[i - d]) return i - d
-        if (i + d < n && blobs[i + d]) return i + d
-      }
-      return -1
-    }
-
     const decode = (i: number) => {
       const b = blobs[i]
       if (!b || bitmaps.has(i) || decoding.has(i)) return
@@ -150,13 +154,20 @@ export function ScrollFilm({ name, children }: { name: string; children: ReactNo
       }
     }
 
-    const draw = (bmp: ImageBitmap) => {
+    const draw = (bmp: ImageBitmap, alpha = 1) => {
       const cw = canvas.width
       const ch = canvas.height
       const s = Math.max(cw / bmp.width, ch / bmp.height) // cover
       const w = bmp.width * s
       const h = bmp.height * s
+      ctx.globalAlpha = alpha
       ctx.drawImage(bmp, (cw - w) / 2, (ch - h) / 2, w, h)
+      ctx.globalAlpha = 1
+    }
+
+    const loadedAt = (i: number, step: 1 | -1) => {
+      for (let j = i; j >= 0 && j < blobs.length; j += step) if (blobs[j]) return j
+      return -1
     }
 
     const progress = () => {
@@ -176,23 +187,48 @@ export function ScrollFilm({ name, children }: { name: string; children: ReactNo
         if (Math.abs(pS - p) > 1e-4) wake(200)
         else pS = p
       }
+      // Scroll progress for the beats' own effects (CSS: var(--film-p)).
+      const pv = pS.toFixed(4)
+      if (pv !== pVar) root.style.setProperty('--film-p', (pVar = pv))
       const n = blobs.length
-      target = Math.round(pS * (n - 1))
-      const at = nearestLoaded(target)
-      if (at < 0) return
+      const f = Math.min(1, Math.max(0, (pS - r0) / Math.max(1e-3, r1 - r0)))
+      const ft = f * (n - 1)
+      target = Math.round(ft)
+      // The loaded frames either side of the playhead: between neighbours, cross-fade (the scrub
+      // reads as continuous motion, not steps); across a gap still streaming, show the nearer.
+      let lo = loadedAt(Math.floor(ft), -1)
+      let hi = loadedAt(Math.ceil(ft), 1)
+      if (lo < 0 && hi < 0) return
+      if (lo < 0) lo = hi
+      if (hi < 0) hi = lo
+      let mix = hi > lo ? (ft - lo) / (hi - lo) : 0
+      if (hi - lo > 2) {
+        if (mix < 0.5) hi = lo
+        else lo = hi
+        mix = 0
+      }
       // Decode ahead in the direction of travel.
       const dir = p >= pS ? 1 : -1
-      for (let k = -2; k <= 4; k++) {
-        const j = nearestLoaded(Math.min(n - 1, Math.max(0, target + k * dir)))
+      decode(lo)
+      decode(hi)
+      for (let k = -2; k <= 5; k++) {
+        const j = loadedAt(Math.min(n - 1, Math.max(0, target + k * dir)), dir === 1 ? 1 : -1)
         if (j >= 0) decode(j)
       }
-      const bmp = bitmaps.get(at)
-      if (!bmp) return
+      const a = bitmaps.get(lo)
+      const b = bitmaps.get(hi)
+      if (!a) return
       size()
-      if (at !== shown) {
-        draw(bmp)
-        shown = at
-        if (!document.documentElement.hasAttribute(attr)) document.documentElement.setAttribute(attr, '')
+      const q = b && hi !== lo ? Math.round(mix * 24) : 0
+      const key = lo * 4096 + hi * 32 + q
+      if (key !== shown) {
+        draw(a)
+        if (q && b) draw(b, q / 24)
+        shown = key
+        if (!root.hasAttribute('data-on')) {
+          root.setAttribute('data-on', '')
+          document.documentElement.setAttribute(attr, '')
+        }
       }
     }
 
@@ -224,7 +260,10 @@ export function ScrollFilm({ name, children }: { name: string; children: ReactNo
     }
     window.addEventListener('resize', onResize)
     const unsubPref = subscribeMotionPref(() => {
-      if (isReducedMotion()) document.documentElement.removeAttribute(attr)
+      if (isReducedMotion()) {
+        root.removeAttribute('data-on')
+        document.documentElement.removeAttribute(attr)
+      }
       else begin()
     })
 
@@ -238,12 +277,14 @@ export function ScrollFilm({ name, children }: { name: string; children: ReactNo
       window.removeEventListener('resize', onResize)
       for (const b of bitmaps.values()) b.close()
       bitmaps.clear()
+      root.removeAttribute('data-on')
       document.documentElement.removeAttribute(attr)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the range is a static literal
   }, [name])
 
   return (
-    <div ref={wrap} className="film" data-film={name}>
+    <div ref={wrap} className={className ? `film ${className}` : 'film'} data-film={name}>
       <div className="film-stage" aria-hidden="true">
         <canvas ref={canvasRef} className="film-canvas" />
       </div>
