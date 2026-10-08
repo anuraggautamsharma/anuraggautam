@@ -22,7 +22,8 @@
   --c-ember-50: #FFE9E3; --c-ember-300: #FCA48D; --c-ember-500: #E23721; --c-ember-700: #B71C0E;
   --c-amber-300: #FCD176; --c-amber-500: #F5AF20; --c-amber-700: #915C08;
   --scrim-rgb: 14 29 21;    /* ink, for rgb(var(--scrim-rgb) / a) scrims */
-  --veil-rgb: 247 242 232;  /* paper, for light veils */
+  --veil-rgb: 247 242 232;  /* paper, for light veils and plates over photos (the same in both themes) */
+  --page-rgb: 247 242 232;  /* the page itself, for fades into it (follows the theme) */
 
   /* ── Semantic tokens: default tone = paper ── */
   --bg: var(--c-paper); --surface: var(--c-surface); --surface-2: var(--c-sand-100);
@@ -178,7 +179,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --scrim-rgb: 4 10 7;
-  --veil-rgb: 10 20 16;     /* the "paper" veils behind text on maps become night veils */
+  --page-rgb: 10 20 16;     /* fades into the page (the route map's veils) become night */
   --bg: #0A1410; --surface: #101C17; --surface-2: #16241E;
   --ink: #EEE8DC;                         /* 16.0:1 on bg */
   --ink-muted: #B4BCB2;                   /*  9.6:1 */

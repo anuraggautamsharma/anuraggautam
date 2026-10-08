@@ -308,7 +308,7 @@
   html[data-js]:not([data-motion="reduced"]) .route-head-in::before { /* paper veil, so the heading never sits on dark ground */
     content: ""; position: absolute; z-index: -1; inset: -35% auto -45% calc(-1 * var(--margin) - 8rem); inline-size: min(78rem, 92%);
     /* closest-side: the haze reaches zero inside its own box, so no edge ever shows. */
-    background: radial-gradient(closest-side, rgb(var(--veil-rgb) / .9), rgb(var(--veil-rgb) / .72) 45%, rgb(var(--veil-rgb) / 0));
+    background: radial-gradient(closest-side, rgb(var(--page-rgb) / .9), rgb(var(--page-rgb) / .72) 45%, rgb(var(--page-rgb) / 0));
     pointer-events: none;
   }
   html[data-js]:not([data-motion="reduced"]) .route-title { max-inline-size: 13ch; }
@@ -342,7 +342,7 @@
      makes the compositor redo the whole layer every frame, which integrated GPUs can't afford.) */
   html[data-js]:not([data-motion="reduced"]) .route-stage:not([data-gl]) .route-view::after {
     content: ""; position: absolute; inset: auto 0 0 0; block-size: 18%; pointer-events: none;
-    background: linear-gradient(to bottom, rgb(var(--veil-rgb) / 0), var(--bg));
+    background: linear-gradient(to bottom, rgb(var(--page-rgb) / 0), var(--bg));
   }
   html[data-js]:not([data-motion="reduced"]) .route .rm-map {
     -webkit-mask-image: var(--feather-x), var(--feather-y);
@@ -368,7 +368,7 @@
 
 .rr-btn {
   display: grid; place-items: center; inline-size: 44px; block-size: 44px; padding: 0;
-  border: 1.5px solid var(--line-strong); border-radius: 0; background: rgb(var(--veil-rgb) / .9); color: var(--ink);
+  border: 1.5px solid var(--line-strong); border-radius: 0; background: rgb(var(--page-rgb) / .9); color: var(--ink);
   transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out);
 }
 .rr-btn svg { transform: rotate(-90deg); }
