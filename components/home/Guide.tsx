@@ -2,12 +2,11 @@ import type { CSSProperties } from 'react'
 import Image from 'next/image'
 import { Section } from '@/components/ui/Section'
 import { FullBleedPhoto } from '@/components/ui/FullBleedPhoto'
-import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { LivingPhoto } from '@/components/living/LivingPhoto'
 import guideDepth from '@/assets/nature/depth/guide-trail-depth.webp'
 import { photos, portraitCutout } from '@/lib/photos'
-import { chapters, home } from '@/lib/site'
+import { home } from '@/lib/site'
 import './home.css'
 
 /**
@@ -31,7 +30,7 @@ export function Guide() {
         <LivingPhoto depth={guideDepth.src} fx={0.5} fy={0.55} />
       </div>
 
-      <Section id="guide" tone="sand" topo alt={chapters.guide.alt} labelledBy="guide-title" className="gd">
+      <Section id="guide" tone="sand" topo labelledBy="guide-title" className="gd">
         <div className="wrap cols gd-grid">
           <div className="gd-plate">
             <figure className="gd-fig wipe">
@@ -48,7 +47,6 @@ export function Guide() {
           </div>
 
           <div className="gd-text reveal">
-            <ChapterLabel {...chapters.guide} />
             <h2 id="guide-title" className="t-h2 gd-title">
               {copy.h2}
             </h2>
@@ -61,16 +59,6 @@ export function Guide() {
                 </span>
               ))}
             </p>
-            <ul className="rule-list gd-badges">
-              {copy.badges.map((badge, i) => (
-                <li key={badge} className="reveal" style={{ '--i': i + 1 } as CSSProperties}>
-                  <span className="t-label" aria-hidden="true" data-wb-exclude="">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="t-h4">{badge}</span>
-                </li>
-              ))}
-            </ul>
             <ButtonLink href="/about" variant="secondary" className="gd-cta">
               {copy.cta}
             </ButtonLink>

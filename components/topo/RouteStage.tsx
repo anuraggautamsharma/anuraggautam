@@ -174,6 +174,8 @@ export function RouteStage({ camps }: { camps: readonly StageCamp[] }) {
       const a = activeCamp(uS)
       if (a !== active) {
         const announce = active !== -2
+        // Climbing up into a new camp rings its bell (components/sound).
+        if (announce && a > active && a >= 0) window.dispatchEvent(new CustomEvent('ag-camp', { detail: a }))
         active = a
         routeState.active = a
         setStates(a, announce)
@@ -223,6 +225,16 @@ export function RouteStage({ camps }: { camps: readonly StageCamp[] }) {
       e.preventDefault()
       go(e.key === 'ArrowRight' ? 1 : -1)
     }
+    // "Where are you stuck?" chips (outside the stage): fly the climb to that camp.
+    const onGoto = (e: MouseEvent) => {
+      if (!on || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+      const a = (e.target as Element | null)?.closest<HTMLElement>('[data-route-goto]')
+      if (!a) return
+      e.preventDefault()
+      e.stopPropagation()
+      scrollToCamp(Number(a.dataset.routeGoto))
+    }
+    document.addEventListener('click', onGoto, true)
     stage.addEventListener('click', onClick)
     stage.addEventListener('keydown', onKey)
 
@@ -318,6 +330,7 @@ export function RouteStage({ camps }: { camps: readonly StageCamp[] }) {
     return () => {
       unsubPref()
       leave()
+      document.removeEventListener('click', onGoto, true)
       stage.removeEventListener('click', onClick)
       stage.removeEventListener('keydown', onKey)
       if (routeState.dom?.stage === stage) routeState.dom = null

@@ -124,6 +124,12 @@ export type Camp = {
   hue: `var(--camp-${CampId})`
   /** The Field Notes topic that maps to this camp (posts.ts `topicCamp`). */
   topic: 'positioning' | 'pricing' | 'pipeline' | 'workflows' | 'team'
+  /** Home, in plain words: the problem a founder feels, and the fix. */
+  problem: string
+  fix: string
+  /** "Where are you stuck?" chip, and the /contact prefill it carries. */
+  stuckLabel: string
+  stuck: 'positioning' | 'pricing' | 'pipeline' | 'pilots' | 'team'
 }
 
 export const summitRoute = {
@@ -149,6 +155,10 @@ export const camps: readonly Camp[] = [
     photo: 'waypoint-position',
     hue: 'var(--camp-position)',
     topic: 'positioning',
+    problem: 'Buyers love the demo, but can’t explain it.',
+    fix: 'Make it easy to explain.',
+    stuckLabel: 'They don’t get it',
+    stuck: 'positioning',
   },
   {
     n: 2,
@@ -165,6 +175,10 @@ export const camps: readonly Camp[] = [
     photo: 'waypoint-price',
     hue: 'var(--camp-price)',
     topic: 'pricing',
+    problem: 'Every deal needs a discount.',
+    fix: 'Price it so yes is easy.',
+    stuckLabel: 'Every deal is a discount',
+    stuck: 'pricing',
   },
   {
     n: 3,
@@ -181,6 +195,10 @@ export const camps: readonly Camp[] = [
     photo: 'waypoint-market',
     hue: 'var(--camp-market)',
     topic: 'pipeline',
+    problem: 'Sales still runs through the founder.',
+    fix: 'Build a pipeline that runs without you.',
+    stuckLabel: 'It all runs through me',
+    stuck: 'pipeline',
   },
   {
     n: 4,
@@ -197,6 +215,10 @@ export const camps: readonly Camp[] = [
     photo: 'waypoint-systems',
     hue: 'var(--camp-systems)',
     topic: 'workflows',
+    problem: 'Pilots never turn into contracts.',
+    fix: 'Turn pilots into contracts.',
+    stuckLabel: 'Pilots stall',
+    stuck: 'pilots',
   },
   {
     n: 5,
@@ -213,6 +235,10 @@ export const camps: readonly Camp[] = [
     photo: 'waypoint-team',
     hue: 'var(--camp-team)',
     topic: 'team',
+    problem: 'Nothing closes when you’re away.',
+    fix: 'Hire and train a team that sells.',
+    stuckLabel: 'No team to hand it to',
+    stuck: 'team',
   },
 ]
 
@@ -270,34 +296,34 @@ export const home: {
 } = {
   basecamp: {
     kicker: 'Anurag Gautam · GTM for complex technology',
-    h1: 'You built something the world hasn’t seen yet.',
-    line: 'I take complex tech to market: positioning, pricing, pipeline, systems and team.',
+    h1: 'You built something new. I take it to market.',
+    line: 'Go-to-market for AI and deep-tech founders.',
     cta: CTA_CLIMB,
-    cta2: 'See the route',
+    cta2: 'See how',
     cta2Href: '#route',
     cue: 'Scroll to climb',
   },
   terrain: {
-    h2: 'Great tech doesn’t find its market.',
-    line: 'It has to be taken there. Most stall in the same five places.',
+    h2: 'Great tech doesn’t sell itself.',
+    line: 'Most founders get stuck in the same five places.',
   },
   route: {
-    h2: 'Five camps between your product and its market.',
-    line: 'The Summit Route: one camp to clear each stall.',
-    cta: 'See every camp',
+    h2: 'Five steps, from product to market.',
+    line: 'Where are you stuck?',
+    cta: 'How each step works',
   },
   stack: {
     label: 'The stack',
     h2: 'The stack I build with.',
   },
   guide: {
-    h2: 'I’ve made this climb. From the founder’s side.',
-    line: 'I don’t hand you a deck and leave. I climb with your team.',
+    h2: 'I’ve been the founder.',
+    line: 'So I build go-to-market with your team, not a deck for it.',
     badges: ['Left BIT Sindri CS to build companies', 'Product designer: I make hard things clear', 'Founding GTM Lead, VideoDB'],
-    cta: 'Meet the guide',
+    cta: 'About me',
   },
   expeditions: {
-    h2: 'The climbs so far.',
+    h2: 'Done it before.',
     line: 'Companies I built, and the one I’m taking to market now.',
   },
   fit: {
@@ -320,7 +346,7 @@ export const home: {
   },
   summit: {
     h2: 'Let’s take it to market.',
-    line: 'Tell me what you built and where it’s stuck. Two minutes.',
+    line: 'Tell me what you built. It takes two minutes.',
     cta: CTA_CLIMB,
     dmPrefix: 'Prefer a message?',
     dm: 'LinkedIn',

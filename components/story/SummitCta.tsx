@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Section } from '@/components/ui/Section'
 import { FullBleedPhoto } from '@/components/ui/FullBleedPhoto'
-import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { photos } from '@/lib/photos'
 import { chapters, directLine, home } from '@/lib/site'
@@ -13,6 +12,7 @@ import './summit.css'
  * sunrise block. Ink text sits in the pale sky with no scrim; the footer ridge rises over
  * the bottom 110px of the photo, so the plate always stays clear of it.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- `n` kept so callers needn't change
 export function SummitCta({ n }: { n?: string }) {
   const copy = home.summit
   return (
@@ -29,7 +29,6 @@ export function SummitCta({ n }: { n?: string }) {
       <div className="sm-flare" aria-hidden="true" />
       <div className="wrap sm-inner">
         <div className="sm-head">
-          <ChapterLabel n={n} name={chapters.summit.name} alt={chapters.summit.alt} />
           <h2 id="summit-title" className="t-display reveal-lines sm-title">
             <MaskWords text={copy.h2} />
           </h2>

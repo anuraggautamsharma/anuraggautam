@@ -718,3 +718,19 @@ html[data-js] .signpost:not(.is-in) > .sign { clip-path: var(--sign-from); }
 /* The theme reveal: the old page stays put underneath while the new one is uncovered. */
 :root[data-theme-vt]::view-transition-old(root), :root[data-theme-vt]::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 :root[data-theme-vt] .site-header { view-transition-name: none; }
+
+/* ── The cursor's light (CursorLight) ── */
+.cursor-light {
+  position: fixed; left: 0; top: 0; z-index: 9; pointer-events: none;
+  inline-size: 560px; block-size: 560px; margin: -280px 0 0 -280px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 236 200 / .16), rgb(255 226 180 / .06) 45%, transparent 70%);
+  mix-blend-mode: soft-light; opacity: 0; transition: opacity 600ms var(--ease-out); will-change: transform;
+}
+.cursor-light[data-on] { opacity: 1; }
+:root[data-theme="dark"] .cursor-light {
+  background: radial-gradient(closest-side, rgb(190 210 255 / .13), rgb(160 185 255 / .05) 45%, transparent 70%);
+  mix-blend-mode: screen;
+}
+@media (pointer: coarse), (prefers-reduced-motion: reduce) { .cursor-light { display: none; } }
+html[data-motion="reduced"] .cursor-light { display: none; }
+@media print { .cursor-light { display: none; } }

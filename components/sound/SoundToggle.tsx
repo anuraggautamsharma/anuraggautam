@@ -97,6 +97,13 @@ export function SoundToggle({ className }: { className?: string }) {
      
   }, [on, waiting])
 
+  // Each camp reached on the route rings a bell.
+  useEffect(() => {
+    const onCamp = (e: Event) => engine.current?.camp((e as CustomEvent<number>).detail)
+    window.addEventListener('ag-camp', onCamp)
+    return () => window.removeEventListener('ag-camp', onCamp)
+  }, [])
+
   useEffect(
     () => () => {
       window.clearInterval(steerTimer.current)

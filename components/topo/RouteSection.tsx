@@ -1,9 +1,8 @@
 import type { CSSProperties } from 'react'
 import { Section } from '@/components/ui/Section'
-import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import Link from 'next/link'
 import { Icon } from '@/components/ui/Icon'
-import { camps, chapters, home } from '@/lib/site'
+import { camps, home } from '@/lib/site'
 import { RoutePlane, mapVars } from './RouteMapSvg'
 import { PROFILE, tw } from './route'
 import { RouteStage } from './RouteStage'
@@ -28,20 +27,28 @@ export function RouteSection() {
     <Section
       id="route"
       tone="paper"
-      alt={chapters.route.alt}
       labelledBy="route-title"
       className="route"
       style={mapVars()}
     >
       <header className="route-head">
         <div className="route-head-in wrap">
-          <ChapterLabel {...chapters.route} className="reveal" />
-          <h2 id="route-title" className="t-h2 route-title reveal" style={{ '--i': 1 } as CSSProperties}>
+          <h2 id="route-title" className="t-h2 route-title reveal">
             {copy.h2}
           </h2>
-          <p className="t-lead route-line reveal" style={{ '--i': 2 } as CSSProperties}>
-            {copy.line}
-          </p>
+          {/* Where are you stuck? One tap flies the climb to that camp. */}
+          <nav className="route-pick reveal" style={{ '--i': 1 } as CSSProperties} aria-label={copy.line}>
+            <p className="route-pick-q">{copy.line}</p>
+            <ul>
+              {camps.map((c, i) => (
+                <li key={c.id}>
+                  <a href={`#camp-${c.id}`} className="route-chip" data-route-goto={i}>
+                    {c.stuckLabel}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </header>
 

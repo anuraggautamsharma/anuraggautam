@@ -11,6 +11,7 @@ import { JsonLd } from '@/components/ui/JsonLd'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MotionRuntime } from '@/components/motion/MotionRuntime'
+import { CursorLight } from '@/components/motion/CursorLight'
 import { RevealObserver } from '@/components/motion/RevealObserver'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { Parallax } from '@/components/motion/Parallax'
@@ -47,10 +48,10 @@ export const viewport: Viewport = {
 }
 
 // Runs before first paint (SPEC_V2 §3.1): gates JS reveals, sets the colour theme (the stored
-// choice, else the system's) so there is never a flash of the wrong one, restores the motion
+// choice, else the visitor's own time of day: night from 7 pm to 6 am) so there is never a flash of the wrong one, restores the motion
 // toggle, and releases every reveal after 2.5s if the RevealObserver never arrives.
 const headScript = `(function(){var d=document.documentElement;try{var t=localStorage.getItem('ag-theme');
-d.setAttribute('data-theme',(t==='dark'||t==='light')?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));}catch(e){d.setAttribute('data-theme','light')}
+var h=new Date().getHours();d.setAttribute('data-theme',(t==='dark'||t==='light')?t:((h>=19||h<6)?'dark':'light'));}catch(e){d.setAttribute('data-theme','light')}
 try{d.setAttribute('data-js','');
 if(localStorage.getItem('ag-motion')==='off')d.setAttribute('data-motion','reduced');
 setTimeout(function(){if(!d.hasAttribute('data-reveal-ready'))d.setAttribute('data-revealed','')},2500);}catch(e){}})()`
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </ViewTransition>
         <Footer />
         <MotionRuntime />
+        <CursorLight />
         <RevealObserver />
         <Magnetic />
         <Parallax />

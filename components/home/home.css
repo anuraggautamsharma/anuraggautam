@@ -591,3 +591,30 @@ html[data-revealed] .gd-fig.wipe:not(.is-in) { clip-path: inset(calc(-1 * var(--
 :root[data-theme="dark"] .gd-cutout { filter: drop-shadow(0 24px 40px rgb(0 0 0 / .55)); }
 /* Dark theme: the card scrims follow the band into night. */
 :root[data-theme="dark"] .ex-card .photo-scrim { --scrim-c: 8 27 18 !important; }
+
+/* ── 02 · Captions: the five stalls, one at a time ─────────────────── */
+.tr-caps-wrap { position: relative; z-index: 2; padding-block: var(--s-8) var(--s-9); }
+.caps-stage { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-6); }
+.caps-line {
+  font-family: var(--ff-h1, var(--ff-display)), sans-serif; font-weight: 800; letter-spacing: var(--tr-h2);
+  font-size: clamp(2rem, 1.2rem + 3.6vw, 4.75rem); line-height: 1.02; max-inline-size: 16ch;
+  color: var(--c-paper); text-wrap: balance; text-shadow: var(--text-shadow-photo);
+}
+.caps-line:last-child { color: var(--c-sunrise-300); }
+/* Scroll mode: a tall track; one line holds the screen at a time and hands over to the next. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-js]:not([data-motion="reduced"]) .tr-caps-wrap { padding-block: 0; }
+  html[data-js]:not([data-motion="reduced"]) .tr-caps { block-size: calc(6 * 62svh); }
+  html[data-js]:not([data-motion="reduced"]) .caps-stage {
+    position: sticky; top: 0; block-size: 100svh; display: grid; align-items: center; gap: 0;
+  }
+  html[data-js]:not([data-motion="reduced"]) .caps-line {
+    grid-area: 1 / 1; opacity: 0; translate: 0 36px;
+    transition: opacity 650ms var(--ease-out), translate 900ms var(--ease-arrive);
+  }
+  html[data-js]:not([data-motion="reduced"]) .caps-line[data-past] { translate: 0 -36px; }
+  html[data-js]:not([data-motion="reduced"]) .caps-line[data-on] { opacity: 1; translate: 0 0; }
+}
+@media (min-width: 64rem) {
+  .caps-line { max-inline-size: 18ch; }
+}

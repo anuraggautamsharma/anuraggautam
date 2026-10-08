@@ -11,8 +11,8 @@ const pad = (n: number) => String(n).padStart(2, '0')
  * One camp on the route: photo plate, the plain-word camp name in its hue ("Camp 03 · Pipeline"),
  * the metaphor title under it, the three things built there, and the hazard it clears (struck
  * through when the camp is reached). `cta` (the last camp only) closes the climb with a text link.
- * `compact` (the homepage route) drops the hazard line: Terrain has just named all five
- * hazards, so home shows only what each camp builds (/method still names every hazard).
+ * `compact` (the homepage route) is plain words only: the step in one sentence and a link to talk
+ * about it; the deliverables, tools and hazard live on /method.
  */
 export function WaypointCard({ camp, cta, compact = false }: { camp: Camp; cta?: ReactNode; compact?: boolean }) {
   const titleId = `wc-${camp.id}`
@@ -33,14 +33,23 @@ export function WaypointCard({ camp, cta, compact = false }: { camp: Camp; cta?:
           </span>
         </p>
         <h3 id={titleId} className="t-h3 wc-title">
-          {camp.title}
+          {compact ? camp.fix : camp.title}
         </h3>
-        <ul className="wc-items">
-          {camp.items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-        {toolsFor(camp.id).length ? (
+        {compact ? (
+          <p className="wc-talk">
+            <a className="link-go" href={`/contact?stuck=${camp.stuck}&source=route`}>
+              Talk about this
+            </a>
+          </p>
+        ) : null}
+        {!compact ? (
+          <ul className="wc-items">
+            {camp.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : null}
+        {!compact && toolsFor(camp.id).length ? (
           <ul className="wc-tools" aria-label={`${camp.name} stack`}>
             {toolsFor(camp.id).map((t) => (
               <li key={t.slug}>

@@ -1,13 +1,13 @@
 // Colour theme, shared by the header switch, the head script and the canvases (route 3D).
 // html[data-theme] is 'light' or 'dark'. An explicit choice is stored in localStorage
-// 'ag-theme'; with none, the theme follows the system setting, live.
+// 'ag-theme'; with none, the theme follows the visitor's local time (night 7 pm to 6 am), and
+// turns over live if they are still here when the sun sets or rises.
 
 import { wake } from '@/components/motion/loop'
 
 export type Theme = 'light' | 'dark'
 export const THEME_EVENT = 'ag-theme-change'
 export const THEME_KEY = 'ag-theme'
-const DARK_QUERY = '(prefers-color-scheme: dark)'
 
 export function getTheme(): Theme {
   if (typeof document === 'undefined') return 'light'
@@ -65,16 +65,19 @@ export function setTheme(t: Theme, from?: { x: number; y: number }) {
   ;(vt as VT & { finished?: Promise<void> }).finished?.finally(() => d.removeAttribute('data-theme-vt'))
 }
 
-/** Calls `cb` on any theme change: the switch, or the system setting while no choice is stored. */
+const byClock = (): Theme => {
+  const h = new Date().getHours()
+  return h >= 19 || h < 6 ? 'dark' : 'light'
+}
+
+/** Calls `cb` on any theme change: the switch, or the hour turning while no choice is stored. */
 export function subscribeTheme(cb: () => void) {
-  const mq = window.matchMedia(DARK_QUERY)
-  const onSystem = () => {
-    if (!stored()) apply(mq.matches ? 'dark' : 'light')
-  }
-  mq.addEventListener('change', onSystem)
+  const timer = window.setInterval(() => {
+    if (!stored()) apply(byClock())
+  }, 60_000)
   window.addEventListener(THEME_EVENT, cb)
   return () => {
-    mq.removeEventListener('change', onSystem)
+    window.clearInterval(timer)
     window.removeEventListener(THEME_EVENT, cb)
   }
 }

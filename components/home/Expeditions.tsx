@@ -1,9 +1,8 @@
 import { Section } from '@/components/ui/Section'
 import { Ridge } from '@/components/ui/Ridge'
 import { FullBleedPhoto } from '@/components/ui/FullBleedPhoto'
-import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { Signpost, Sign } from '@/components/ui/Signpost'
-import { chapters, home, ventures } from '@/lib/site'
+import { home, ventures } from '@/lib/site'
 import { ExpeditionTrack } from './ExpeditionTrack'
 import { LivingPhoto, type LivingScene } from '@/components/living/LivingPhoto'
 import type { PhotoId } from '@/lib/photos'
@@ -33,15 +32,13 @@ export function Expeditions() {
   const copy = home.expeditions
   const total = pad(ventures.length)
   return (
-    <Section id="expeditions" tone="forest" alt={chapters.expeditions.alt} labelledBy="expeditions-title" className="ex">
+    <Section id="expeditions" tone="forest" labelledBy="expeditions-title" className="ex">
       <Ridge />
       <ExpeditionTrack>
         <div className="ex-panel">
-          <ChapterLabel {...chapters.expeditions} />
           <h2 id="expeditions-title" className="t-h2 ex-title">
             {copy.h2}
           </h2>
-          <p className="t-lead ex-line">{copy.line}</p>
           <p className="t-label ex-count" aria-hidden="true" data-wb-exclude="">
             <span className="ex-num">
               <span data-ex-count="">01</span> / {total}
@@ -55,7 +52,7 @@ export function Expeditions() {
             order on desktop). It never traps focus. */}
         <div className="ex-viewport" role="region" aria-label="Expeditions" tabIndex={0}>
           <ol className="ex-track">
-            {ventures.map((v, i) => (
+            {ventures.map((v) => (
               <li key={v.id} className="ex-card photo-stage">
                 <FullBleedPhoto
                   id={v.photo}
@@ -70,13 +67,10 @@ export function Expeditions() {
                   </Signpost>
                 ) : null}
                 <div className="ex-body">
-                  <p className="t-label ex-meta">
-                    {pad(i + 1)}
-                    {v.when ? ` · ${v.when}` : null}
-                  </p>
                   <h3 className="t-h3 ex-name">{v.name}</h3>
                   <p className="t-label ex-role">{v.role}</p>
-                  <p className="t-small ex-text">{v.line}</p>
+                  {/* Where numbers tell the story they are enough; otherwise one line says it. */}
+                  {v.stats.length === 0 ? <p className="t-small ex-text">{v.line}</p> : null}
                 </div>
               </li>
             ))}

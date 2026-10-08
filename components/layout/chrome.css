@@ -286,3 +286,5 @@ body:has(#main .sb:not([data-ready])) .ft-camp[data-event] .ft-sub { display: no
 /* Dark theme: the deep header follows the bands into night. */
 :root[data-theme="dark"] .site-header[data-mode="deep"] { --hd-bg: rgb(12 36 25 / .9); }
 :root[data-theme="dark"] .site-header[data-mode="deep"][data-under="glacier"] { --hd-bg: rgb(11 34 54 / .9); }
+/* No altimeter in the header: one less thing to read. */
+.hd-alt { display: none !important; }

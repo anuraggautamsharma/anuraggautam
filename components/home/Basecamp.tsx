@@ -1,11 +1,10 @@
 import type { CSSProperties } from 'react'
 import { Section } from '@/components/ui/Section'
 import { FullBleedPhoto } from '@/components/ui/FullBleedPhoto'
-import { ChapterLabel } from '@/components/ui/ChapterLabel'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { MaskWords } from '@/components/story/MaskWords'
 import { photos } from '@/lib/photos'
-import { chapters, home } from '@/lib/site'
+import { home } from '@/lib/site'
 import { InViewFlag } from './InViewFlag'
 import './home.css'
 
@@ -21,7 +20,6 @@ export function Basecamp() {
     <Section
       id="basecamp"
       tone="photo"
-      alt={chapters.basecamp.alt}
       labelledBy="basecamp-title"
       className="bc photo-stage"
       style={{ '--photo-dominant': photos['basecamp-hero'].dominant } as CSSProperties}
@@ -30,7 +28,6 @@ export function Basecamp() {
       <InViewFlag />
       <div className="wrap cols bc-inner">
         <div className="bc-text">
-          <ChapterLabel {...chapters.basecamp} />
           <h1 id="basecamp-title" className="t-h1 load-lines bc-title">
             <MaskWords text={copy.h1} />
           </h1>

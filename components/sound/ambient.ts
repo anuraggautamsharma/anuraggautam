@@ -27,6 +27,8 @@ export type Ambient = {
   stop(): Promise<void>
   /** 0–1 each: how deep in the cloud flight, and how close to the summit sunrise. */
   steer(clouds: number, summit: number): void
+  /** A camp lights up on the route: a clear bell, one step higher for each camp. */
+  camp(i: number): void
   dispose(): void
 }
 
@@ -142,10 +144,10 @@ export function createAmbient(): Ambient {
 
   // ── Chimes: now and then, a far bell ──
   let chimeTimer = 0
-  const chime = () => {
-    if (ctx.state === 'running') {
+  /** One bell: `note` picks the pitch (a rising scale for the camps), `level` its loudness. */
+  const bell = (n: number, level = 0.035, panTo = Math.random() * 1.4 - 0.7) => {
+    {
       const t = ctx.currentTime
-      const n = CHIMES[Math.floor(Math.random() * CHIMES.length)]
       const o = ctx.createOscillator()
       o.type = 'sine'
       o.frequency.value = NOTE(n)
@@ -154,14 +156,14 @@ export function createAmbient(): Ambient {
       o2.frequency.value = NOTE(n) * 2.76 // a bell's inharmonic partial
       const g = ctx.createGain()
       g.gain.setValueAtTime(0, t)
-      g.gain.linearRampToValueAtTime(0.035, t + 0.02)
+      g.gain.linearRampToValueAtTime(level, t + 0.02)
       g.gain.exponentialRampToValueAtTime(0.0001, t + 5)
       const g2 = ctx.createGain()
       g2.gain.value = 0.25
       o.connect(g)
       o2.connect(g2).connect(g)
       const pan = ctx.createStereoPanner()
-      pan.pan.value = Math.random() * 1.4 - 0.7
+      pan.pan.value = panTo
       g.connect(pan)
       pan.connect(verb)
       pan.connect(dry)
@@ -170,6 +172,9 @@ export function createAmbient(): Ambient {
       o.stop(t + 5.2)
       o2.stop(t + 5.2)
     }
+  }
+  const chime = () => {
+    if (ctx.state === 'running') bell(CHIMES[Math.floor(Math.random() * CHIMES.length)])
     chimeTimer = window.setTimeout(chime, 7000 + Math.random() * 9000)
   }
 
@@ -245,6 +250,11 @@ export function createAmbient(): Ambient {
       if (summit > 0.5 && sunrise <= 0.5) voice(CHORDS.sunrise, 1.8)
       else if (summit <= 0.3 && sunrise > 0.3) voice(CHORDS.night[chordIdx], 2.5)
       sunrise = summit
+    },
+    camp(i) {
+      if (!playing || ctx.state !== 'running') return
+      const scale = [74, 76, 79, 81, 83]
+      bell(scale[Math.max(0, Math.min(4, i))], 0.06, -0.4 + i * 0.2)
     },
     dispose() {
       window.clearTimeout(chimeTimer)
