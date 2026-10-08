@@ -38,6 +38,8 @@ export type CameraInput = {
   py: number
   /** Seconds, for the idle drift. */
   time: number
+  /** Distance multiplier (portrait screens step back). */
+  zoom?: number
 }
 
 /** The camera wanted for the input. Chapters blend with the route's own eased leg fraction. Returns the distance. */
@@ -48,7 +50,10 @@ export function cameraFor(input: CameraInput, pos: Vector3, target: Vector3) {
   const cx = lerp(a.c[0], b.c[0], f)
   const cz = lerp(a.c[1], b.c[1], f)
   const ty = lerp(TARGET_Y[i], TARGET_Y[Math.min(TARGET_Y.length - 1, i + 1)], f)
-  const dist = Math.exp(lerp(Math.log(a.dist), Math.log(b.dist), f)) // zoom feels even in log space
+  let dist = Math.exp(lerp(Math.log(a.dist), Math.log(b.dist), f)) // zoom feels even in log space
+  // Portrait steps back for the close camp shots, and comes in a touch for the wide ones.
+  const z = input.zoom ?? 1
+  if (z !== 1) dist *= lerp(z, 0.85, Math.min(1, Math.max(0, (dist - 8) / 6)))
   // The pointer leans the view a few degrees; the idle drift keeps the air moving.
   const drift = Math.sin(input.time * 0.12) * 1.6
   const el = (lerp(a.elev, b.elev, f) - input.py * 2.5) * DEG

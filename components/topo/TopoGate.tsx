@@ -17,8 +17,8 @@ type IdleWindow = Window & {
   cancelIdleCallback?: (id: number) => void
 }
 
-/** The stage layout the 3D map is drawn for: a desktop viewport with a precise pointer. */
-const DESKTOP = '(min-width: 64rem) and (pointer: fine)'
+/** Any screen the scroll stage lays out on: desktops and phones alike (phones get the portrait framing). */
+const STAGE = 'screen and (min-width: 20rem)'
 
 /** No reduced motion (OS or site toggle), no Save-Data or 2G, ≥ 4 GB when reported, WebGL2, not retreated. */
 function can3D() {
@@ -28,8 +28,8 @@ function can3D() {
     ? 'turned off this session after a failure'
     : prefersReducedMotion()
       ? 'reduced motion is on'
-      : !window.matchMedia(DESKTOP).matches
-        ? 'not a desktop viewport with a mouse'
+      : !window.matchMedia(STAGE).matches
+        ? 'screen too small'
         : nav.connection?.saveData
           ? 'Save-Data is on'
           : /2g$/.test(nav.connection?.effectiveType ?? '')
@@ -119,14 +119,14 @@ export function TopoGate() {
   // Live conditions: the motion toggle, the OS setting, the viewport or the pointer can change.
   useEffect(() => {
     const onChange = () => {
-      const ok = !isTopoDisabled() && !prefersReducedMotion() && window.matchMedia(DESKTOP).matches
+      const ok = !isTopoDisabled() && !prefersReducedMotion() && window.matchMedia(STAGE).matches
       if (!ok) setPhase('off')
       else if (phaseRef.current === 'off') {
         setPhase('gate')
         setEpoch((e) => e + 1)
       }
     }
-    const queries = ['(prefers-reduced-motion: reduce)', DESKTOP].map((q) => window.matchMedia(q))
+    const queries = ['(prefers-reduced-motion: reduce)', STAGE].map((q) => window.matchMedia(q))
     for (const mq of queries) mq.addEventListener('change', onChange)
     window.addEventListener(MOTION_EVENT, onChange)
     return () => {

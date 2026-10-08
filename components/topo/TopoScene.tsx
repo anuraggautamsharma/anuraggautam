@@ -159,10 +159,23 @@ class Controller {
     }
   }
 
+  /** The plane's on-screen box in layer px (after CSS), which the pins and the framing are placed from. */
+  private box = { x: 0, y: 0, w: 1, h: 1 }
+  /** Portrait screens: a taller lens and a step back, so the climb still fits the frame. */
+  private zoom = 1
+
   private measure() {
     const r = this.host.layer.getBoundingClientRect()
     this.w = Math.max(1, r.width)
     this.h = Math.max(1, r.height)
+    const plane = routeState.dom?.plane
+    if (plane) {
+      const p = plane.getBoundingClientRect()
+      this.box = { x: p.left - r.left, y: p.top - r.top, w: Math.max(1, p.width), h: Math.max(1, p.height) }
+    } else {
+      const L = routeState.layout
+      this.box = { x: L.x, y: L.y, w: L.w, h: L.h }
+    }
     this.sizeDirty = true
   }
 
@@ -226,7 +239,7 @@ class Controller {
     this.px = dt ? damp(this.px, tx, 2.2, dt) : tx
     this.py = dt ? damp(this.py, ty, 2.2, dt) : ty
     routeAt(routeState.uS, this.head, this.ground)
-    this.moving = this.rig.update({ p: routeState.p, head: this.head, px: this.px, py: this.py, time: this.time }, dt, camera)
+    this.moving = this.rig.update({ p: routeState.p, head: this.head, px: this.px, py: this.py, time: this.time, zoom: this.zoom }, dt, camera)
 
     this.ribbon.material.uniforms.uProgress.value = routeState.uS
     this.ribbon.material.uniforms.uTime.value = this.time
@@ -282,14 +295,20 @@ class Controller {
     }
     this.placeDom(camera)
     if (this.frames === 1) this.host.live()
+    // Live mode can restyle the plane (phones flatten their tilted poster): re-measure once it has.
+    if (this.frames === 3) this.scheduleResize()
   }
 
   /** Aspect, plus a view offset that puts the look-at point where the poster centres its route. */
   private frameView(camera: PerspectiveCamera) {
     const L = routeState.layout
+    const B = this.box
     camera.aspect = this.w / this.h
-    let sx = L.x + ((ROI.x - L.fx) / L.fw) * L.w - this.w / 2
-    let sy = L.y + ((ROI.y - L.fy) / L.fh) * L.h - this.h / 2
+    const portrait = camera.aspect < 1
+    camera.fov = portrait ? 52 : FOV
+    this.zoom = portrait ? 1.5 : 1
+    let sx = B.x + ((ROI.x - L.fx) / L.fw) * B.w - this.w / 2
+    let sy = B.y + ((ROI.y - L.fy) / L.fh) * B.h - this.h / 2
     if (!Number.isFinite(sx)) sx = 0
     if (!Number.isFinite(sy)) sy = 0
     sx = Math.max(-0.3 * this.w, Math.min(0.3 * this.w, sx))
@@ -303,8 +322,9 @@ class Controller {
     const dom = routeState.dom
     if (!dom) return
     const L = routeState.layout
-    const toX = (mx: number) => L.x + ((mx - L.fx) / L.fw) * L.w
-    const toY = (my: number) => L.y + ((my - L.fy) / L.fh) * L.h
+    const B = this.box
+    const toX = (mx: number) => B.x + ((mx - L.fx) / L.fw) * B.w
+    const toY = (my: number) => B.y + ((my - L.fy) / L.fh) * B.h
     for (let i = 0; i < this.anchors.length; i++) {
       const pin = dom.pins[i]
       const base = CAMPS[i]

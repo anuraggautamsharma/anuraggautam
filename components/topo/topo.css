@@ -267,6 +267,12 @@
   /* Before the climb starts, Camp 01 previews instead of a blank paper frame. */
   html[data-js]:not([data-motion="reduced"]) .route-cards:not(:has(> [data-state="active"])) > .route-card:first-child { opacity: 1; transform: none; }
   html[data-js]:not([data-motion="reduced"]) .route-cards { inset: auto 16px 16px 16px; }
+  /* 3D on phones: the world fills the whole stage behind the card; the tilted poster flattens so
+     the scene can place the pins on it (and it fades out under the canvas). */
+  html[data-js]:not([data-motion="reduced"]) .route-gl { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-stage[data-gl] .route-view { perspective: none; -webkit-mask-image: none; mask-image: none; }
+  html[data-js]:not([data-motion="reduced"]) .route-stage[data-gl] .rm-plane { transform: translateY(-50%); }
+  html[data-js]:not([data-motion="reduced"]) .route-stage[data-gl] .rm-map { -webkit-mask-image: none; mask-image: none; }
   html[data-js]:not([data-motion="reduced"]) .route-card { max-block-size: calc(46svh - 24px); }
   html[data-js]:not([data-motion="reduced"]) .route-card .wc { block-size: auto; max-block-size: calc(46svh - 24px); overflow: clip; box-shadow: var(--sh-1); }
   html[data-js]:not([data-motion="reduced"]) .route-card .wc-photo { display: none; }
