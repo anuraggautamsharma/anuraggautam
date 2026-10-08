@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { pageAlternates } from '@/lib/meta'
+import { ScrollFilm } from '@/components/film/ScrollFilm'
 import { Basecamp } from '@/components/home/Basecamp'
 import { Terrain } from '@/components/home/Terrain'
 import { RouteSection } from '@/components/topo/RouteSection'
@@ -34,8 +35,11 @@ export const revalidate = 3600
 export default function Home() {
   return (
     <>
-      <Basecamp />
-      <Terrain />
+      {/* The ascent: one scroll-played cinematic flight behind basecamp and terrain. */}
+      <ScrollFilm name="ascent">
+        <Basecamp />
+        <Terrain />
+      </ScrollFilm>
       <RouteSection />
       <StackBand />
       <Guide />

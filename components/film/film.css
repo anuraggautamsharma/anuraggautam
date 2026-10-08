@@ -1,0 +1,16 @@
+/* ScrollFilm: a sticky canvas under the beats it wraps. Scroll mode only (JS, full motion, screen). */
+.film { position: relative; }
+.film-stage { display: none; }
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-js]:not([data-motion="reduced"]) .film-stage {
+    display: block; position: sticky; top: 0; z-index: 0;
+    block-size: 100svh; margin-block-end: -100svh; pointer-events: none; overflow: clip;
+  }
+}
+.film-canvas { display: block; inline-size: 100%; block-size: 100%; opacity: 0; transition: opacity 700ms var(--ease-out); }
+
+/* The ascent (basecamp → terrain): once its first frame is up, the beats' stills step aside. */
+html[data-film-ascent] .film[data-film="ascent"] .film-canvas { opacity: 1; }
+html[data-film-ascent] .film[data-film="ascent"] > section { background-color: transparent; }
+html[data-film-ascent] .film[data-film="ascent"] .photo-img { opacity: 0; transition: opacity 700ms var(--ease-out); }
+html[data-film-ascent] .film[data-film="ascent"] .tr-fog { opacity: 0; transition: opacity 700ms var(--ease-out); }

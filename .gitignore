@@ -13,3 +13,6 @@ Anurag's Images/
 
 # Internal strategy, specs and review screenshots stay local (the repo is public).
 docs/
+
+# AI-generated film footage before processing (frames go to public/film/<name>/)
+film-inbox/
