@@ -416,3 +416,30 @@
 /* The camp's stack: official marks in one wrapping row, gaps double as clear space. */
 .wc-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; list-style: none; margin: var(--s-4) 0 0; padding: var(--s-3) 0 0; border-top: 1px solid var(--line); }
 .wc-tools img { display: block; }
+
+/* ── Camp photos: alive, and at night ── */
+/* A slow drift while the card is open (individual transform properties, so it composes with
+   the settle-in transform; compositor only). */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .wc-photo .plate-img > img {
+    scale: 1.07;
+    animation: wc-drift 22s ease-in-out infinite alternate;
+  }
+  html:not([data-motion="reduced"]) .wc:hover .wc-photo .plate-img > img { scale: 1.11; transition: scale 1.2s var(--ease-out), transform var(--dur-photo) var(--ease-settle); }
+}
+@keyframes wc-drift { from { translate: -2% 1%; } to { translate: 2% -1.5%; } }
+
+/* Dark theme: the same camp under the moon the mountain beside it stands under. */
+:root[data-theme="dark"] .wc-photo .plate-img > img { filter: saturate(.5) brightness(.9) contrast(1.06); }
+:root[data-theme="dark"] .wc-photo .plate-img::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 70% 0%, rgb(170 195 255 / .22), transparent 60%),
+    linear-gradient(to bottom, rgb(40 62 120 / .42), rgb(14 24 52 / .5));
+  mix-blend-mode: multiply;
+}
+:root[data-theme="dark"] .wc-photo .plate-img::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(90% 70% at 72% 8%, rgb(190 210 255 / .2), transparent 65%);
+  mix-blend-mode: screen;
+}
