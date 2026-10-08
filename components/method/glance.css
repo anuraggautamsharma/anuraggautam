@@ -11,8 +11,8 @@
 /* Phone trail: a dashed sunrise line down the left edge, a dot per camp. */
 .mg-camps::before { content: ""; position: absolute; inset-block: 12px 12px; inset-inline-start: 7px; border-inline-start: 2px dashed var(--c-sunrise-500); opacity: .7; }
 .mg-camp { position: relative; }
-.mg-card { display: grid; gap: 6px; padding: var(--s-4) var(--s-4) var(--s-4) var(--s-4); background: var(--c-surface, #FCFAF4); border: 1px solid var(--line); border-top: 3px solid var(--hue); color: var(--ink); text-decoration: none; transition: transform var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out); }
-.mg-dot { position: absolute; inset-inline-start: -28px; top: 18px; inline-size: 16px; block-size: 16px; border-radius: 50%; background: var(--c-paper, #F7F2E8); border: 3px solid var(--hue); }
+.mg-card { display: grid; gap: 6px; padding: var(--s-4) var(--s-4) var(--s-4) var(--s-4); background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--hue); color: var(--ink); text-decoration: none; transition: transform var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out); }
+.mg-dot { position: absolute; inset-inline-start: -28px; top: 18px; inline-size: 16px; block-size: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--hue); }
 .mg-label { font-family: var(--ff-mono), ui-monospace, monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hue); font-weight: 600; }
 .mg-camp-title { font-weight: 800; font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); line-height: 1.1; letter-spacing: -.01em; }
 .mg-camp-line { font-size: .9375rem; line-height: 1.45; color: var(--ink-muted); }
@@ -43,7 +43,7 @@
   /* Pins: stake down to the ridge, numbered head in the camp's hue. */
   .mg-pin { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -100%); display: grid; justify-items: center; }
   .mg-pin::after { content: ""; inline-size: 2px; block-size: 18px; background: var(--ink); }
-  .mg-pin-head { display: grid; place-items: center; inline-size: 34px; block-size: 34px; border-radius: 50%; background: var(--c-paper, #F7F2E8); border: 3px solid var(--hue); font-family: var(--ff-mono), ui-monospace, monospace; font-size: 12px; font-weight: 700; color: var(--ink); }
+  .mg-pin-head { display: grid; place-items: center; inline-size: 34px; block-size: 34px; border-radius: 50%; background: var(--surface); border: 3px solid var(--hue); font-family: var(--ff-mono), ui-monospace, monospace; font-size: 12px; font-weight: 700; color: var(--ink); }
   html[data-js] .mg-profile:not(.is-in) .mg-pin { opacity: 0; transform: translate(-50%, -80%); }
   .mg-profile .mg-pin { transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); transition-delay: calc(300ms + var(--i) * 220ms); }
 
