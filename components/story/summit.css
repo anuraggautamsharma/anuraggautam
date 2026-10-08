@@ -114,13 +114,14 @@
   /* A swell around the moment the sun clears the ridge (p ≈ .42), settling to a soft glow. */
   --flare: max(0, 1 - max(var(--film-p, 0) - 0.42, 0.42 - var(--film-p, 0)) * 4.2);
   opacity: calc(var(--flare) * 0.85 + min(1, max(0, var(--film-p, 0) - 0.5) * 3) * 0.18);
+  will-change: opacity;
 }
 .film[data-on] .sm-head {
   --in: min(1, max(0, (var(--film-p, 1) - 0.36) * 5));
   opacity: var(--in);
-  transform: translateY(calc((1 - var(--in)) * 48px)) scale(calc(0.96 + var(--in) * 0.04));
-  filter: blur(calc((1 - var(--in)) * 10px));
+  transform: translateY(calc((1 - var(--in)) * 56px)) scale(calc(0.94 + var(--in) * 0.06));
   transform-origin: 0 100%;
+  will-change: transform, opacity;
 }
 html[data-js] .film[data-on] .sm-plate.reveal {
   transition: none;
@@ -128,6 +129,7 @@ html[data-js] .film[data-on] .sm-plate.reveal {
   --in: min(1, max(0, (var(--film-p, 1) - 0.62) * 6));
   opacity: var(--in);
   translate: 0 calc((1 - var(--in)) * 32px);
+  will-change: translate, opacity;
 }
 @media (min-width: 64rem) {
   .film[data-on] .sm-head { transform-origin: 0 50%; }

@@ -33,9 +33,13 @@ export function ScrollFilm({
   name,
   range = [0, 1],
   className,
+  cssProgress = false,
   children,
 }: {
   name: string
+  /** Expose the scroll progress as var(--film-p) on the wrapper, for the beats' own effects.
+   *  Off by default: every change restyles the whole subtree. */
+  cssProgress?: boolean
   /** The part of the wrapper's scroll that plays the film; the rest holds the first or last frame. */
   range?: [number, number]
   className?: string
@@ -188,8 +192,10 @@ export function ScrollFilm({
         else pS = p
       }
       // Scroll progress for the beats' own effects (CSS: var(--film-p)).
-      const pv = pS.toFixed(4)
-      if (pv !== pVar) root.style.setProperty('--film-p', (pVar = pv))
+      if (cssProgress) {
+        const pv = pS.toFixed(3)
+        if (pv !== pVar) root.style.setProperty('--film-p', (pVar = pv))
+      }
       const n = blobs.length
       const f = Math.min(1, Math.max(0, (pS - r0) / Math.max(1e-3, r1 - r0)))
       const ft = f * (n - 1)
@@ -280,7 +286,7 @@ export function ScrollFilm({
       root.removeAttribute('data-on')
       document.documentElement.removeAttribute(attr)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- the range is a static literal
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- range and cssProgress are static per film
   }, [name])
 
   return (

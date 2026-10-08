@@ -47,7 +47,7 @@ export default function Home() {
       <FieldNotes />
       <FitBand notFit={home.fit.no} notReady={home.fit.notReady} />
       {/* The ending: pinned while the camera rises past the summit into the sunrise. */}
-      <ScrollFilm name="summit" className="film-pin" range={[0.02, 0.84]}>
+      <ScrollFilm name="summit" className="film-pin" range={[0.02, 0.84]} cssProgress>
         <SummitCta n="08" />
       </ScrollFilm>
     </>
