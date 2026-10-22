@@ -53,6 +53,8 @@ export function SoundToggle({ className }: { className?: string }) {
   }
 
   useEffect(() => {
+    // The holding page (app/hello) is silent: nothing to switch off there.
+    if (document.querySelector('.hold')) return
     // On by default: only an explicit "off" keeps it quiet.
     let off = false
     try {

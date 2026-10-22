@@ -1,0 +1,117 @@
+/* ═══ The holding page: portrait and story, nothing to click ═══ */
+
+/* This page stands alone: no header, footer or skip link around it. */
+body:has(.hold) :is(.site-header, .site-footer, .skip-link) { display: none !important; }
+body:has(.hold) { background: var(--bg); }
+
+.hold {
+  min-block-size: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* ── The portrait ── */
+.hold-photo {
+  position: relative;
+  block-size: 64svh;
+  min-block-size: 420px;
+  overflow: clip;
+  display: grid;
+  place-items: end center;
+}
+.hold-panel {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(80% 60% at 50% 38%, rgb(255 190 130 / .45), transparent 70%),
+    linear-gradient(to bottom, var(--c-sand-200), var(--c-sand-300));
+}
+:root[data-theme="dark"] .hold-panel {
+  background:
+    radial-gradient(80% 60% at 50% 38%, rgb(255 170 100 / .28), transparent 70%),
+    linear-gradient(to bottom, #2E2618, #15120C);
+}
+.hold-cutout {
+  position: relative;
+  inline-size: auto;
+  block-size: 94%;
+  max-inline-size: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 30px 60px rgb(0 0 0 / .25));
+}
+
+/* ── The story ── */
+.hold-text {
+  padding: var(--s-7) var(--margin) var(--s-7);
+  display: grid;
+  align-content: start;
+  max-inline-size: 46rem;
+}
+.hold-kicker {
+  font: 500 var(--fs-micro) / 1 var(--ff-mono), ui-monospace, monospace;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--ink-muted);
+}
+.hold-name {
+  margin-top: var(--s-4);
+  font-family: var(--ff-mega, var(--ff-display)), sans-serif;
+  font-weight: 900; font-stretch: 125%;
+  font-size: clamp(3.4rem, 1.5rem + 7vw, 7.5rem);
+  line-height: .9; letter-spacing: -.02em; text-transform: uppercase;
+}
+.hold-dot { color: var(--accent); }
+.hold-lead {
+  margin-top: var(--s-6);
+  font: 700 var(--fs-h3) / 1.08 var(--ff-display), sans-serif; letter-spacing: var(--tr-h3);
+  text-wrap: balance;
+}
+.hold-body { margin-top: var(--s-4); font-size: var(--fs-lead); line-height: var(--lh-lead); color: var(--ink-muted); max-inline-size: 34ch; text-wrap: pretty; }
+
+.hold-block { margin-top: var(--s-8); }
+.hold-h {
+  font: 500 var(--fs-micro) / 1 var(--ff-mono), ui-monospace, monospace;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--ink-muted);
+  padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-strong);
+}
+.hold-work { list-style: none; margin: 0; padding: 0; }
+.hold-work li, .hold-edu {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
+  padding-block: var(--s-4); border-bottom: 1px solid var(--line);
+}
+.hold-edu { margin: 0; }
+.hold-org { font: 700 var(--fs-h4) / 1.15 var(--ff-display), sans-serif; letter-spacing: var(--tr-h4); display: inline-flex; align-items: center; gap: 12px; }
+.hold-role { font-size: var(--fs-ui); font-weight: 600; color: var(--ink); }
+.hold-fact { font-size: var(--fs-ui); color: var(--ink-muted); }
+.hold-now {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 var(--fs-micro) / 1 var(--ff-mono), ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.hold-now::before { content: ""; inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgb(248 106 0 / .5); animation: hold-pulse 2s ease-out infinite; }
+@keyframes hold-pulse { 0% { box-shadow: 0 0 0 0 rgb(248 106 0 / .55); } 100% { box-shadow: 0 0 0 10px rgb(248 106 0 / 0); } }
+
+.hold-does { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.hold-does li {
+  padding: 8px 14px; border: 1.5px solid var(--line-strong);
+  font: 600 var(--fs-small) / 1.2 var(--ff-display), sans-serif; color: var(--ink);
+}
+.hold-foot { margin-top: var(--s-8); font: 500 var(--fs-micro) / 1.4 var(--ff-mono), ui-monospace, monospace; letter-spacing: .12em; color: var(--ink-subtle); }
+
+/* ── Desktop: the portrait holds the left half while the story scrolls on the right ── */
+@media (min-width: 64rem) {
+  .hold { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr); }
+  .hold-photo { position: sticky; top: 0; block-size: 100svh; min-block-size: 0; }
+  .hold-cutout { block-size: 88%; }
+  .hold-text { padding: clamp(3rem, 9svh, 7rem) clamp(2.5rem, 6vw, 7rem) var(--s-8); }
+  .hold-work li, .hold-edu { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: var(--gutter); }
+  .hold-work li .hold-org, .hold-edu .hold-org { grid-row: span 2; }
+}
+
+/* ── Arrival: a calm, staggered rise (CSS only) ── */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .hold-in { animation: hold-rise 900ms var(--ease-arrive) both; animation-delay: var(--d, 0ms); }
+  html:not([data-motion="reduced"]) .hold-cutout { animation: hold-photo 1400ms var(--ease-settle) both; }
+}
+@keyframes hold-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes hold-photo { from { opacity: 0; transform: translateY(40px) scale(1.03); } to { opacity: 1; transform: none; } }

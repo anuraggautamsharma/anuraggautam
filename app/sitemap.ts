@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL, pages, site } from '@/lib/site'
+import { HOLDING } from '@/lib/holding'
 import { hasVideos, publishedWatchPages, watchPath } from '@/lib/videos'
 import {
   HUB_INDEX_THRESHOLD,
@@ -19,6 +20,8 @@ export const revalidate = 3600
 // redirect to /subscribe and /start), /subscribe/confirm (noindex, per-person links) and
 // /credits (noindex, spec §5.6, §7.5; crawlers still reach it via the footer).
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Holding mode: only the landing page exists publicly.
+  if (HOLDING) return [{ url: SITE_URL, lastModified: new Date('2026-10-22') }]
   const posts = publishedPosts()
   const newest = newestDate(posts) ?? site.updated
   const hubs = topicsWithCounts().filter((t) => t.count >= HUB_INDEX_THRESHOLD)
