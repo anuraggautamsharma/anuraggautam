@@ -131,3 +131,6 @@ html[data-revealed] .reveal .m-strike::after { transform: none; }
 .m-camp-stack { margin-top: var(--s-5); }
 .m-stack { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; list-style: none; margin: var(--s-3) 0 0; padding: 0; }
 .m-stack img { display: block; }
+/* An odd last offer spans the row instead of standing alone. */
+@media (min-width: 40rem) { .m-offer-grid > li:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+@media (min-width: 40rem) { .m-offer-grid > li:last-child:nth-child(odd) .m-offer-line { max-inline-size: 52ch; } }

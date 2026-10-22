@@ -2,10 +2,11 @@
 import { pages } from '@/lib/site'
 
 /** "What's this about?" (PLAN_V3 §6). Only `engagement` runs the fit/maybe/not-fit routing. */
-export const TYPE_VALUES = ['engagement', 'workshop', 'speaking', 'other'] as const
+export const TYPE_VALUES = ['engagement', 'build', 'workshop', 'speaking', 'other'] as const
 export type WorkType = (typeof TYPE_VALUES)[number]
 export const TYPE_LABELS: Record<WorkType, string> = {
   engagement: pages.contact.types.engagement,
+  build: pages.contact.types.build,
   workshop: pages.contact.types.workshop,
   speaking: pages.contact.types.speaking,
   other: pages.contact.types.other,
@@ -28,7 +29,7 @@ export const STUCK_LABELS: Record<Stuck, string> = {
   positioning: 'Positioning',
   pricing: 'Pricing',
   pipeline: 'Pipeline',
-  pilots: 'Pilots won’t convert',
+  pilots: 'Trials or pilots won’t convert',
   workflows: 'Systems',
   team: 'Team',
 }

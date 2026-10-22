@@ -24,7 +24,7 @@ export const site = {
 
 /** Spec §7.1. Identical in the footer, Person.description, llms.txt and the about page. */
 const ENTITY_STATEMENT =
-  'Anurag Gautam (also Anurag Gautam Sharma) is a go-to-market (GTM) consultant for complex technology, from AI and physical AI to infrastructure and hardware. He is Founding GTM Lead at VideoDB, co-founded Suggaa, and founded Zecway and The Pipeline Lab. He created the Summit Route, a five-camp GTM method.'
+  'Anurag Gautam (also Anurag Gautam Sharma) is a product designer turned go-to-market (GTM) consultant for complex technology, from AI and physical AI to infrastructure and hardware. He designs high-converting websites and product-led growth (PLG) flows, and has run marketing agencies and sales systems. He is Founding GTM Lead at VideoDB, co-founded Suggaa, and founded Zecway and The Pipeline Lab. He created the Summit Route, a five-camp GTM method.'
 
 export const person = {
   name: 'Anurag Gautam',
@@ -32,14 +32,14 @@ export const person = {
   role: 'GTM consultant for complex technology',
   currentTitle: 'Founding GTM Lead',
   currentCompany: { name: 'VideoDB', url: 'https://videodb.io' },
-  oneLiner: 'I take complex technology to market, end to end: positioning, pricing, pipeline, systems and team.',
+  oneLiner: 'I take complex technology to market, end to end: from the product flow and the website to the pipeline and the team that sells.',
   // Article author box: third person like a byline, without the machine-facing alias.
   authorBio:
     'Founding GTM Lead at VideoDB. Co-founded Suggaa, founded Zecway and The Pipeline Lab, and created the Summit Route, an end-to-end GTM method for complex technology.',
   // Kept identical everywhere so assistants can tell him apart from namesakes.
   entityBio: ENTITY_STATEMENT,
   aboutLead:
-    'Anurag Gautam is a founder and go-to-market (GTM) consultant who takes complex technology to market, end to end: positioning, pricing, pipeline, systems and team. He co-founded Suggaa (raised $2M; its application sold for ~$4M), founded Zecway and The Pipeline Lab, and is Founding GTM Lead at VideoDB.',
+    'Anurag Gautam is a founder, product designer and go-to-market (GTM) consultant who takes complex technology to market, end to end: positioning, pricing, websites and PLG flows, pipeline, sales systems and team. He co-founded Suggaa (raised $2M; its application sold for ~$4M), founded Zecway and The Pipeline Lab, and is Founding GTM Lead at VideoDB.',
 }
 
 /**
@@ -76,6 +76,17 @@ export const stats = [
   { value: '$7M+', num: 7000000, label: 'Client revenue generated', note: 'Revenue generated for The Pipeline Lab’s clients from the GTM and outbound systems we set up.' },
   { value: '45+', num: 45, label: 'Companies, mostly service & SaaS', note: 'Between 45 and 50 enterprises whose GTM and outbound systems The Pipeline Lab set up. The Pipeline Lab’s work spans customers outside India.' },
 ] as const
+
+/**
+ * Home: the jobs Anurag has done with his own hands. Told as his story, never as a service menu:
+ * a role, and one line of proof in plain words.
+ */
+export const roles: readonly { id: 'design' | 'marketing' | 'sales' | 'conversion'; role: string; proof: string }[] = [
+  { id: 'design', role: 'Product designer', proof: 'Designed Suggaa’s apps and design system.' },
+  { id: 'marketing', role: 'Marketer', proof: 'Ran two marketing agencies.' },
+  { id: 'sales', role: 'Seller', proof: 'Built sales systems for 45–50 companies.' },
+  { id: 'conversion', role: 'Conversion builder', proof: 'Websites, landing pages and PLG flows that convert.' },
+]
 
 /** /about trail log (spec §5.2). `years` renders only when known. */
 export const buildLog: readonly { code: string; title: string; body: string; years: string | null }[] = [
@@ -186,11 +197,11 @@ export const camps: readonly Camp[] = [
     name: 'Pipeline',
     title: 'Light the beacons.',
     line: 'Qualified demand every week, not once per launch.',
-    items: ['Launches & content', 'Inbound & AI search', 'Signal-based outbound'],
+    items: ['Landing pages that convert', 'Inbound & AI search', 'Signal-based outbound'],
     hazard: 'Pipeline runs on the founder.',
     detail:
-      'Launches spike and fade. A market needs a steady signal. I build the channels that create qualified demand every week: launches, founder-led content, search and AI-assistant visibility, events, partners and signal-based outbound.',
-    leaveWith: ['Channel plan', 'Launch plan', 'Content engine', 'Outbound system'],
+      'Launches spike and fade. A market needs a steady signal. I build the channels that create qualified demand every week: landing pages that convert, launches, founder-led content, search and AI-assistant visibility, events, partners and signal-based outbound.',
+    leaveWith: ['Channel plan', 'Landing pages', 'Content engine', 'Outbound system'],
     icon: 'beacon',
     photo: 'waypoint-market',
     hue: 'var(--camp-market)',
@@ -205,19 +216,19 @@ export const camps: readonly Camp[] = [
     id: 'systems',
     name: 'Systems',
     title: 'Bridge the crevasses.',
-    line: 'Close the gaps where deals stall.',
-    items: ['CRM & routing', 'AI agents & automation', 'Pilot-to-production playbook'],
-    hazard: 'Pilots never become contracts.',
+    line: 'Close the gaps where users and deals stall.',
+    items: ['PLG & self-serve flows', 'CRM & AI automation', 'Pilot-to-production playbook'],
+    hazard: 'Trials and pilots never become revenue.',
     detail:
-      'Deals stall in security review, context dies between tools, and pilots drift. I bridge those gaps: CRM, enrichment and routing, AI agents and automation, procurement kits, and a pilot-to-production playbook.',
-    leaveWith: ['CRM architecture', 'Automations', 'Procurement kit', 'Pilot playbook'],
+      'Sign-ups never activate, deals stall in security review, context dies between tools, and pilots drift. I bridge those gaps: product-led onboarding and upgrade flows, CRM and routing, AI agents and automation, procurement kits, and a pilot-to-production playbook.',
+    leaveWith: ['PLG flows', 'CRM architecture', 'Automations', 'Pilot playbook'],
     icon: 'carabiner',
     photo: 'waypoint-systems',
     hue: 'var(--camp-systems)',
     topic: 'workflows',
-    problem: 'Pilots never turn into contracts.',
-    fix: 'Turn pilots into contracts.',
-    stuckLabel: 'Pilots stall',
+    problem: 'Trials and pilots never turn into revenue.',
+    fix: 'Turn trials and pilots into revenue.',
+    stuckLabel: 'Trials and pilots stall',
     stuck: 'pilots',
   },
   {
@@ -277,7 +288,7 @@ export const home: {
   route: { h2: string; line: string; cta: string }
   /** v3 drops the stack line. `line` stays an optional, never-set key only until StackBand stops reading it. */
   stack: { label: string; h2: string; line?: undefined }
-  guide: { h2: string; line: string; badges: [string, string, string]; cta: string }
+  guide: { h2: string; line: string; offClock: string; badges: [string, string, string]; cta: string }
   expeditions: { h2: string; line: string }
   fit: {
     h2: string
@@ -317,8 +328,9 @@ export const home: {
     h2: 'The stack I build with.',
   },
   guide: {
-    h2: 'I’ve been the founder.',
-    line: 'So I build go-to-market with your team, not a deck for it.',
+    h2: 'I’ve done every job between a product and its revenue.',
+    line: 'So your go-to-market is one story, not four hand-offs.',
+    offClock: 'Off the clock, I make content and explore new places.',
     badges: ['Left BIT Sindri CS to build companies', 'Product designer: I make hard things clear', 'Founding GTM Lead, VideoDB'],
     cta: 'About me',
   },
@@ -366,7 +378,7 @@ export const ventures: readonly {
   {
     id: 'suggaa',
     name: 'Suggaa',
-    role: 'Co-founder · CMO',
+    role: 'Co-founder · CMO · Design',
     when: 'Until 2024',
     line: 'Ride-hailing. Designed both apps, ran launch.',
     photo: 'expedition-canyon',
@@ -411,12 +423,13 @@ export const ventures: readonly {
 // /method, /about
 // ---------------------------------------------------------------------------
 
-/** "Four ways to climb" (spec §5.1.4, PLAN_V3 §6). Formats carried over from v1, plus Team workshop (v3): CONFIRM before launch (§12.3). No public prices. */
+/** "Five ways to climb" (spec §5.1.4, PLAN_V3 §6). Formats carried over from v1, plus Team workshop (v3): CONFIRM before launch (§12.3). No public prices. */
 export const offers: readonly { name: string; length: string; line: string }[] = [
   { name: 'Recon', length: '2 weeks', line: 'Find the stall. One page: the three moves that matter most.' },
   { name: 'Expedition', length: '~90 days', line: 'I build all five camps with your team, then hand them over.' },
   { name: 'Guide on call', length: 'Monthly', line: 'On call while your team runs the route.' },
   { name: 'Team workshop', length: '1–2 days', line: 'Your team learns the route on your own product.' },
+  { name: 'Build sprint', length: '~4 weeks', line: 'I design your website, landing pages or a product-led flow, built to convert.' },
 ]
 
 /** /method FAQ (spec §7.4). Visible text and the FAQPage JSON-LD read this same array. */
@@ -439,11 +452,11 @@ export const methodFaqs: readonly { q: string; a: string }[] = [
   },
   {
     q: 'How is this different from an outbound agency?',
-    a: 'An outbound agency runs one channel. I work the whole route, starting upstream with positioning and pricing, where most stalls begin. I’ve built agencies, so I know exactly where their job ends.',
+    a: 'An outbound agency runs one channel. I work the whole route, starting upstream with positioning and pricing, where most stalls begin, and I design the website and product flows myself. I’ve built agencies, so I know exactly where their job ends.',
   },
   {
     q: 'How does an engagement work, and what does it cost?',
-    a: 'Four ways in: a two-week Recon to diagnose the route, a roughly 90-day Expedition to build and install it, monthly guidance on call, or a one-to-two-day workshop for your team. Every fee is fixed and scoped on a 30-minute fit call.',
+    a: 'Five ways in: a two-week Recon to diagnose the route, a roughly 90-day Expedition to build and install it, monthly guidance on call, a one-to-two-day workshop for your team, or a four-week Build sprint where I design your website, landing pages or a product-led flow. Every fee is fixed and scoped on a 30-minute fit call.',
   },
 ]
 
@@ -469,14 +482,15 @@ export const aboutQa: readonly { q: string; a: string }[] = [
 
 /** /about bio, 63 words (spec §5.2.2). The trail log below carries the venture facts. */
 export const bio =
-  'I’m Anurag Gautam: a founder first, and a go-to-market guide for complex technology. I left computer science at BIT Sindri in my second year to build, and I’ve worked every side of the climb since: product, design, marketing and sales. Today I’m Founding GTM Lead at VideoDB, and I consult alongside it. I design, explore new places and write down what I learn.'
+  'I’m Anurag Gautam: a founder first, and a go-to-market guide for complex technology. I left computer science at BIT Sindri in my second year to build, and I’ve worked every side of the climb since: product design, marketing, sales and go-to-market. I still design with my own hands: the websites, landing pages and product-led flows that turn interest into revenue. Today I’m Founding GTM Lead at VideoDB, and I consult alongside it. Off the clock I make content, explore new places and write down what I learn.'
 
 /** /about "At a glance" rows. */
 export const glance: readonly { k: string; v: string }[] = [
   { k: 'Does', v: 'End-to-end GTM for complex technology' },
+  { k: 'Hands-on', v: 'Product design, websites, PLG flows, sales' },
   { k: 'Now', v: 'Founding GTM Lead, VideoDB' },
   { k: 'Built', v: 'Suggaa, Zecway, The Pipeline Lab' },
-  { k: 'Off the clock', v: 'Design, content, new places' },
+  { k: 'Off the clock', v: 'Content, design, new places' },
 ]
 
 // ---------------------------------------------------------------------------
@@ -638,12 +652,12 @@ export const pages = {
       line: 'My end-to-end GTM method for complex technology: five camps, climbed in order, until your team can run it without me.',
     },
     camp: { leaveWith: 'You leave with', clears: 'Clears:' },
-    offers: { h2: 'Four ways to climb', note: 'Every fee is fixed and scoped on a 30-minute fit call.' },
+    offers: { h2: 'Five ways to climb', note: 'Every fee is fixed and scoped on a 30-minute fit call.' },
     fit: { notFit: home.fit.no },
     faq: { h2: 'Questions from the trail' },
   },
   about: {
-    hero: { kicker: 'Anurag Gautam', h1: 'Founder first. GTM guide by trade.', cta: 'How I work', alt: '3,600 M' },
+    hero: { kicker: 'Anurag Gautam', h1: 'Designer, marketer, seller. Founder first.', cta: 'How I work', alt: '3,600 M' },
     bio: { glanceLabel: 'At a glance' },
     trail: { h2: 'The trail so far' },
     qa: { h2: 'Straight answers' },
@@ -661,6 +675,7 @@ export const pages = {
     types: {
       label: 'What’s this about?',
       engagement: 'GTM engagement',
+      build: 'Website, landing page or PLG flow',
       workshop: 'Team workshop',
       speaking: 'Speaking or podcast',
       other: 'Something else',

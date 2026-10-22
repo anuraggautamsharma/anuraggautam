@@ -5,7 +5,7 @@ import { Section } from '@/components/ui/Section'
 import { FullBleedPhoto } from '@/components/ui/Photo'
 
 /**
- * "Four ways to climb": a route-valley band with the heading in its sky, then the engagement
+ * "Five ways to climb": a route-valley band with the heading in its sky, then the engagement
  * cards in a 2×2 grid (stacked on phones). Team workshop links to its own contact type.
  */
 export function Offers() {

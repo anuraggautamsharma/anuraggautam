@@ -6,8 +6,16 @@ import { ButtonLink } from '@/components/ui/ButtonLink'
 import { LivingPhoto } from '@/components/living/LivingPhoto'
 import guideDepth from '@/assets/nature/depth/guide-trail-depth.webp'
 import { photos, portraitCutout } from '@/lib/photos'
-import { home } from '@/lib/site'
+import { home, roles } from '@/lib/site'
 import './home.css'
+
+/** Line icons, drawn on as each role arrives. */
+const ROLE_ICON = {
+  design: 'M4 20 L4.6 16.4 L15.5 5.5 L18.5 8.5 L7.6 19.4 Z M13.5 7.5 L16.5 10.5 M4 20 L8 19.4',
+  marketing: 'M3 10 L3 14 L7 14 L15 19 L15 5 L7 10 Z M18.5 9 C20.5 10.5 20.5 13.5 18.5 15',
+  sales: 'M2 12 L6 8 L10 10 L14 7 L18 9 L22 6 M2 18 L22 18 M15 7 L18 9 L18 6',
+  conversion: 'M3 5 L21 5 L21 19 L3 19 Z M3 9 L21 9 M7 13 L11 13 M7 16 L15 16 M15.5 12.5 L17 14 L19.5 11.5',
+} as const
 
 /**
  * Beat 03b + 04. A wordless photo band (the breath after the map), then the guide: Anurag's
@@ -59,6 +67,19 @@ export function Guide() {
                 </span>
               ))}
             </p>
+            {/* The jobs he has done himself: icon, role, one line of proof. */}
+            <ul className="gd-roles">
+              {roles.map((r, i) => (
+                <li key={r.id} className="gd-role reveal" style={{ '--i': i + 1 } as CSSProperties}>
+                  <svg className="gd-role-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d={ROLE_ICON[r.id]} />
+                  </svg>
+                  <span className="gd-role-name">{r.role}</span>
+                  <span className="gd-role-proof">{r.proof}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="gd-off">{copy.offClock}</p>
             <ButtonLink href="/about" variant="secondary" className="gd-cta">
               {copy.cta}
             </ButtonLink>
