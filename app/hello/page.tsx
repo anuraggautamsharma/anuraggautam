@@ -152,7 +152,7 @@ export default function Hello() {
         </section>
 
         <p className="hold-foot hold-in" style={d()}>
-          © {new Date().getFullYear()} Anurag Gautam. The full site is on its way.
+          © {new Date().getFullYear()} Anurag Gautam
         </p>
       </div>
     </main>
