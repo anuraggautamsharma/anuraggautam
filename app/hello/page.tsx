@@ -48,7 +48,7 @@ export default function Hello() {
       <div className="hold-photo">
         <Image
           src={pottery}
-          alt="Anurag Gautam painting a pottery duck at a café"
+          alt="Anurag Gautam painting a pottery dog at a café"
           priority
           fill
           sizes="(min-width: 64rem) 48vw, 100vw"
@@ -56,7 +56,7 @@ export default function Hello() {
           placeholder="blur"
         />
         <p className="hold-tag" aria-hidden="true">
-          Painting a pottery duck.
+          Painting a pottery dog.
           <br />
           Very serious business.
         </p>
