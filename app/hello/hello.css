@@ -1,117 +1,183 @@
-/* ═══ The holding page: portrait and story, nothing to click ═══ */
+/* ═══ The holding page: portrait and story ═══ */
 
 /* This page stands alone: no header, footer or skip link around it. */
 body:has(.hold) :is(.site-header, .site-footer, .skip-link) { display: none !important; }
 body:has(.hold) { background: var(--bg); }
 
 .hold {
+  position: relative;
   min-block-size: 100svh;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   background: var(--bg);
   color: var(--ink);
+  overflow-x: clip;
 }
 
-/* ── The portrait ── */
+/* ── The photo: as it was taken, nothing added ── */
 .hold-photo {
   position: relative;
-  block-size: 64svh;
-  min-block-size: 420px;
+  block-size: 72svh;
+  min-block-size: 440px;
   overflow: clip;
-  display: grid;
-  place-items: end center;
+  background: #6b5a48;
 }
-.hold-panel {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(80% 60% at 50% 38%, rgb(255 190 130 / .45), transparent 70%),
-    linear-gradient(to bottom, var(--c-sand-200), var(--c-sand-300));
+.hold-img { object-fit: cover; object-position: 62% 30%; }
+/* A paper tag stuck on the photo, a little crooked. */
+.hold-tag {
+  position: absolute; left: var(--margin); bottom: 22px;
+  padding: 10px 14px;
+  background: #FBF7EF; color: #1A1A16;
+  font: 600 var(--fs-small) / 1.3 var(--ff-display), sans-serif;
+  transform: rotate(-3deg);
+  box-shadow: 0 10px 24px -10px rgb(0 0 0 / .45);
 }
-:root[data-theme="dark"] .hold-panel {
-  background:
-    radial-gradient(80% 60% at 50% 38%, rgb(255 170 100 / .28), transparent 70%),
-    linear-gradient(to bottom, #2E2618, #15120C);
-}
-.hold-cutout {
-  position: relative;
-  inline-size: auto;
-  block-size: 94%;
-  max-inline-size: 100%;
-  object-fit: contain;
-  object-position: bottom;
-  filter: drop-shadow(0 30px 60px rgb(0 0 0 / .25));
+.hold-tag::before {
+  content: ""; position: absolute; top: -9px; left: 50%; inline-size: 54px; block-size: 18px; margin-left: -27px;
+  background: rgb(248 106 0 / .55); transform: rotate(4deg);
 }
 
 /* ── The story ── */
 .hold-text {
+  position: relative;
   padding: var(--s-7) var(--margin) var(--s-7);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
-  max-inline-size: 46rem;
+  min-inline-size: 0;
 }
 .hold-kicker {
-  font: 500 var(--fs-micro) / 1 var(--ff-mono), ui-monospace, monospace;
-  letter-spacing: .2em; text-transform: uppercase; color: var(--ink-muted);
+  font: 500 var(--fs-micro) / 1.5 var(--ff-mono), ui-monospace, monospace;
+  letter-spacing: clamp(.1em, .5vw, .22em); text-transform: uppercase; color: var(--ink-muted);
 }
 .hold-name {
   margin-top: var(--s-4);
-  font-family: var(--ff-mega, var(--ff-display)), sans-serif;
-  font-weight: 900; font-stretch: 125%;
-  font-size: clamp(3.4rem, 1.5rem + 7vw, 7.5rem);
-  line-height: .9; letter-spacing: -.02em; text-transform: uppercase;
+  font-family: var(--ff-h1, var(--ff-display)), sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.9rem, 1rem + 9.5vw, 5.4rem);
+  line-height: .95; letter-spacing: -.035em;
 }
-.hold-dot { color: var(--accent); }
+.hold-name-line { display: block; padding-bottom: .04em; }
+.hold-word { display: inline-block; white-space: pre; overflow: clip; vertical-align: top; }
+.hold-ch { display: inline-block; }
+.hold-dot { display: inline-block; color: var(--accent); }
 .hold-lead {
   margin-top: var(--s-6);
-  font: 700 var(--fs-h3) / 1.08 var(--ff-display), sans-serif; letter-spacing: var(--tr-h3);
+  font: 700 var(--fs-h3) / 1.06 var(--ff-display), sans-serif; letter-spacing: var(--tr-h3);
   text-wrap: balance;
 }
-.hold-body { margin-top: var(--s-4); font-size: var(--fs-lead); line-height: var(--lh-lead); color: var(--ink-muted); max-inline-size: 34ch; text-wrap: pretty; }
+.hold-body { margin-top: var(--s-4); font-size: var(--fs-lead); line-height: var(--lh-lead); color: var(--ink-muted); max-inline-size: 36ch; text-wrap: pretty; }
+
+/* The numbers. */
+.hold-stats {
+  margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.hold-stat { padding: var(--s-4) var(--s-3) var(--s-4) 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column-reverse; gap: 6px; }
+.hold-stat-v {
+  margin: 0;
+  font-family: var(--ff-mega, var(--ff-display)), sans-serif; font-weight: 900; font-stretch: 125%;
+  font-size: clamp(2.1rem, 1.4rem + 2.4vw, 3.4rem); line-height: 1; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+.hold-stat:last-child .hold-stat-v { color: var(--accent); }
+.hold-stat-label { font: 500 var(--fs-micro) / 1.3 var(--ff-mono), ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-muted); }
 
 .hold-block { margin-top: var(--s-8); }
 .hold-h {
   font: 500 var(--fs-micro) / 1 var(--ff-mono), ui-monospace, monospace;
-  letter-spacing: .2em; text-transform: uppercase; color: var(--ink-muted);
+  letter-spacing: .22em; text-transform: uppercase; color: var(--ink-muted);
   padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-strong);
 }
 .hold-work { list-style: none; margin: 0; padding: 0; }
-.hold-work li, .hold-edu {
+.hold-work li {
+  position: relative;
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
   padding-block: var(--s-4); border-bottom: 1px solid var(--line);
 }
-.hold-edu { margin: 0; }
-.hold-org { font: 700 var(--fs-h4) / 1.15 var(--ff-display), sans-serif; letter-spacing: var(--tr-h4); display: inline-flex; align-items: center; gap: 12px; }
+/* A thin orange line draws under the row you're reading. */
+.hold-work li::after {
+  content: ""; position: absolute; left: 0; bottom: -1px; block-size: 1.5px; inline-size: 100%;
+  background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 600ms var(--ease-out);
+}
+@media (hover: hover) {
+  .hold-work li:hover::after { transform: scaleX(1); }
+  .hold-work li:hover .hold-org { color: var(--accent-ink); }
+}
+.hold-org { font: 700 var(--fs-h4) / 1.15 var(--ff-display), sans-serif; letter-spacing: var(--tr-h4); display: inline-flex; align-items: center; gap: 12px; transition: color var(--dur-hover) var(--ease-out); }
 .hold-role { font-size: var(--fs-ui); font-weight: 600; color: var(--ink); }
+.hold-when { font-weight: 500; color: var(--ink-muted); }
 .hold-fact { font-size: var(--fs-ui); color: var(--ink-muted); }
 .hold-now {
   display: inline-flex; align-items: center; gap: 6px;
   font: 600 var(--fs-micro) / 1 var(--ff-mono), ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase;
   color: var(--accent-ink);
 }
-.hold-now::before { content: ""; inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgb(248 106 0 / .5); animation: hold-pulse 2s ease-out infinite; }
+.hold-now::before { content: ""; inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--accent); animation: hold-pulse 2s ease-out infinite; }
 @keyframes hold-pulse { 0% { box-shadow: 0 0 0 0 rgb(248 106 0 / .55); } 100% { box-shadow: 0 0 0 10px rgb(248 106 0 / 0); } }
 
-.hold-does { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.hold-does li {
-  padding: 8px 14px; border: 1.5px solid var(--line-strong);
-  font: 600 var(--fs-small) / 1.2 var(--ff-display), sans-serif; color: var(--ink);
+/* What I do: large words gliding past, separated by orange points. */
+.hold-marquee {
+  margin-top: var(--s-4); display: flex; overflow: hidden; min-inline-size: 0; inline-size: 100%;
+  -webkit-mask: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
-.hold-foot { margin-top: var(--s-8); font: 500 var(--fs-micro) / 1.4 var(--ff-mono), ui-monospace, monospace; letter-spacing: .12em; color: var(--ink-subtle); }
+.hold-does {
+  list-style: none; margin: 0; padding: 0; display: flex; flex: none; align-items: center;
+  font: 800 clamp(1.6rem, 1.1rem + 1.8vw, 2.6rem) / 1.2 var(--ff-display), sans-serif; letter-spacing: -.02em; white-space: nowrap;
+}
+.hold-does li { display: inline-flex; align-items: center; }
+.hold-does li::after { content: ""; inline-size: .28em; block-size: .28em; margin-inline: .7em; border-radius: 50%; background: var(--accent); }
+.hold-does li:nth-child(even) { color: transparent; -webkit-text-stroke: 1.2px var(--ink); }
+
+/* Reach me. */
+.hold-links { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6); margin-top: var(--s-4); }
+.hold-link {
+  position: relative;
+  font: 700 clamp(1.2rem, 1rem + .8vw, 1.6rem) / 1.3 var(--ff-display), sans-serif; letter-spacing: -.01em; color: var(--ink);
+  text-decoration: none; overflow-wrap: anywhere;
+  background: linear-gradient(var(--accent), var(--accent)) left bottom / 100% 2px no-repeat;
+  padding-bottom: 4px;
+  transition: color var(--dur-hover) var(--ease-out), background-size 500ms var(--ease-out);
+}
+.hold-link:hover { color: var(--accent-ink); }
+.hold-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+
+.hold-foot { margin-top: var(--s-8); font: 500 var(--fs-micro) / 1.4 var(--ff-mono), ui-monospace, monospace; letter-spacing: .14em; color: var(--ink-subtle); }
+
+/* No added light on this page: the photo speaks for itself. */
+body:has(.hold) .cursor-light { display: none; }
 
 /* ── Desktop: the portrait holds the left half while the story scrolls on the right ── */
 @media (min-width: 64rem) {
-  .hold { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr); }
+  .hold { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); }
+  .hold-name { font-size: clamp(4.4rem, 6vw, 7.6rem); }
   .hold-photo { position: sticky; top: 0; block-size: 100svh; min-block-size: 0; }
-  .hold-cutout { block-size: 88%; }
-  .hold-text { padding: clamp(3rem, 9svh, 7rem) clamp(2.5rem, 6vw, 7rem) var(--s-8); }
-  .hold-work li, .hold-edu { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: var(--gutter); }
-  .hold-work li .hold-org, .hold-edu .hold-org { grid-row: span 2; }
+  .hold-tag { left: clamp(1.5rem, 3vw, 3rem); bottom: clamp(1.5rem, 4svh, 3rem); }
+  .hold-text { padding: clamp(3rem, 10svh, 7.5rem) clamp(2.5rem, 6vw, 7rem) var(--s-8); max-inline-size: 52rem; }
+  .hold-work li { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: var(--gutter); }
+  .hold-work li .hold-org { grid-row: span 2; }
 }
 
-/* ── Arrival: a calm, staggered rise (CSS only) ── */
+/* ── Arrival and motion ── */
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="reduced"]) .hold-in { animation: hold-rise 900ms var(--ease-arrive) both; animation-delay: var(--d, 0ms); }
-  html:not([data-motion="reduced"]) .hold-cutout { animation: hold-photo 1400ms var(--ease-settle) both; }
+  html:not([data-motion="reduced"]) .hold-in { animation: hold-rise 1000ms var(--ease-arrive) both; animation-delay: var(--d, 0ms); }
+  html:not([data-motion="reduced"]) .hold-ch { animation: hold-letter 1100ms var(--ease-arrive) both; animation-delay: calc(var(--c) * 45ms + 150ms); }
+  html:not([data-motion="reduced"]) .hold-dot { animation: hold-dot 900ms var(--ease-drop) both 900ms; }
+  html:not([data-motion="reduced"]) .hold-img { animation: hold-photo 1800ms var(--ease-settle) both; }
+  html:not([data-motion="reduced"]) .hold-tag { animation: hold-tag 900ms var(--ease-drop) both 1300ms; }
+  html:not([data-motion="reduced"]) .hold-does { animation: hold-marquee 38s linear infinite; }
+  html:not([data-motion="reduced"]) .hold-marquee:hover .hold-does { animation-play-state: paused; }
 }
-@keyframes hold-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-@keyframes hold-photo { from { opacity: 0; transform: translateY(40px) scale(1.03); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .hold-marquee { -webkit-mask: none; mask: none; }
+  .hold-does { flex-wrap: wrap; white-space: normal; }
+  .hold-does[aria-hidden="true"] { display: none; }
+}
+html[data-motion="reduced"] .hold-does[aria-hidden="true"] { display: none; }
+html[data-motion="reduced"] .hold-does { flex-wrap: wrap; white-space: normal; }
+@keyframes hold-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes hold-letter { from { transform: translateY(105%); } to { transform: none; } }
+@keyframes hold-dot { from { transform: scale(0); } to { transform: none; } }
+@keyframes hold-photo { from { transform: scale(1.06); } to { transform: none; } }
+@keyframes hold-tag { from { opacity: 0; transform: rotate(-12deg) scale(.8); } to { opacity: 1; transform: rotate(-3deg); } }
+@keyframes hold-marquee { from { transform: translateX(0); } to { transform: translateX(-100%); } }
